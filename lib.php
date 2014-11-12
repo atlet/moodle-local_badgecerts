@@ -645,11 +645,11 @@ function get_all_certificates($courseid = NULL) {
                     }
                     // Set seminar start date
                     if (isset($options['coursestarttime']) && !empty($options['coursestarttime'])) {
-                        $booking->startdate = userdate((int) $options['coursestarttime'], '%d. %m. %Y');
+                        $booking->startdate = userdate((int) $options['coursestarttime'], get_string('strftimedatefullshort'));
                     }
                     // Set seminar end date
                     if (isset($options['courseendtime']) && !empty($options['courseendtime'])) {
-                        $booking->enddate = userdate((int) $options['courseendtime'], '%d. %m. %Y');
+                        $booking->enddate = userdate((int) $options['courseendtime'], get_string('strftimedatefullshort'));
                     }
                     // Set seminar duration
                     if (isset($options['duration']) && !empty($options['duration'])) {
@@ -682,9 +682,9 @@ function get_all_certificates($courseid = NULL) {
             $ownCert['bookingStartdate'] = $booking->startdate;
             $ownCert['bookingEnddate'] = $booking->enddate;
             $ownCert['bookingDuration'] = $booking->duration;
-            $ownCert['recipientBirthdate'] = userdate((int) $cert->recipient->birthdate, '%d. %m. %Y');
+            $ownCert['recipientBirthdate'] = userdate((int) $cert->recipient->birthdate, get_string('strftimedatefullshort'));
             $ownCert['recipientInstitution'] = $cert->recipient->institution;
-            $ownCert['badgeDateIssued'] = userdate((int) $cert->issued, '%d. %m. %Y');
+            $ownCert['badgeDateIssued'] = userdate((int) $cert->issued, get_string('strftimedatefullshort'));
 
             $bulkCerts[] = $ownCert;
         }
@@ -788,11 +788,11 @@ function bulk_generate_badge_certificates($currentcourseid, $certid) {
                         }
                         // Set seminar start date
                         if (isset($options['coursestarttime']) && !empty($options['coursestarttime'])) {
-                            $booking->startdate = userdate((int) $options['coursestarttime'], '%d. %m. %Y');
+                            $booking->startdate = userdate((int) $options['coursestarttime'], get_string('strftimedatefullshort'));
                         }
                         // Set seminar end date
                         if (isset($options['courseendtime']) && !empty($options['courseendtime'])) {
-                            $booking->enddate = userdate((int) $options['courseendtime'], '%d. %m. %Y');
+                            $booking->enddate = userdate((int) $options['courseendtime'], get_string('strftimedatefullshort'));
                         }
                         // Set seminar duration
                         if (isset($options['duration']) && !empty($options['duration'])) {
@@ -856,9 +856,9 @@ function bulk_generate_badge_certificates($currentcourseid, $certid) {
                     $booking->startdate,
                     $booking->enddate,
                     $booking->duration,
-                    userdate((int) $cert->recipient->birthdate, '%d. %m. %Y'),
+                    userdate((int) $cert->recipient->birthdate, get_string('strftimedatefullshort')),
                     $cert->recipient->institution,
-                    userdate((int) $cert->issued['issuedOn'], '%d. %m. %Y'),
+                    userdate((int) $cert->issued['issuedOn'], get_string('strftimedatefullshort')),
                 );
                 $template = str_replace($placeholders, $values, $template);
                 $pdf->ImageSVG($file = '@' . $template, 0, 0, 0, 0, '', '', '', 0, true);
