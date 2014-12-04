@@ -309,17 +309,17 @@ class badge_certificate {
                 get_string('preview:badgecourse', 'local_badgecerts'),
                 sha1(rand() . $this->usercreated . $this->id . $now),
                 strftime('%Y', $now),
-                strftime('%d. %m. %Y', $now),
-                strftime('%d/%m/%Y', $now),
+                userdate($now, get_string('datetimeformat', 'local_badgecerts')),
+                userdate($now, get_string('datetimeformat', 'local_badgecerts')),
                 strftime('%F', $now),
                 strftime('%s', $now),
                 get_string('preview:seminartitle', 'local_badgecerts'),
-                strftime('%d. %m. %Y', strtotime('- 2 months', $now)),
-                strftime('%d. %m. %Y', strtotime('- 1 month', $now)),
+                userdate(strtotime('- 2 month', $now), get_string('datetimeformat', 'local_badgecerts')),
+                userdate(strtotime('- 1 month', $now), get_string('datetimeformat', 'local_badgecerts')),
                 get_string('preview:seminarduration', 'local_badgecerts'),
-                strftime('%d. %m. %Y', strtotime('1 January 1970')),
+                userdate(strtotime('1 January 1970'), get_string('datetimeformat', 'local_badgecerts')),
                 get_string('preview:recipientinstitution', 'local_badgecerts'),
-                strftime('%d. %m. %Y', $now),
+                userdate($now, get_string('datetimeformat', 'local_badgecerts')),
             );
             $template = str_replace($placeholders, $values, $template);
 
@@ -788,11 +788,11 @@ function bulk_generate_badge_certificates($currentcourseid, $certid) {
                         }
                         // Set seminar start date
                         if (isset($options['coursestarttime']) && !empty($options['coursestarttime'])) {
-                            $booking->startdate = userdate((int) $options['coursestarttime'], get_string('strftimedatefullshort'));
+                            $booking->startdate = userdate((int) $options['coursestarttime'], get_string('datetimeformat', 'local_badgecerts'));
                         }
                         // Set seminar end date
                         if (isset($options['courseendtime']) && !empty($options['courseendtime'])) {
-                            $booking->enddate = userdate((int) $options['courseendtime'], get_string('strftimedatefullshort'));
+                            $booking->enddate = userdate((int) $options['courseendtime'], get_string('datetimeformat', 'local_badgecerts'));
                         }
                         // Set seminar duration
                         if (isset($options['duration']) && !empty($options['duration'])) {
@@ -848,17 +848,17 @@ function bulk_generate_badge_certificates($currentcourseid, $certid) {
                     $DB->get_field('course', 'fullname', array('id' => $cert->courseid)),
                     sha1(rand() . $cert->usercreated . $cert->id . $now),
                     strftime('%Y', $now),
-                    strftime('%d. %m. %Y', $now),
-                    strftime('%d/%m/%Y', $now),
+                    userdate($now, get_string('datetimeformat', 'local_badgecerts')),
+                    userdate($now, get_string('datetimeformat', 'local_badgecerts')),
                     strftime('%F', $now),
                     strftime('%s', $now),
                     $booking->title,
                     $booking->startdate,
                     $booking->enddate,
                     $booking->duration,
-                    userdate((int) $cert->recipient->birthdate, get_string('strftimedatefullshort')),
+                    userdate((int) $cert->recipient->birthdate, get_string('datetimeformat', 'local_badgecerts')),
                     $cert->recipient->institution,
-                    userdate((int) $cert->issued['issuedOn'], get_string('strftimedatefullshort')),
+                    userdate((int) $cert->issued['issuedOn'], get_string('datetimeformat', 'local_badgecerts')),
                 );
                 $template = str_replace($placeholders, $values, $template);
                 $pdf->ImageSVG($file = '@' . $template, 0, 0, 0, 0, '', '', '', 0, true);

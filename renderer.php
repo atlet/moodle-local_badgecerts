@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of the BadgeCerts plugin for Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -22,7 +23,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author     Gregor Anželj <gregor.anzelj@gmail.com>
  */
-
 require_once($CFG->libdir . '/tablelib.php');
 require_once($CFG->dirroot . '/local/badgecerts/lib.php');
 
@@ -38,22 +38,23 @@ class local_badgecerts_renderer extends plugin_renderer_base {
             $context = ($badge->type == CERT_TYPE_SITE) ? context_system::instance() : context_course::instance($badge->courseid);
             $bname = $badge->name;
 
-            $imageurl = moodle_url::make_pluginfile_url($context->id, 'badges', 'badgeimage', $badge->id, '/', 'f1', false);
+            $imageurl = moodle_url::make_pluginfile_url($context->id, 'badges', 'badgeimage', $badge->id, '/', 'f1',
+                            false);
 
             $name = html_writer::tag('span', $bname, array('class' => 'badge-name'));
 
             $image = html_writer::empty_tag('img', array('src' => $imageurl, 'class' => 'badge-image'));
             if (!empty($badge->dateexpire) && $badge->dateexpire < time()) {
                 $image .= $this->output->pix_icon('i/expired',
-                        get_string('expireddate', 'badges', userdate($badge->dateexpire)),
-                        'moodle',
+                        get_string('expireddate', 'badges', userdate($badge->dateexpire)), 'moodle',
                         array('class' => 'expireimage'));
                 $name .= '(' . get_string('expired', 'badges') . ')';
             }
 
             $download = $status = $push = '';
             if (($userid == $USER->id) && !$profile) {
-                $url = new moodle_url('mycerts.php', array('download' => $badge->id, 'hash' => $badge->uniquehash, 'sesskey' => sesskey()));
+                $url = new moodle_url('mycerts.php',
+                        array('download' => $badge->id, 'hash' => $badge->uniquehash, 'sesskey' => sesskey()));
                 $download = $this->output->action_icon($url, new pix_icon('t/download', get_string('download')));
             }
 
@@ -80,7 +81,8 @@ class local_badgecerts_renderer extends plugin_renderer_base {
 
         // Badge certificate details.
         $display .= html_writer::start_tag('fieldset', array('class' => 'generalbox'));
-        $display .= html_writer::tag('legend', get_string('badgecertificatedetails', 'local_badgecerts'), array('class' => 'bold'));
+        $display .= html_writer::tag('legend', get_string('badgecertificatedetails', 'local_badgecerts'),
+                        array('class' => 'bold'));
 
         $detailstable = new html_table();
         $detailstable->attributes = array('class' => 'clearfix', 'id' => 'badgedetails');
@@ -98,7 +100,7 @@ class local_badgecerts_renderer extends plugin_renderer_base {
         $issuertable->attributes = array('class' => 'clearfix', 'id' => 'badgeissuer');
         $issuertable->data[] = array(get_string('issuername', 'local_badgecerts') . ":", $cert->issuername);
         $issuertable->data[] = array(get_string('contact', 'local_badgecerts') . ":",
-                html_writer::tag('a', $cert->issuercontact, array('href' => 'mailto:' . $cert->issuercontact)));
+            html_writer::tag('a', $cert->issuercontact, array('href' => 'mailto:' . $cert->issuercontact)));
         $display .= html_writer::table($issuertable);
         $display .= html_writer::end_tag('fieldset');
 
@@ -119,25 +121,29 @@ class local_badgecerts_renderer extends plugin_renderer_base {
                 $url->param('sesskey', sesskey());
                 $return = new moodle_url(qualified_me());
                 $url->param('return', $return->out_as_local_url(false));
-                $actions .= $this->output->action_icon($url, new pix_icon('t/show', get_string('activate', 'local_badgecerts'))) . " ";
+                $actions .= $this->output->action_icon($url,
+                                new pix_icon('t/show', get_string('activate', 'local_badgecerts'))) . " ";
             } else {
                 $url = new moodle_url(qualified_me());
                 $url->param('lock', $cert->id);
                 $url->param('sesskey', sesskey());
-                $actions .= $this->output->action_icon($url, new pix_icon('t/hide', get_string('deactivate', 'local_badgecerts'))) . " ";
+                $actions .= $this->output->action_icon($url,
+                                new pix_icon('t/hide', get_string('deactivate', 'local_badgecerts'))) . " ";
             }
         }
 
         // Preview badge certificate.
         if (has_capability('moodle/badges:configurecertificate', $context)) {
-            $url = new moodle_url('/local/badgecerts/action.php', array('preview' => '1', 'id' => $cert->id, 'sesskey' => sesskey()));
+            $url = new moodle_url('/local/badgecerts/action.php',
+                    array('preview' => '1', 'id' => $cert->id, 'sesskey' => sesskey()));
             $actions .= $this->output->action_icon($url, new pix_icon('t/preview', get_string('preview'))) . " ";
         }
 
         // Download (bulk print/generate) badge certificates.
         if (has_capability('moodle/badges:configurecertificate', $context) &&
-            user_can_bulk_generate_certificates_in_course($cert->courseid)) {
-            $url = new moodle_url('/local/badgecerts/action.php', array('download' => '1', 'id' => $cert->id, 'sesskey' => sesskey()));
+                user_can_bulk_generate_certificates_in_course($cert->courseid)) {
+            $url = new moodle_url('/local/badgecerts/action.php',
+                    array('download' => '1', 'id' => $cert->id, 'sesskey' => sesskey()));
             $actions .= $this->output->action_icon($url, new pix_icon('t/download', get_string('download'))) . " ";
         }
 
@@ -157,7 +163,7 @@ class local_badgecerts_renderer extends plugin_renderer_base {
         return $actions;
     }
 
-   // Outputs table of badge certificates with actions available.
+    // Outputs table of badge certificates with actions available.
     protected function render_cert_management(cert_management $certs) {
         $paging = new paging_bar($certs->totalcount, $certs->page, $certs->perpage, $this->page->url, 'page');
 
@@ -166,30 +172,31 @@ class local_badgecerts_renderer extends plugin_renderer_base {
         if (has_capability('moodle/badges:createcertificate', $this->page->context)) {
             $n['type'] = $this->page->url->get_param('type');
             $n['id'] = $this->page->url->get_param('id');
-            $htmlnew = $this->output->single_button(new moodle_url('/local/badgecerts/new.php', $n), get_string('newbadgecertificate', 'local_badgecerts'));
+            $htmlnew = $this->output->single_button(new moodle_url('/local/badgecerts/new.php', $n),
+                    get_string('newbadgecertificate', 'local_badgecerts'));
         }
 
         $htmlpagingbar = $this->render($paging);
         $table = new html_table();
         $table->attributes['class'] = 'collection';
 
-        $sortbyname = $this->helper_sortable_heading(get_string('name'),
-                'name', $certs->sort, $certs->dir);
-        $sortbyissuer = $this->helper_sortable_heading(get_string('issuername', 'local_badgecerts'),
-                'issuer', $certs->sort, $certs->dir);
-        $sortbystatus = $this->helper_sortable_heading(get_string('status', 'badges'),
-                'status', $certs->sort, $certs->dir);
+        $sortbyname = $this->helper_sortable_heading(get_string('name'), 'name', $certs->sort, $certs->dir);
+        $sortbyissuer = $this->helper_sortable_heading(get_string('issuername', 'local_badgecerts'), 'issuer',
+                $certs->sort, $certs->dir);
+        $sortbystatus = $this->helper_sortable_heading(get_string('status', 'badges'), 'status', $certs->sort,
+                $certs->dir);
         $table->head = array(
-                $sortbyname,
-                $sortbyissuer,
-                $sortbystatus,
-                get_string('actions')
-            );
+            $sortbyname,
+            $sortbyissuer,
+            $sortbystatus,
+            get_string('actions')
+        );
         $table->colclasses = array('name', 'status', 'criteria', 'actions');
 
         foreach ($certs->certs as $c) {
             $style = !$c->is_active() ? array('class' => 'dimmed') : array();
-            $name = html_writer::link(new moodle_url('/local/badgecerts/overview.php', array('id' => $c->id)), $c->name, $style);
+            $name = html_writer::link(new moodle_url('/local/badgecerts/overview.php', array('id' => $c->id)), $c->name,
+                            $style);
             $issuer = $c->issuername;
             $status = $c->statstring;
 
@@ -212,27 +219,24 @@ class local_badgecerts_renderer extends plugin_renderer_base {
         $n = array('type' => $cert->type, 'id' => $cert->courseid);
         $caption = get_string('managebadgecertificates', 'local_badgecerts');
         echo $this->single_button(new moodle_url('/local/badgecerts/index.php', $n), $caption, 'get');
-        
+
         // Output tabs
         $row = array();
 
-        $row[] = new tabobject('overview',
-                    new moodle_url('/local/badgecerts/overview.php', array('id' => $certid)),
-                    get_string('boverview', 'local_badgecerts')
-                );
+        $row[] = new tabobject('overview', new moodle_url('/local/badgecerts/overview.php', array('id' => $certid)),
+                get_string('boverview', 'local_badgecerts')
+        );
 
         if (has_capability('moodle/badges:configurecertificate', $context)) {
-            $row[] = new tabobject('details',
-                        new moodle_url('/local/badgecerts/edit.php', array('id' => $certid)),
-                        get_string('bdetails', 'local_badgecerts')
-                    );
+            $row[] = new tabobject('details', new moodle_url('/local/badgecerts/edit.php', array('id' => $certid)),
+                    get_string('bdetails', 'local_badgecerts')
+            );
         }
 
         if (has_capability('moodle/badges:configurecertificate', $context)) {
-            $row[] = new tabobject('assign',
-                        new moodle_url('/local/badgecerts/assign.php', array('id' => $certid)),
-                        get_string('bassign', 'local_badgecerts')
-                    );
+            $row[] = new tabobject('assign', new moodle_url('/local/badgecerts/assign.php', array('id' => $certid)),
+                    get_string('bassign', 'local_badgecerts')
+            );
         }
 
         echo $this->tabtree($row, $current);
@@ -251,17 +255,17 @@ class local_badgecerts_renderer extends plugin_renderer_base {
             if ($cert->is_active()) {
                 if ($cert->status != CERT_STATUS_ACTIVE_LOCKED) {
                     $action = $this->output->single_button(new moodle_url('/local/badgecerts/action.php',
-                                array('id' => $cert->id, 'lock' => 1, 'sesskey' => sesskey(),
-                                      'return' => $this->page->url->out_as_local_url(false))),
+                            array('id' => $cert->id, 'lock' => 1, 'sesskey' => sesskey(),
+                        'return' => $this->page->url->out_as_local_url(false))),
                             get_string('deactivate', 'local_badgecerts'), 'POST', array('class' => 'activatebadge'));
                 } else {
                     $action = null;
                 }
             } else {
                 $action = $this->output->single_button(new moodle_url('/local/badgecerts/action.php',
-                            array('id' => $cert->id, 'activate' => 1, 'sesskey' => sesskey(),
-                                  'return' => $this->page->url->out_as_local_url(false))),
-                        get_string('activate', 'local_badgecerts'), 'POST', array('class' => 'activatebadge'));
+                        array('id' => $cert->id, 'activate' => 1, 'sesskey' => sesskey(),
+                    'return' => $this->page->url->out_as_local_url(false))), get_string('activate', 'local_badgecerts'),
+                        'POST', array('class' => 'activatebadge'));
             }
             $row = array($status, $action);
             $table->data[] = $row;
@@ -285,12 +289,15 @@ class local_badgecerts_renderer extends plugin_renderer_base {
 
         // Local badge certificates.
         $localhtml = html_writer::start_tag('fieldset', array('id' => 'issued-badge-table', 'class' => 'generalbox'));
-        $heading = get_string('localbadgecerts', 'local_badgecerts', format_string($SITE->fullname, true, array('context' => context_system::instance())));
-        $localhtml .= html_writer::tag('legend', $this->output->heading_with_help($heading, 'localbadgecertsh', 'local_badgecerts'));
+        $heading = get_string('localbadgecerts', 'local_badgecerts',
+                format_string($SITE->fullname, true, array('context' => context_system::instance())));
+        $localhtml .= html_writer::tag('legend',
+                        $this->output->heading_with_help($heading, 'localbadgecertsh', 'local_badgecerts'));
         if ($certs->certs) {
             $table = new html_table();
             $table->attributes['class'] = 'statustable';
-            $table->data[] = array($this->output->heading(get_string('badgecertsearned', 'local_badgecerts', $certs->totalcount), 4, 'activatebadge'));
+            $table->data[] = array($this->output->heading(get_string('badgecertsearned', 'local_badgecerts',
+                                $certs->totalcount), 4, 'activatebadge'));
             $subheading = html_writer::table($table);
 
             $htmllist = $this->print_badgecerts_list($certs->certs, $USER->id);
@@ -328,17 +335,20 @@ class local_badgecerts_renderer extends plugin_renderer_base {
                 $url = new moodle_url($this->page->url);
                 $url->params(array('sort' => $sortid, 'dir' => 'ASC'));
                 $out .= $this->output->action_icon($url,
-                        new pix_icon('t/sort_asc', get_string('sortbyx', 'core', s($text)), null, array('class' => 'iconsort')));
+                        new pix_icon('t/sort_asc', get_string('sortbyx', 'core', s($text)), null,
+                        array('class' => 'iconsort')));
             }
             if ($sortby !== $sortid || $sorthow !== 'DESC') {
                 $url = new moodle_url($this->page->url);
                 $url->params(array('sort' => $sortid, 'dir' => 'DESC'));
                 $out .= $this->output->action_icon($url,
-                        new pix_icon('t/sort_desc', get_string('sortbyxreverse', 'core', s($text)), null, array('class' => 'iconsort')));
+                        new pix_icon('t/sort_desc', get_string('sortbyxreverse', 'core', s($text)), null,
+                        array('class' => 'iconsort')));
             }
         }
         return $out;
     }
+
     /**
      * Tries to guess the fullname format set at the site
      *
@@ -355,6 +365,7 @@ class local_badgecerts_renderer extends plugin_renderer_base {
             return 'fl';
         }
     }
+
     /**
      * Renders a search form
      *
@@ -415,18 +426,21 @@ class cert_collection implements renderable {
     public function __construct($certs) {
         $this->certs = $certs;
     }
+
 }
 
 /**
  * Collection of badge certificates used at the index.php page
  */
 class cert_management extends cert_collection implements renderable {
+    
 }
 
 /**
  * Collection of user badge certificates used at the mycerts.php page
  */
 class cert_user_collection extends cert_collection implements renderable {
+
     /** @var string search */
     public $search = '';
 
@@ -440,12 +454,14 @@ class cert_user_collection extends cert_collection implements renderable {
         global $CFG;
         parent::__construct($certs);
     }
+
 }
 
 /**
  * An issued badge certificates for mycerts.php page
  */
 class issued_badgecert implements renderable {
+
     /** @var issued badge ID */
     public $id;
 
@@ -492,14 +508,16 @@ class issued_badgecert implements renderable {
                         WHERE u.id = :userid", array('userid' => $rec->userid));
             // Add custom profile field 'Datumrojstva' value
             $fieldid = $DB->get_field('user_info_field', 'id', array('shortname' => 'Datumrojstva'));
-            if ($fieldid && $birthdate = $DB->get_field('user_info_data', 'data', array('userid' => $rec->userid, 'fieldid' => $fieldid))) {
+            if ($fieldid && $birthdate = $DB->get_field('user_info_data', 'data',
+                    array('userid' => $rec->userid, 'fieldid' => $fieldid))) {
                 $user->birthdate = $birthdate;
             } else {
                 $user->birthdate = null;
             }
             // Add custom profile field 'VIZ' value
             $fieldid = $DB->get_field('user_info_field', 'id', array('shortname' => 'VIZ'));
-            if ($fieldid && $institution = $DB->get_field('user_info_data', 'data', array('userid' => $rec->userid, 'fieldid' => $fieldid))) {
+            if ($fieldid && $institution = $DB->get_field('user_info_data', 'data',
+                    array('userid' => $rec->userid, 'fieldid' => $fieldid))) {
                 $user->institution = $institution;
             } else {
                 $user->institution = null;
@@ -557,15 +575,15 @@ class issued_badgecert implements renderable {
             $template = file_get_contents($cert->certbgimage, false);
             // Get booking related data
             $booking = new StdClass();
-            $booking->title     = get_string('titlenotset', 'local_badgecerts');
+            $booking->title = get_string('titlenotset', 'local_badgecerts');
             $booking->startdate = get_string('datenotdefined', 'local_badgecerts');
-            $booking->enddate   = get_string('datenotdefined', 'local_badgecerts');
-            $booking->duration  = 0;
+            $booking->enddate = get_string('datenotdefined', 'local_badgecerts');
+            $booking->duration = 0;
 
             if ($cert->bookingid > 0 && file_exists($CFG->dirroot . '/mod/booking/locallib.php')) {
                 require_once($CFG->dirroot . '/mod/booking/locallib.php');
                 $coursemodule = get_coursemodule_from_id('booking', $cert->bookingid);
-                $bookingid    = $coursemodule->instance;
+                $bookingid = $coursemodule->instance;
                 $optionid = booking_getbookingoptionid($bookingid, $USER->id);
                 if (isset($optionid) && $optionid > 0) {
                     $options = booking_getbookingoptions($bookingid, $optionid);
@@ -575,11 +593,11 @@ class issued_badgecert implements renderable {
                     }
                     // Set seminar start date
                     if (isset($options['coursestarttime']) && !empty($options['coursestarttime'])) {
-                        $booking->startdate = userdate((int)$options['coursestarttime'], '%d. %m. %Y');
+                        $booking->startdate = userdate((int) $options['coursestarttime'], get_string('datetimeformat', 'local_badgecerts'));
                     }
                     // Set seminar end date
                     if (isset($options['courseendtime']) && !empty($options['courseendtime'])) {
-                        $booking->enddate = userdate((int)$options['courseendtime'], '%d. %m. %Y');
+                        $booking->enddate = userdate((int) $options['courseendtime'], get_string('datetimeformat', 'local_badgecerts'));
                     }
                     // Set seminar duration
                     if (isset($options['duration']) && !empty($options['duration'])) {
@@ -597,36 +615,36 @@ class issued_badgecert implements renderable {
                 $recipientemail = $this->recipient->accountemail;
             }
             $placeholders = array(
-                '[[recipient-fname]]',       // Adds the recipient's first name
-                '[[recipient-lname]]',       // Adds the recipient's last name
-                '[[recipient-flname]]',      // Adds the recipient's full name (first, last)
-                '[[recipient-lfname]]',      // Adds the recipient's full name (last, first)
-                '[[recipient-email]]',       // Adds the recipient's email address
-                '[[issuer-name]]',           // Adds the issuer's name or title
-                '[[issuer-contact]]',        // Adds the issuer's contact information
-                '[[badge-name]]',            // Adds the badge's name or title
-                '[[badge-desc]]',            // Adds the badge's description
-                '[[badge-number]]',          // Adds the badge's ID number
-                '[[badge-course]]',          // Adds the name of the course where badge was awarded
-                '[[badge-hash]]',            // Adds the badge hash value
-                '[[datetime-Y]]',            // Adds the year
-                '[[datetime-d.m.Y]]',        // Adds the date in dd.mm.yyyy format
-                '[[datetime-d/m/Y]]',        // Adds the date in dd/mm/yyyy format
-                '[[datetime-F]]',            // Adds the date (used in DB datestamps)
-                '[[datetime-s]]',            // Adds Unix Epoch Time timestamp';
-                '[[booking-title]]',         // Adds the seminar title
-                '[[booking-startdate]]',     // Adds the seminar start date
-                '[[booking-enddate]]',       // Adds the seminar end date
-                '[[booking-duration]]',      // Adds the seminar duration
-                '[[recipient-birthdate]]',   // Adds the recipient's date of birth
+                '[[recipient-fname]]', // Adds the recipient's first name
+                '[[recipient-lname]]', // Adds the recipient's last name
+                '[[recipient-flname]]', // Adds the recipient's full name (first, last)
+                '[[recipient-lfname]]', // Adds the recipient's full name (last, first)
+                '[[recipient-email]]', // Adds the recipient's email address
+                '[[issuer-name]]', // Adds the issuer's name or title
+                '[[issuer-contact]]', // Adds the issuer's contact information
+                '[[badge-name]]', // Adds the badge's name or title
+                '[[badge-desc]]', // Adds the badge's description
+                '[[badge-number]]', // Adds the badge's ID number
+                '[[badge-course]]', // Adds the name of the course where badge was awarded
+                '[[badge-hash]]', // Adds the badge hash value
+                '[[datetime-Y]]', // Adds the year
+                '[[datetime-d.m.Y]]', // Adds the date in dd.mm.yyyy format
+                '[[datetime-d/m/Y]]', // Adds the date in dd/mm/yyyy format
+                '[[datetime-F]]', // Adds the date (used in DB datestamps)
+                '[[datetime-s]]', // Adds Unix Epoch Time timestamp';
+                '[[booking-title]]', // Adds the seminar title
+                '[[booking-startdate]]', // Adds the seminar start date
+                '[[booking-enddate]]', // Adds the seminar end date
+                '[[booking-duration]]', // Adds the seminar duration
+                '[[recipient-birthdate]]', // Adds the recipient's date of birth
                 '[[recipient-institution]]', // Adds the institution where the recipient is employed
-                '[[badge-date-issued]]',     // Adds the date when badge was issued
+                '[[badge-date-issued]]', // Adds the date when badge was issued
             );
             $values = array(
                 $this->recipient->firstname,
                 $this->recipient->lastname,
-                $this->recipient->firstname.' '.$this->recipient->lastname,
-                $this->recipient->lastname.' '.$this->recipient->firstname,
+                $this->recipient->firstname . ' ' . $this->recipient->lastname,
+                $this->recipient->lastname . ' ' . $this->recipient->firstname,
                 $recipientemail,
                 $cert->issuername,
                 $cert->issuercontact,
@@ -636,21 +654,21 @@ class issued_badgecert implements renderable {
                 $DB->get_field('course', 'fullname', array('id' => $cert->courseid)),
                 sha1(rand() . $cert->usercreated . $cert->id . $now),
                 strftime('%Y', $now),
-                strftime('%d. %m. %Y', $now),
-                strftime('%d/%m/%Y', $now),
+                userdate($now, get_string('datetimeformat', 'local_badgecerts')),
+                userdate($now, get_string('datetimeformat', 'local_badgecerts')),
                 strftime('%F', $now),
                 strftime('%s', $now),
                 $booking->title,
                 $booking->startdate,
                 $booking->enddate,
                 $booking->duration,
-                userdate((int)$this->recipient->birthdate, '%d. %m. %Y'),
+                userdate((int) $this->recipient->birthdate, get_string('datetimeformat', 'local_badgecerts')),
                 $this->recipient->institution,
-                userdate((int)$this->issued['issuedOn'], '%d. %m. %Y'),
+                userdate((int) $this->issued['issuedOn'], get_string('datetimeformat', 'local_badgecerts')),
             );
             $template = str_replace($placeholders, $values, $template);
 
-            $pdf->ImageSVG($file='@'.$template, 0, 0, 0, 0, '', '', '', 0, true);
+            $pdf->ImageSVG($file = '@' . $template, 0, 0, 0, 0, '', '', '', 0, true);
             // restore auto-page-break status
             $pdf->SetAutoPageBreak($auto_page_break, $break_margin);
             // set the starting point for the page content
@@ -661,4 +679,5 @@ class issued_badgecert implements renderable {
         // This method has several options, check the source code documentation for more information.
         $pdf->Output($this->badgeclass['name'] . '.pdf', 'D');
     }
+
 }
