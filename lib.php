@@ -251,7 +251,7 @@ class badge_certificate {
         // set image scale factor
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
         // set default font subsetting mode
-        $pdf->setFontSubsetting(true);
+        $pdf->setFontSubsetting(FALSE);
 
         // Add badge certificate background image
         if ($this->certbgimage) {
@@ -324,6 +324,7 @@ class badge_certificate {
             $template = str_replace($placeholders, $values, $template);
 
             $pdf->ImageSVG($file = '@' . $template, 0, 0, 0, 0, '', '', '', 0, true);
+
             // restore auto-page-break status
             $pdf->SetAutoPageBreak($auto_page_break, $break_margin);
             // set the starting point for the page content

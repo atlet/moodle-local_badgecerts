@@ -163,4 +163,4 @@ $string['statuscertmessage_2'] = 'This badge certificate is currently not availa
 $string['statuscertmessage_3'] = 'This badge certificate is currently available to users, and its elements are locked. ';
 $string['titlenotset'] = 'Course title not set';
 
-$string['datetimeformat'] = '%-d.%-m.%Y';
+$string['datetimeformat'] = '%-d. %-m. %Y';
