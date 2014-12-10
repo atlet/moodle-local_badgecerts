@@ -251,7 +251,7 @@ class badge_certificate {
         // set image scale factor
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
         // set default font subsetting mode
-        $pdf->setFontSubsetting(FALSE);
+        $pdf->setFontSubsetting(true);
 
         // Add badge certificate background image
         if ($this->certbgimage) {
@@ -497,15 +497,19 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
                 bi.id as issuedid,
                 bi.visible,
                 u.email,
-                b.*
+                b.*,
+                bc.status as certstatus
             FROM
                 {badge} b,
                 {badge_issued} bi,
-                {user} u
+                {user} u,
+                {badge_certificate} bc
             WHERE b.id = bi.badgeid
                 AND u.id = bi.userid
                 AND bi.userid = ?
-                AND b.certid IS NOT NULL';
+                AND b.certid IS NOT NULL
+                AND bc.id = b.certid
+                AND bc.status >= 1';
 
     if (!empty($search)) {
         $sql .= ' AND (' . $DB->sql_like('b.name', '?', false) . ') ';
