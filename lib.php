@@ -566,20 +566,20 @@ function booking_getbookingoptionid($bookingid = NULL, $userid = NULL) {
 /**
  * Get bookingoptions - from booking module
  */
-function booking_getbookingoptions($bookingid = NULL, $optionid = NULL) {
-    global $DB;
-
-    if (is_null($optionid) || is_null($bookingid)) {
+function booking_getbookingoptions($cmid = NULL, $optionid = NULL) {
+    require_once($CFG->dirroot . '/mod/booking/locallib.php');
+    
+    if (is_null($optionid)) {
         return FALSE;
     }
 
-    $bo = $DB->get_record('booking_options', array('id' => $optionid));
-    $booking = $DB->get_record('booking', array('id' => $bookingid));
+    $booking = new booking_option($cmid, $optionid);
+    $booking->apply_tags();
 
-    if ($bo === FALSE || $booking === FALSE) {
+    if ($booking === FALSE) {
         return FALSE;
     } else {
-        return array('text' => $bo->text, 'coursestarttime' => $bo->coursestarttime, 'courseendtime' => $bo->courseendtime, 'duration' => $booking->duration);
+        return array('text' => $booking->option->text, 'coursestarttime' => $booking->option->coursestarttime, 'courseendtime' => $booking->option->courseendtime, 'duration' => $booking->booking->duration);
     }
 }
 
@@ -643,7 +643,8 @@ function get_all_certificates($courseid = NULL) {
             if ($cert->bookingid > 0) {
                 $optionid = booking_getbookingoptionid($cert->bookingid, $badge->userid);
                 if (isset($optionid) && $optionid > 0) {
-                    $options = booking_getbookingoptions($cert->bookingid, $optionid);
+                    $coursemodule = get_coursemodule_from_id('booking', $cert->bookingid);
+                    $options = booking_getbookingoptions($coursemodule->id, $optionid);
                     // Set seminar title
                     if (isset($options['text']) && !empty($options['text'])) {
                         $booking->title = $options['text'];
@@ -786,7 +787,8 @@ function bulk_generate_badge_certificates($currentcourseid, $certid) {
                 if ($cert->bookingid > 0) {
                     $optionid = booking_getbookingoptionid($cert->bookingid, $badge->userid);
                     if (isset($optionid) && $optionid > 0) {
-                        $options = booking_getbookingoptions($cert->bookingid, $optionid);
+                        $coursemodule = get_coursemodule_from_id('booking', $cert->bookingid);
+                        $options = booking_getbookingoptions($coursemodule->id, $optionid);
                         // Set seminar title
                         if (isset($options['text']) && !empty($options['text'])) {
                             $booking->title = $options['text'];
