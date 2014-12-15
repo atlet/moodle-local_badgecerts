@@ -567,6 +567,7 @@ function booking_getbookingoptionid($bookingid = NULL, $userid = NULL) {
  * Get bookingoptions - from booking module
  */
 function booking_getbookingoptions($cmid = NULL, $optionid = NULL) {
+    global $CFG;
     require_once($CFG->dirroot . '/mod/booking/locallib.php');
     
     if (is_null($optionid)) {
@@ -576,7 +577,7 @@ function booking_getbookingoptions($cmid = NULL, $optionid = NULL) {
     $booking = new booking_option($cmid, $optionid);
     $booking->apply_tags();
 
-    if ($booking === FALSE) {
+    if (empty($booking)) {
         return FALSE;
     } else {
         return array('text' => $booking->option->text, 'coursestarttime' => $booking->option->coursestarttime, 'courseendtime' => $booking->option->courseendtime, 'duration' => $booking->booking->duration);

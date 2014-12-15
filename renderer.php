@@ -581,12 +581,12 @@ class issued_badgecert implements renderable {
             $booking->duration = 0;
 
             if ($cert->bookingid > 0 && file_exists($CFG->dirroot . '/mod/booking/locallib.php')) {
-                //require_once($CFG->dirroot . '/mod/booking/locallib.php');
                 $coursemodule = get_coursemodule_from_id('booking', $cert->bookingid);
                 $bookingid = $coursemodule->instance;
                 $optionid = booking_getbookingoptionid($bookingid, $USER->id);
                 if (isset($optionid) && $optionid > 0) {
-                    $options = booking_getbookingoptions($coursemodule->id, $optionid);
+                    $options = booking_getbookingoptions($cert->bookingid, $optionid);
+
                     // Set seminar title
                     if (isset($options['text']) && !empty($options['text'])) {
                         $booking->title = $options['text'];
