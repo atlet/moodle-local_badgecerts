@@ -350,14 +350,20 @@ class badge_certificate {
  * @param int $user User specific search
  * @return array $badge Array of records matching criteria
  */
-function badges_get_certificates($type, $courseid = 0, $sort = '', $dir = '', $page = 0, $perpage = CERT_PERPAGE,
-        $user = 0) {
+function badges_get_certificates($type, $courseid = 0, $sort = '', $dir = '', $page = 0, $perpage = CERT_PERPAGE, $user = 0) {
     global $DB;
     $records = array();
     $params = array();
-    $where = "bc.type = :type AND bc.usercreated = :user";
+
     $params['type'] = $type;
+    $where = "bc.type = :type";
+    // Managers can see all badge certificates, regardless of ownership.
+    // Admins can see only the badge cerficates that they own.
+    list($context, $course, $cm) = get_context_info_array($user);
+    if (!has_any_capability(array('moodle/role:manage'), $context)) {
+        $where .= " AND bc.usercreated = :user";
     $params['user'] = $user;
+    }
 
     $userfields = array('bc.id, bc.name, bc.status');
     $usersql = "";
