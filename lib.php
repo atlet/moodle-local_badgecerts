@@ -350,7 +350,8 @@ class badge_certificate {
  * @param int $user User specific search
  * @return array $badge Array of records matching criteria
  */
-function badges_get_certificates($type, $courseid = 0, $sort = '', $dir = '', $page = 0, $perpage = CERT_PERPAGE, $user = 0) {
+function badges_get_certificates($type, $courseid = 0, $sort = '', $dir = '', $page = 0, $perpage = CERT_PERPAGE,
+        $user = 0) {
     global $DB;
     $records = array();
     $params = array();
@@ -362,7 +363,7 @@ function badges_get_certificates($type, $courseid = 0, $sort = '', $dir = '', $p
     list($context, $course, $cm) = get_context_info_array($user);
     if (!has_any_capability(array('moodle/role:manage'), $context)) {
         $where .= " AND bc.usercreated = :user";
-    $params['user'] = $user;
+        $params['user'] = $user;
     }
 
     $userfields = array('bc.id, bc.name, bc.status');
@@ -503,8 +504,10 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
                 bi.id as issuedid,
                 bi.visible,
                 u.email,
+                u.id as userid,
                 b.*,
-                bc.status as certstatus
+                bc.status as certstatus,
+                bc.bookingid as bookingid
             FROM
                 {badge} b,
                 {badge_issued} bi,
@@ -530,6 +533,17 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
     }
     $sql .= ' ORDER BY bi.dateissued DESC';
     $certs = $DB->get_records_sql($sql, $params, $page * $perpage, $perpage);
+
+    foreach ($certs as $key => $value) {
+        if ($value->bookingid > 0) {
+            $coursemodule = get_coursemodule_from_id('booking', $value->bookingid);
+            $bookingid = $coursemodule->instance;
+
+            if (booking_getbookingoptionid($bookingid, $value->userid) == 0) {
+                unset($certs[$key]);
+            }
+        }
+    }
 
     return $certs;
 }
@@ -563,9 +577,9 @@ function booking_getbookingoptionid($bookingid = NULL, $userid = NULL) {
     $ba = $DB->get_record('booking_answers', array('completed' => '1', 'userid' => $userid, 'bookingid' => $bookingid));
 
     if ($ba === FALSE) {
-        return 0;
+        return (int) 0;
     } else {
-        return $ba->optionid;
+        return (int) $ba->optionid;
     }
 }
 
@@ -575,7 +589,7 @@ function booking_getbookingoptionid($bookingid = NULL, $userid = NULL) {
 function booking_getbookingoptions($cmid = NULL, $optionid = NULL) {
     global $CFG;
     require_once($CFG->dirroot . '/mod/booking/locallib.php');
-    
+
     if (is_null($optionid)) {
         return FALSE;
     }
@@ -586,10 +600,10 @@ function booking_getbookingoptions($cmid = NULL, $optionid = NULL) {
     if (empty($booking)) {
         return FALSE;
     } else {
-        return array('text' => $booking->option->text, 'coursestarttime' => $booking->option->coursestarttime, 'courseendtime' => $booking->option->courseendtime, 'duration' => $booking->booking->duration);
+        return array('text' => $booking->option->text, 'coursestarttime' => $booking->option->coursestarttime, 'courseendtime' => $booking->option->courseendtime,
+            'duration' => $booking->booking->duration);
     }
 }
-
 
 /**
  * Get all certificates for courseid - for API!
@@ -658,11 +672,13 @@ function get_all_certificates($courseid = NULL) {
                     }
                     // Set seminar start date
                     if (isset($options['coursestarttime']) && !empty($options['coursestarttime'])) {
-                        $booking->startdate = userdate((int) $options['coursestarttime'], get_string('strftimedatefullshort'));
+                        $booking->startdate = userdate((int) $options['coursestarttime'],
+                                get_string('strftimedatefullshort'));
                     }
                     // Set seminar end date
                     if (isset($options['courseendtime']) && !empty($options['courseendtime'])) {
-                        $booking->enddate = userdate((int) $options['courseendtime'], get_string('strftimedatefullshort'));
+                        $booking->enddate = userdate((int) $options['courseendtime'],
+                                get_string('strftimedatefullshort'));
                     }
                     // Set seminar duration
                     if (isset($options['duration']) && !empty($options['duration'])) {
@@ -695,7 +711,8 @@ function get_all_certificates($courseid = NULL) {
             $ownCert['bookingStartdate'] = $booking->startdate;
             $ownCert['bookingEnddate'] = $booking->enddate;
             $ownCert['bookingDuration'] = $booking->duration;
-            $ownCert['recipientBirthdate'] = userdate((int) $cert->recipient->birthdate, get_string('strftimedatefullshort'));
+            $ownCert['recipientBirthdate'] = userdate((int) $cert->recipient->birthdate,
+                    get_string('strftimedatefullshort'));
             $ownCert['recipientInstitution'] = $cert->recipient->institution;
             $ownCert['badgeDateIssued'] = userdate((int) $cert->issued, get_string('strftimedatefullshort'));
 
@@ -714,7 +731,7 @@ function bulk_generate_badge_certificates($currentcourseid, $certid) {
 
     if (user_can_bulk_generate_certificates_in_course($currentcourseid)) {
         // Get issued badges from current course
-        $badgeid = $DB->get_field('badge', '*', array('certid' => $certid));
+        $badgeid = $DB->get_field('badge', 'id', array('certid' => $certid));
         $sql = "SELECT bi.userid, bi.uniquehash AS hash
                 FROM {badge_issued} bi
                 WHERE bi.badgeid = :badgeid";
@@ -741,6 +758,17 @@ function bulk_generate_badge_certificates($currentcourseid, $certid) {
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
         // set default font subsetting mode
         $pdf->setFontSubsetting(true);
+
+        $coursemodule = get_coursemodule_from_id('booking', $cert->bookingid);
+        $bookingid = $coursemodule->instance;
+
+        if ((int) $cert->bookingid > 0) {
+            foreach ($badges as $key => $value) {
+                if (booking_getbookingoptionid($bookingid, $value->userid) == 0) {
+                    unset($badges[$key]);
+                }
+            }
+        }
 
         // Add badge certificate background image
         if ($cert->certbgimage) {
@@ -792,7 +820,7 @@ function bulk_generate_badge_certificates($currentcourseid, $certid) {
                 $booking->duration = 0;
 
                 if ($cert->bookingid > 0) {
-                    $optionid = booking_getbookingoptionid($cert->bookingid, $badge->userid);
+                    $optionid = booking_getbookingoptionid($bookingid, $badge->userid);
                     if (isset($optionid) && $optionid > 0) {
                         $coursemodule = get_coursemodule_from_id('booking', $cert->bookingid);
                         $options = booking_getbookingoptions($coursemodule->id, $optionid);
@@ -802,11 +830,13 @@ function bulk_generate_badge_certificates($currentcourseid, $certid) {
                         }
                         // Set seminar start date
                         if (isset($options['coursestarttime']) && !empty($options['coursestarttime'])) {
-                            $booking->startdate = userdate((int) $options['coursestarttime'], get_string('datetimeformat', 'local_badgecerts'));
+                            $booking->startdate = userdate((int) $options['coursestarttime'],
+                                    get_string('datetimeformat', 'local_badgecerts'));
                         }
                         // Set seminar end date
                         if (isset($options['courseendtime']) && !empty($options['courseendtime'])) {
-                            $booking->enddate = userdate((int) $options['courseendtime'], get_string('datetimeformat', 'local_badgecerts'));
+                            $booking->enddate = userdate((int) $options['courseendtime'],
+                                    get_string('datetimeformat', 'local_badgecerts'));
                         }
                         // Set seminar duration
                         if (isset($options['duration']) && !empty($options['duration'])) {
