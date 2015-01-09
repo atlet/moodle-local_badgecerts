@@ -101,5 +101,27 @@ $capabilities = array(
             'editingteacher' => CAP_ALLOW,
         )
     ),
+    
+    // View badge certificates.
+    'moodle/badges:viewcertificates' => array(
+        'captype'      => 'read',
+        'contextlevel' => CONTEXT_COURSE,
+        'archetypes'   => array(
+            'manager'        => CAP_ALLOW,
+            'teacher'        => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+        )
+    ),
+    
+    // Print badge certificates.
+    'moodle/badges:printcertificates' => array(
+        'captype'      => 'read',
+        'contextlevel' => CONTEXT_COURSE,
+        'archetypes'   => array(
+            'manager'        => CAP_ALLOW,
+            'teacher'        => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+        )
+    ),
 
 );

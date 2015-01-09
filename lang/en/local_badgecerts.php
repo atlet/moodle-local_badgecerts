@@ -164,3 +164,6 @@ $string['statuscertmessage_3'] = 'This badge certificate is currently available 
 $string['titlenotset'] = 'Course title not set';
 
 $string['datetimeformat'] = '%-d. %-m. %Y';
+
+// renderer.php
+$string['viewcertificates'] = 'Recipients';

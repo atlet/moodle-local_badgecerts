@@ -74,6 +74,12 @@ class local_badgecerts_renderer extends plugin_renderer_base {
 
         return html_writer::alist($items, array('class' => 'badges'));
     }
+    
+    public function print_badgecert_view($cert, $context) {
+        $display = "";
+        
+        return $display;
+    }
 
     // Prints a badge certificate overview infomation.
     public function print_badgecert_overview($cert, $context) {
@@ -236,6 +242,12 @@ class local_badgecerts_renderer extends plugin_renderer_base {
         if (has_capability('moodle/badges:configurecertificate', $context)) {
             $row[] = new tabobject('assign', new moodle_url('/local/badgecerts/assign.php', array('id' => $certid)),
                     get_string('bassign', 'local_badgecerts')
+            );
+        }
+        
+        if (has_capability('moodle/badges:viewcertificates', $context)) {
+            $row[] = new tabobject('view', new moodle_url('/local/badgecerts/view.php', array('id' => $certid)),
+                    get_string('viewcertificates', 'local_badgecerts')
             );
         }
 

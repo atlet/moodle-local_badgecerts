@@ -506,8 +506,7 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
                 u.email,
                 u.id as userid,
                 b.*,
-                bc.status as certstatus,
-                bc.bookingid as bookingid
+                bc.status as certstatus
             FROM
                 {badge} b,
                 {badge_issued} bi,
@@ -518,7 +517,23 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
                 AND bi.userid = ?
                 AND b.certid IS NOT NULL
                 AND bc.id = b.certid
-                AND bc.status >= 1';
+                AND bc.status >= 1
+            AND (SELECT 
+            IF(bc.bookingid > 0,
+                    (SELECT 
+                            IF(COUNT(*) > 0, 1, 0)
+                        FROM
+                            mdl_booking_answers AS ans
+                        WHERE
+                            bookingid = (SELECT 
+                                    instance
+                                FROM
+                                    mdl_course_modules AS cm
+                                WHERE
+                                    cm.id = bc.bookingid)
+                                AND userid = u.id),
+                    1)
+        ) = 1';
 
     if (!empty($search)) {
         $sql .= ' AND (' . $DB->sql_like('b.name', '?', false) . ') ';
@@ -533,17 +548,6 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
     }
     $sql .= ' ORDER BY bi.dateissued DESC';
     $certs = $DB->get_records_sql($sql, $params, $page * $perpage, $perpage);
-
-    foreach ($certs as $key => $value) {
-        if ($value->bookingid > 0) {
-            $coursemodule = get_coursemodule_from_id('booking', $value->bookingid);
-            $bookingid = $coursemodule->instance;
-
-            if (booking_getbookingoptionid($bookingid, $value->userid) == 0) {
-                unset($certs[$key]);
-            }
-        }
-    }
 
     return $certs;
 }
@@ -732,9 +736,34 @@ function bulk_generate_badge_certificates($currentcourseid, $certid) {
     if (user_can_bulk_generate_certificates_in_course($currentcourseid)) {
         // Get issued badges from current course
         $badgeid = $DB->get_field('badge', 'id', array('certid' => $certid));
-        $sql = "SELECT bi.userid, bi.uniquehash AS hash
-                FROM {badge_issued} bi
-                WHERE bi.badgeid = :badgeid";
+        $sql = "SELECT 
+    d.userid, d.uniquehash AS hash
+FROM
+    mdl_badge_issued d
+        JOIN
+    mdl_badge AS b ON d.badgeid = b.id
+        JOIN
+    mdl_user AS u ON d.userid = u.id
+        JOIN
+    mdl_badge_certificate AS c ON b.certid = c.id
+WHERE
+    d.badgeid = :badgeid
+        AND (SELECT 
+            IF(c.bookingid > 0,
+                    (SELECT 
+                            IF(COUNT(*) > 0, 1, 0)
+                        FROM
+                            mdl_booking_answers AS ans
+                        WHERE
+                            bookingid = (SELECT 
+                                    instance
+                                FROM
+                                    mdl_course_modules AS cm
+                                WHERE
+                                    cm.id = c.bookingid)
+                                AND userid = u.id),
+                    1)
+        ) = 1";
         $badges = $DB->get_records_sql($sql, array('badgeid' => $badgeid));
 
         // Generate badge certificate for each of the issued badges
@@ -761,14 +790,6 @@ function bulk_generate_badge_certificates($currentcourseid, $certid) {
 
         $coursemodule = get_coursemodule_from_id('booking', $cert->bookingid);
         $bookingid = $coursemodule->instance;
-
-        if ((int) $cert->bookingid > 0) {
-            foreach ($badges as $key => $value) {
-                if (booking_getbookingoptionid($bookingid, $value->userid) == 0) {
-                    unset($badges[$key]);
-                }
-            }
-        }
 
         // Add badge certificate background image
         if ($cert->certbgimage) {
