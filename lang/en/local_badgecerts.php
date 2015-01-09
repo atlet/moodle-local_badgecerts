@@ -167,3 +167,13 @@ $string['datetimeformat'] = '%-d. %-m. %Y';
 
 // renderer.php
 $string['viewcertificates'] = 'Recipients';
+$string['filterreport'] = 'Filter report';
+
+// all_users.php
+$string['fullname'] = 'Recipient';
+$string['dateissued'] = 'Date issued';
+
+// view.php
+$string['printselected'] = 'Print certificate for selected users';
+$string['printall'] = 'Print certificate for all users';
+$string['nousers'] = 'Can\'t print certificates, because no users found!';

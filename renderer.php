@@ -74,10 +74,10 @@ class local_badgecerts_renderer extends plugin_renderer_base {
 
         return html_writer::alist($items, array('class' => 'badges'));
     }
-    
+
     public function print_badgecert_view($cert, $context) {
         $display = "";
-        
+
         return $display;
     }
 
@@ -143,14 +143,6 @@ class local_badgecerts_renderer extends plugin_renderer_base {
             $url = new moodle_url('/local/badgecerts/action.php',
                     array('preview' => '1', 'id' => $cert->id, 'sesskey' => sesskey()));
             $actions .= $this->output->action_icon($url, new pix_icon('t/preview', get_string('preview'))) . " ";
-        }
-
-        // Download (bulk print/generate) badge certificates.
-        if (has_capability('moodle/badges:configurecertificate', $context) &&
-                user_can_bulk_generate_certificates_in_course($cert->courseid)) {
-            $url = new moodle_url('/local/badgecerts/action.php',
-                    array('download' => '1', 'id' => $cert->id, 'sesskey' => sesskey()));
-            $actions .= $this->output->action_icon($url, new pix_icon('t/download', get_string('download'))) . " ";
         }
 
         // Edit badge certificate.
@@ -244,7 +236,7 @@ class local_badgecerts_renderer extends plugin_renderer_base {
                     get_string('bassign', 'local_badgecerts')
             );
         }
-        
+
         if (has_capability('moodle/badges:viewcertificates', $context)) {
             $row[] = new tabobject('view', new moodle_url('/local/badgecerts/view.php', array('id' => $certid)),
                     get_string('viewcertificates', 'local_badgecerts')
@@ -252,6 +244,33 @@ class local_badgecerts_renderer extends plugin_renderer_base {
         }
 
         echo $this->tabtree($row, $current);
+    }
+
+    public function print_badgecert_filter_box(badge_certificate $cert, $url, $day = 0, $month = 0, $year = 0) {
+        
+        $cTime = 0;
+        
+        if ($year > 0) {
+            $cTime = mktime(0, 0, 0, $month, $day, $year);
+        }
+        
+        
+
+        echo html_writer::start_tag('form',
+                array('class' => 'reportbadgesselecform', 'action' => $url, 'method' => 'get'));
+        echo html_writer::start_div();
+
+        echo html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'id', 'value' => $cert->id));
+
+        echo html_writer::select_time('days', 'day', $cTime);
+        echo html_writer::select_time('months', 'month', $cTime);
+        echo html_writer::select_time('years', 'year', $cTime);
+
+        echo html_writer::empty_tag('input',
+                array('type' => 'submit', 'value' => get_string('filterreport', 'local_badgecerts')));
+
+        echo html_writer::end_div();
+        echo html_writer::end_tag('form');
     }
 
     /**
@@ -605,11 +624,13 @@ class issued_badgecert implements renderable {
                     }
                     // Set seminar start date
                     if (isset($options['coursestarttime']) && !empty($options['coursestarttime'])) {
-                        $booking->startdate = userdate((int) $options['coursestarttime'], get_string('datetimeformat', 'local_badgecerts'));
+                        $booking->startdate = userdate((int) $options['coursestarttime'],
+                                get_string('datetimeformat', 'local_badgecerts'));
                     }
                     // Set seminar end date
                     if (isset($options['courseendtime']) && !empty($options['courseendtime'])) {
-                        $booking->enddate = userdate((int) $options['courseendtime'], get_string('datetimeformat', 'local_badgecerts'));
+                        $booking->enddate = userdate((int) $options['courseendtime'],
+                                get_string('datetimeformat', 'local_badgecerts'));
                     }
                     // Set seminar duration
                     if (isset($options['duration']) && !empty($options['duration'])) {
