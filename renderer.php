@@ -706,6 +706,8 @@ class issued_badgecert implements renderable {
             $pdf->SetAutoPageBreak($auto_page_break, $break_margin);
             // set the starting point for the page content
             $pdf->setPageMark();
+            
+            local_badgecerts_insert_to_log($cert->id, $USER->id);
         }
 
         // Close and output PDF document

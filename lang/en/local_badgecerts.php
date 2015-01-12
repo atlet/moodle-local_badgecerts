@@ -172,6 +172,8 @@ $string['filterreport'] = 'Filter report';
 // all_users.php
 $string['fullname'] = 'Recipient';
 $string['dateissued'] = 'Date issued';
+$string['nctransfers'] = 'N. of trasnfers';
+$string['ndatelasttransfer'] = 'Last time of trasnfer';
 
 // view.php
 $string['printselected'] = 'Print certificate for selected users';

@@ -22,7 +22,9 @@ class all_users extends table_sql {
         $columns = array(
             'selected',
             'fullname',
-            'dateissued'
+            'dateissued',
+            'nctransfers',
+            'ndatelasttransfer'
         );
         $this->define_columns($columns);
 
@@ -30,7 +32,9 @@ class all_users extends table_sql {
         $headers = array(
             '',
             get_string('fullname', 'local_badgecerts'),
-            get_string('dateissued', 'local_badgecerts')
+            get_string('dateissued', 'local_badgecerts'),
+            get_string('nctransfers', 'local_badgecerts'),
+            get_string('ndatelasttransfer', 'local_badgecerts')
         );
         $this->define_headers($headers);
 
@@ -52,14 +56,23 @@ class all_users extends table_sql {
         return userdate($values->dateissued);
     }
 
-    function col_selected($values) {        
-        if (!$this->is_downloading()) {
-            return '<input type="checkbox" class="usercheckbox" name="user[]['.$values->id.']" value="'.$values->uniquehash.'" />';
+    function col_ndatelasttransfer($values) {
+
+        if (empty($values->ndatelasttransfer)) {
+            return '';
         } else {
-            return '';            
+            return userdate($values->ndatelasttransfer);
         }
     }
-    
+
+    function col_selected($values) {
+        if (!$this->is_downloading()) {
+            return '<input type="checkbox" class="usercheckbox" name="user[][' . $values->id . ']" value="' . $values->uniquehash . '" />';
+        } else {
+            return '';
+        }
+    }
+
     /**
      * This function is called for each data row to allow processing of
      * columns which do not have a *_cols function.

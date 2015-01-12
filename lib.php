@@ -339,6 +339,30 @@ class badge_certificate {
 }
 
 /**
+ * Insert to log table when user transfer certificate.
+ *
+ * @param int Certificate id
+ * @param int User id
+ * @param int Timestamp
+ */
+function local_badgecerts_insert_to_log($certid = NULL, $userid = NULL) {
+    global $DB, $USER;
+    
+    if (!$certid && !$userid) {
+        return FALSE;
+    }
+        
+    $timeLog = new stdClass();
+    $timeLog->badgecertificateid = $certid;
+    $timeLog->transfereruserid = $USER->id;
+    $timeLog->userid = $userid;
+    $timeLog->created = time();
+    
+    $DB->insert_record('badge_certificate_trasnfers', $timeLog);
+    
+}
+
+/**
  * Get all badge certificates.
  *
  * @param int Type of badges to return
@@ -900,6 +924,8 @@ function bulk_generate_certificates($certid, $badges, $context) {
                 $pdf->SetAutoPageBreak($auto_page_break, $break_margin);
                 // set the starting point for the page content
                 $pdf->setPageMark();
+                
+                local_badgecerts_insert_to_log($cert->id, $badge->userid);
             }
 
             // Close and output PDF document

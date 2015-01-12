@@ -21,11 +21,11 @@
  * @author     Gregor Anželj <gregor.anzelj@gmail.com>
  */
 
-$plugin->version = 2015010900;
+$plugin->version = 2015011201;
 $plugin->requires = 2013111800; // Moodle 2.6.0 or newer
 $plugin->component = 'local_badgecerts';
 $plugin->maturity = MATURITY_BETA;
-$plugin->release = '2.0';
+$plugin->release = '1.0';
 $plugin->dependencies = array(
     'mod_booking' => 2014100100, // The Booking plugin version 2014100100 or higher must be present.
 );
