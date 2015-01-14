@@ -69,6 +69,14 @@ $context = $cert->get_context();
 require_capability('moodle/badges:viewcertificates', $context);
 $navurl = new moodle_url('/local/badgecerts/index.php', array('type' => $cert->type));
 
+$onlyTeachers = "";
+if ($cert->bookingid > 0 && !has_capability('moodle/badges:certificatemanager', $context)) {
+    $onlyTeachers = " JOIN {booking_answers} AS ba ON ba.userid = u.id JOIN {booking_teachers} AS bt ON bt.optionid = ba.optionid ";
+    
+    $sqlWhere .= " AND bt.userid = :teacherid ";
+    $sqlValues['teacherid'] = $USER->id;
+}
+
 if ($cert->type == CERT_TYPE_COURSE) {
     if (empty($CFG->badges_allowcoursebadges)) {
         print_error('coursebadgesdisabled', 'badges');
@@ -87,10 +95,10 @@ $currenturl = new moodle_url('/local/badgecerts/view.php', $urlParams);
 $table = new all_users('all_users');
 $table->is_downloading($download, 'all_users', 'testing123');
 
-$fields = 'u.id, ' . get_all_user_name_fields(true, 'u') . ', u.username, u.firstname, u.lastname, d.dateissued, d.uniquehash, '
+$fields = 'DISTINCT u.id, ' . get_all_user_name_fields(true, 'u') . ', u.username, u.firstname, u.lastname, d.dateissued, d.uniquehash, '
         . '(SELECT COUNT(*) AS nctransfers FROM {badge_certificate_trasnfers} AS bcf WHERE bcf.userid = u.id AND bcf.badgecertificateid = c.id AND bcf.transfereruserid = u.id) AS nctransfers,'
         . '(SELECT created AS ndatelasttransfer FROM {badge_certificate_trasnfers} AS bcf WHERE bcf.userid = u.id AND bcf.badgecertificateid = c.id AND bcf.transfereruserid = u.id ORDER BY created DESC LIMIT 1) AS ndatelasttransfer';
-$from = '{badge_issued} AS d JOIN {badge} AS b ON d.badgeid = b.id JOIN {user} AS u ON d.userid = u.id JOIN {badge_certificate} AS c ON b.certid = c.id';
+$from = '{badge_issued} AS d JOIN {badge} AS b ON d.badgeid = b.id JOIN {user} AS u ON d.userid = u.id JOIN {badge_certificate} AS c ON b.certid = c.id' . $onlyTeachers;
 
 $where = 'b.certid = :certid
             ' . $sqlWhere . '

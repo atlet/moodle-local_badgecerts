@@ -123,5 +123,14 @@ $capabilities = array(
             'editingteacher' => CAP_ALLOW,
         )
     ),
+    
+    // Print badge certificates.
+    'moodle/badges:certificatemanager' => array(
+        'captype'      => 'read',
+        'contextlevel' => CONTEXT_COURSE,
+        'archetypes'   => array(
+            'manager'        => CAP_ALLOW,
+        )
+    ),
 
 );
