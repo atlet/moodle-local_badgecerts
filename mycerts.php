@@ -58,15 +58,25 @@ if ($clearsearch) {
     $search = '';
 }
 
+$context = context_user::instance($USER->id);
+
 if ($download && $hash) {
     $ibadgecert = new issued_badgecert($hash);
     // Generate badge certificate if a badge have assigned one.
     if (!is_null($ibadgecert->certid)) {
-        $ibadgecert->generate_badge_certificate();
+        
+        $badges = array(); 
+        $user = new stdClass();
+
+        $user->userid = $USER->id;
+        $user->hash = $hash;
+
+        $badges[$USER->id] = $user;
+        
+        $ibadgecert->generate_badge_certificate($context, $badges);
     }
 }
 
-$context = context_user::instance($USER->id);
 require_capability('moodle/badges:manageownbadges', $context);
 
 $PAGE->set_context($context);

@@ -91,6 +91,7 @@ $fields = 'u.id, ' . get_all_user_name_fields(true, 'u') . ', u.username, u.firs
         . '(SELECT COUNT(*) AS nctransfers FROM {badge_certificate_trasnfers} AS bcf WHERE bcf.userid = u.id AND bcf.badgecertificateid = c.id AND bcf.transfereruserid = u.id) AS nctransfers,'
         . '(SELECT created AS ndatelasttransfer FROM {badge_certificate_trasnfers} AS bcf WHERE bcf.userid = u.id AND bcf.badgecertificateid = c.id AND bcf.transfereruserid = u.id ORDER BY created DESC LIMIT 1) AS ndatelasttransfer';
 $from = '{badge_issued} AS d JOIN {badge} AS b ON d.badgeid = b.id JOIN {user} AS u ON d.userid = u.id JOIN {badge_certificate} AS c ON b.certid = c.id';
+
 $where = 'b.certid = :certid
             ' . $sqlWhere . '
         AND (SELECT 
