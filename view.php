@@ -71,10 +71,45 @@ $navurl = new moodle_url('/local/badgecerts/index.php', array('type' => $cert->t
 
 $onlyTeachers = "";
 if ($cert->bookingid > 0 && !has_capability('moodle/badges:certificatemanager', $context)) {
-    $onlyTeachers = " JOIN {booking_answers} AS ba ON ba.userid = u.id JOIN {booking_teachers} AS bt ON bt.optionid = ba.optionid ";
+    $onlyTeachers = " JOIN {booking_answers} AS bat ON bat.userid = u.id JOIN {booking_teachers} AS bta ON bta.optionid = bat.optionid ";
     
-    $sqlWhere .= " AND bt.userid = :teacherid ";
+    $sqlWhere .= ' AND bta.userid = :teacherid ';
     $sqlValues['teacherid'] = $USER->id;
+}
+
+if ($cert->bookingid > 0) {
+    $onlyTeachers .= " AND ((SELECT 
+            IF(c.bookingid > 0,
+                    (SELECT 
+                            IF(COUNT(*) > 0, 1, 0)
+                        FROM
+                            {booking_answers} AS ans
+                        WHERE
+                            bookingid = (SELECT 
+                                    instance
+                                FROM
+                                    {course_modules} AS cm
+                                WHERE
+                                    cm.id = c.bookingid)
+                                AND ans.userid = u.id AND ans.completed = 1),
+                    1)
+        ) = 1
+        OR (SELECT 
+            IF(c.bookingid > 0,
+                    (SELECT 
+                            IF(COUNT(*) > 0, 1, 0)
+                        FROM
+                            {booking_teachers} AS tch
+                        WHERE
+                            bookingid = (SELECT 
+                                    instance
+                                FROM
+                                    {course_modules} AS cm
+                                WHERE
+                                    cm.id = c.bookingid)
+                                AND tch.userid = u.id AND tch.completed = 1),
+                    1)
+        ) = 1) ";
 }
 
 if ($cert->type == CERT_TYPE_COURSE) {
@@ -98,26 +133,9 @@ $table->is_downloading($download, 'all_users', 'testing123');
 $fields = 'DISTINCT u.id, ' . get_all_user_name_fields(true, 'u') . ', u.username, u.firstname, u.lastname, d.dateissued, d.uniquehash, '
         . '(SELECT COUNT(*) AS nctransfers FROM {badge_certificate_trasnfers} AS bcf WHERE bcf.userid = u.id AND bcf.badgecertificateid = c.id AND bcf.transfereruserid = u.id) AS nctransfers,'
         . '(SELECT created AS ndatelasttransfer FROM {badge_certificate_trasnfers} AS bcf WHERE bcf.userid = u.id AND bcf.badgecertificateid = c.id AND bcf.transfereruserid = u.id ORDER BY created DESC LIMIT 1) AS ndatelasttransfer';
-$from = '{badge_issued} AS d JOIN {badge} AS b ON d.badgeid = b.id JOIN {user} AS u ON d.userid = u.id JOIN {badge_certificate} AS c ON b.certid = c.id' . $onlyTeachers;
+$from = ' {badge_issued} AS d JOIN {badge} AS b ON d.badgeid = b.id JOIN {user} AS u ON d.userid = u.id JOIN {badge_certificate} AS c ON b.certid = c.id ' . $onlyTeachers;
 
-$where = 'b.certid = :certid
-            ' . $sqlWhere . '
-        AND (SELECT 
-            IF(c.bookingid > 0,
-                    (SELECT 
-                            IF(COUNT(*) > 0, 1, 0)
-                        FROM
-                            mdl_booking_answers AS ans
-                        WHERE
-                            bookingid = (SELECT 
-                                    instance
-                                FROM
-                                    mdl_course_modules AS cm
-                                WHERE
-                                    cm.id = c.bookingid)
-                                AND userid = u.id),
-                    1)
-        ) = 1';
+$where = ' b.certid = :certid ' . $sqlWhere;
 
 $table->set_sql(
         $fields, $from, $where, $sqlValues);

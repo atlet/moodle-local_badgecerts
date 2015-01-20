@@ -559,22 +559,37 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
                 AND b.certid IS NOT NULL
                 AND bc.id = b.certid
                 AND bc.status >= 1
-            AND (SELECT 
+            AND ((SELECT 
             IF(bc.bookingid > 0,
                     (SELECT 
                             IF(COUNT(*) > 0, 1, 0)
                         FROM
-                            mdl_booking_answers AS ans
+                            {booking_answers} AS ans
                         WHERE
                             bookingid = (SELECT 
                                     instance
                                 FROM
-                                    mdl_course_modules AS cm
+                                    {course_modules} AS cm
                                 WHERE
                                     cm.id = bc.bookingid)
-                                AND userid = u.id),
+                                AND ans.userid = u.id),
                     1)
-        ) = 1';
+        ) = 1 OR (SELECT 
+            IF(bc.bookingid > 0,
+                    (SELECT 
+                            IF(COUNT(*) > 0, 1, 0)
+                        FROM
+                            {booking_teachers} AS tch
+                        WHERE
+                            bookingid = (SELECT 
+                                    instance
+                                FROM
+                                    {course_modules} AS cm
+                                WHERE
+                                    cm.id = bc.bookingid)
+                                AND tch.userid = u.id AND tch.completed = 1),
+                    1)
+        ) = 1)';
 
     if (!empty($search)) {
         $sql .= ' AND (' . $DB->sql_like('b.name', '?', false) . ') ';
@@ -639,8 +654,9 @@ function booking_getbookingoptionsid($bookingid = NULL, $userid = NULL) {
     }
 
     $ba = $DB->get_records('booking_answers', array('completed' => '1', 'userid' => $userid, 'bookingid' => $bookingid));
+    $bt = $DB->get_records('booking_teachers', array('completed' => '1', 'userid' => $userid, 'bookingid' => $bookingid));
 
-    if ($ba === FALSE) {
+    if ($ba === FALSE && $bt === FALSE) {
         return (int) 0;
     } else {
         $r = array();
@@ -649,7 +665,11 @@ function booking_getbookingoptionsid($bookingid = NULL, $userid = NULL) {
             $r[] = (int) $value->optionid;
         }
 
-        return $r;
+        foreach ($bt as $value) {
+            $r[] = (int) $value->optionid;
+        }
+
+        return array_unique($r);
     }
 }
 
