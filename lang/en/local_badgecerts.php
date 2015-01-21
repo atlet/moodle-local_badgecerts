@@ -179,3 +179,9 @@ $string['ndatelasttransfer'] = 'Last time of trasnfer';
 $string['printselected'] = 'Print certificate for selected users';
 $string['printall'] = 'Print certificate for all users';
 $string['nousers'] = 'Can\'t print certificates, because no users found!';
+
+// edit_form.php
+$string['certificatefor'] = 'Certificate for';
+$string['certificateforbadge'] = 'Badge';
+$string['certificateformodbookingusers'] = 'Booking users';
+$string['certificateformodbookingteachers'] = 'Booking teachers';

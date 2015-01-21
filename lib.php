@@ -92,6 +92,7 @@ class badge_certificate {
     public $courseid;
     public $status = 0;
     public $nextcron;
+    public $certtype;
 
     /** @var array Badge certificate elements */
     public $elements = array();
@@ -646,26 +647,36 @@ function booking_getbookingoptionid($bookingid = NULL, $userid = NULL) {
 /**
  * Get bookingoptionid - from booking module
  */
-function booking_getbookingoptionsid($bookingid = NULL, $userid = NULL) {
+function booking_getbookingoptionsid($bookingid = NULL, $userid = NULL, $certtype = NULL) {
     global $DB;
 
     if (is_null($userid) || is_null($bookingid)) {
         return FALSE;
     }
 
-    $ba = $DB->get_records('booking_answers', array('completed' => '1', 'userid' => $userid, 'bookingid' => $bookingid));
-    $bt = $DB->get_records('booking_teachers', array('completed' => '1', 'userid' => $userid, 'bookingid' => $bookingid));
+    switch ($certtype) {
+        case 0:
+            $ba = FALSE;
+            break;
+        
+        case 1:
+            $ba = $DB->get_records('booking_answers', array('completed' => '1', 'userid' => $userid, 'bookingid' => $bookingid));
+            break;
+        
+        case 2:
+            $ba = $DB->get_records('booking_teachers', array('completed' => '1', 'userid' => $userid, 'bookingid' => $bookingid));
+            break;
 
-    if ($ba === FALSE && $bt === FALSE) {
+        default:
+            break;
+    }
+
+    if ($ba === FALSE) {
         return (int) 0;
     } else {
         $r = array();
 
         foreach ($ba as $value) {
-            $r[] = (int) $value->optionid;
-        }
-
-        foreach ($bt as $value) {
             $r[] = (int) $value->optionid;
         }
 
@@ -953,8 +964,8 @@ function bulk_generate_certificates($certid, $badges, $context) {
             $booking->enddate = get_string('datenotdefined', 'local_badgecerts');
             $booking->duration = 0;
 
-            if ($cert->bookingid > 0) {
-                $optionids = booking_getbookingoptionsid($bookingid, $badge->userid);
+            if ($cert->bookingid > 0 && in_array($cert->certtype, array(1, 2))) {
+                $optionids = booking_getbookingoptionsid($bookingid, $badge->userid, $cert->certtype);
                 foreach ($optionids as $optionid) {
                     if (isset($optionid) && $optionid > 0) {
                         $options = booking_getbookingoptions($coursemodule->id, $optionid);

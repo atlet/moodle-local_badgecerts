@@ -70,15 +70,23 @@ require_capability('moodle/badges:viewcertificates', $context);
 $navurl = new moodle_url('/local/badgecerts/index.php', array('type' => $cert->type));
 
 $onlyTeachers = "";
-if ($cert->bookingid > 0 && !has_capability('moodle/badges:certificatemanager', $context)) {
+if ($cert->certtype != 0 && $cert->bookingid > 0 && !has_capability('moodle/badges:certificatemanager', $context)) {
     $onlyTeachers = " JOIN {booking_answers} AS bat ON bat.userid = u.id JOIN {booking_teachers} AS bta ON bta.optionid = bat.optionid ";
-    
+
     $sqlWhere .= ' AND bta.userid = :teacherid ';
     $sqlValues['teacherid'] = $USER->id;
 }
 
-if ($cert->bookingid > 0) {
-    $onlyTeachers .= " AND ((SELECT 
+switch ($cert->certtype) {
+    case 0:
+        // badges
+
+        break;
+
+    case 1:
+        //mod_booking users
+        if ($cert->bookingid > 0) {
+            $sqlWhere .= " AND (SELECT 
             IF(c.bookingid > 0,
                     (SELECT 
                             IF(COUNT(*) > 0, 1, 0)
@@ -92,9 +100,14 @@ if ($cert->bookingid > 0) {
                                 WHERE
                                     cm.id = c.bookingid)
                                 AND ans.userid = u.id AND ans.completed = 1),
-                    1)
-        ) = 1
-        OR (SELECT 
+                    1)) = 1 ";
+        }
+        break;
+
+    case 2:
+        //mod_booking teachers
+        if ($cert->bookingid > 0) {
+            $sqlWhere .= " AND (SELECT 
             IF(c.bookingid > 0,
                     (SELECT 
                             IF(COUNT(*) > 0, 1, 0)
@@ -108,8 +121,12 @@ if ($cert->bookingid > 0) {
                                 WHERE
                                     cm.id = c.bookingid)
                                 AND tch.userid = u.id AND tch.completed = 1),
-                    1)
-        ) = 1) ";
+                    1)) = 1 ";
+        }
+        break;
+
+    default:
+        break;
 }
 
 if ($cert->type == CERT_TYPE_COURSE) {
@@ -165,10 +182,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (isset($_POST['printall'])) {
-        
+
         $users = $DB->get_records_sql("SELECT {$fields} FROM {$from} WHERE {$where}", $sqlValues);
-        $badges = array(); 
-        
+        $badges = array();
+
         foreach ($users as $value) {
 
             $user = new stdClass();
@@ -178,10 +195,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $badges[$value->id] = $user;
         }
-        
+
         if (empty($badges)) {
             print_error('nousers', 'local_badgecerts');
-        } else {        
+        } else {
             bulk_generate_certificates($certid, $badges, $context);
         }
 

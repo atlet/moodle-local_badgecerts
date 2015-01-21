@@ -96,6 +96,17 @@ class edit_cert_details_form extends moodleform {
         $mform->addGroup($unitoptions, 'unitgr', get_string('certificateunit', 'local_badgecerts'), array(' '), false);
         $mform->setDefault('unit', 'mm');
         $mform->addRule('unitgr', null, 'required');
+        
+        $certificatetype = array();
+        $certificatetype[] =& $mform->createElement('radio', 'certtype', '', get_string('certificateforbadge', 'local_badgecerts'), 0);
+        $certificatetype[] =& $mform->createElement('static', 'b1', null, '<br/>');
+        $certificatetype[] =& $mform->createElement('radio', 'certtype', '', get_string('certificateformodbookingusers', 'local_badgecerts'), 1);
+        $certificatetype[] =& $mform->createElement('static', 'b2', null, '<br/>');
+        $certificatetype[] =& $mform->createElement('radio', 'certtype', '', get_string('certificateformodbookingteachers', 'local_badgecerts'), 2);
+        $mform->addGroup($certificatetype, 'certtypes', get_string('certificatefor', 'local_badgecerts'), array(' '), false);
+        $mform->setDefault('certtype', 0);
+        $mform->addRule('certtypes', null, 'required');
+        
 
         $imageoptions = array('maxbytes' => 262144, 'accepted_types' => array('.svg'));
         $mform->addElement('filepicker', 'certbgimage', get_string('backgroundimage', 'local_badgecerts'), null, $imageoptions);

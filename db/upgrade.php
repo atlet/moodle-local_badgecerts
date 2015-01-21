@@ -191,5 +191,21 @@ function xmldb_local_badgecerts_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2015011201, 'local', 'badgecerts');
     }
 
+        if ($oldversion < 2015012100) {
+
+        // Define field certtype to be added to badge_certificate.
+        $table = new xmldb_table('badge_certificate');
+        $field = new xmldb_field('certtype', XMLDB_TYPE_INTEGER, '2', null, null, null, '0', 'nextcron');
+
+        // Conditionally launch add field certtype.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Badgecerts savepoint reached.
+        upgrade_plugin_savepoint(true, 2015012100, 'local', 'badgecerts');
+    }
+
+    
     return true;
 }
