@@ -51,24 +51,25 @@ class local_badgecerts_renderer extends plugin_renderer_base {
                 $name .= '(' . get_string('expired', 'badges') . ')';
             }
 
-            $download = $status = $push = '';
+            if (!$profile) {
+                $burl = new moodle_url('/badges/badge.php', array('hash' => $badge->uniquehash));
+            } else {
+                if (!$external) {
+                    $burl = new moodle_url('/badges/badge.php', array('hash' => $badge->uniquehash));
+                } else {
+                    $hash = hash('md5', $badge->hostedUrl);
+                    $burl = new moodle_url('/badges/external.php', array('hash' => $hash, 'user' => $userid));
+                }
+            }
+
+            $badgeview = $status = $push = '';
             if (($userid == $USER->id) && !$profile) {
                 $url = new moodle_url('mycerts.php',
                         array('download' => $badge->id, 'hash' => $badge->uniquehash, 'sesskey' => sesskey()));
-                $download = $this->output->action_icon($url, new pix_icon('t/download', get_string('download')));
+                $badgeview = $this->output->action_icon($burl, new pix_icon('i/info', get_string('download')));
             }
 
-            if (!$profile) {
-                $url = new moodle_url('/badges/badge.php', array('hash' => $badge->uniquehash));
-            } else {
-                if (!$external) {
-                    $url = new moodle_url('/badges/badge.php', array('hash' => $badge->uniquehash));
-                } else {
-                    $hash = hash('md5', $badge->hostedUrl);
-                    $url = new moodle_url('/badges/external.php', array('hash' => $hash, 'user' => $userid));
-                }
-            }
-            $actions = html_writer::tag('div', $push . $download . $status, array('class' => 'badge-actions'));
+            $actions = html_writer::tag('div', $push . $badgeview . $status, array('class' => 'badge-actions'));
             $items[] = html_writer::link($url, $image . $actions . $name, array('title' => $bname));
         }
 
