@@ -978,14 +978,14 @@ function bulk_generate_certificates($certid, $badges, $context) {
                         // Set seminar start date
                         if (isset($options['coursestarttime']) && !empty($options['coursestarttime'])) {
                             $booking->startdate = userdate((int) $options['coursestarttime'],
-                                    get_string('datetimeformat', 'local_badgecerts'));
+                                    get_string('strftimedate'));
                         } else {
                             $booking->startdate = get_string('datenotdefined', 'local_badgecerts');
                         }
                         // Set seminar end date
                         if (isset($options['courseendtime']) && !empty($options['courseendtime'])) {
                             $booking->enddate = userdate((int) $options['courseendtime'],
-                                    get_string('datetimeformat', 'local_badgecerts'));
+                                    get_string('strftimedate'));
                         } else {
                             $booking->enddate = get_string('datenotdefined', 'local_badgecerts');
                         }
