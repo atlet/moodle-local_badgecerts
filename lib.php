@@ -212,11 +212,11 @@ class badge_certificate {
 
         $fs = get_file_storage();
 
-        // Delete badge certificate images.
+// Delete badge certificate images.
         $certcontext = $this->get_context();
         $fs->delete_area_files($certcontext->id, 'certificates', 'certbgimage', $this->id);
 
-        // Detach badge certificate from badge(s).
+// Detach badge certificate from badge(s).
         $ids = $DB->get_fieldset_sql("SELECT id FROM {badge} WHERE certid = :certid", array('certid' => $this->id));
         foreach ($ids as $id) {
             $record = new StdClass();
@@ -225,7 +225,7 @@ class badge_certificate {
             $DB->update_record('badge', $record);
         }
 
-        // Finally, remove badge certificate itself.
+// Finally, remove badge certificate itself.
         $DB->delete_records('badge_certificate', array('id' => $this->id));
     }
 
@@ -238,37 +238,37 @@ class badge_certificate {
 
         $pdf = new TCPDF($this->orientation, $this->unit, $this->format, true, 'UTF-8', false);
         $pdf->SetCreator(PDF_CREATOR);
-        // remove default header/footer
+// remove default header/footer
         $pdf->setPrintHeader(false);
         $pdf->setPrintFooter(false);
-        // set default monospaced font
+// set default monospaced font
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-        // set margins
-        //$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-        // override default margins
+// set margins
+//$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+// override default margins
         $pdf->SetMargins(0, 0, 0, true);
-        // set auto page breaks
+// set auto page breaks
         $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-        // set image scale factor
+// set image scale factor
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-        // set default font subsetting mode
+// set default font subsetting mode
         $pdf->setFontSubsetting(true);
 
-        // Add badge certificate background image
+// Add badge certificate background image
         if ($this->certbgimage) {
-            // Add a page
-            // This method has several options, check the source code documentation for more information.
+// Add a page
+// This method has several options, check the source code documentation for more information.
             $pdf->AddPage();
 
-            // get the current page break margin
+// get the current page break margin
             $break_margin = $pdf->getBreakMargin();
-            // get current auto-page-break mode
+// get current auto-page-break mode
             $auto_page_break = $pdf->getAutoPageBreak();
-            // disable auto-page-break
+// disable auto-page-break
             $pdf->SetAutoPageBreak(false, 0);
 
             $template = file_get_contents($this->certbgimage);
-            // Replace all placeholder tags
+// Replace all placeholder tags
             $now = time();
             $placeholders = array(
                 '[[recipient-fname]]', // Adds the recipient's first name
@@ -326,14 +326,14 @@ class badge_certificate {
 
             $pdf->ImageSVG($file = '@' . $template, 0, 0, 0, 0, '', '', '', 0, true);
 
-            // restore auto-page-break status
+// restore auto-page-break status
             $pdf->SetAutoPageBreak($auto_page_break, $break_margin);
-            // set the starting point for the page content
+// set the starting point for the page content
             $pdf->setPageMark();
         }
 
-        // Close and output PDF document
-        // This method has several options, check the source code documentation for more information.
+// Close and output PDF document
+// This method has several options, check the source code documentation for more information.
         $pdf->Output('preview_' . $this->name . '.pdf', 'I');
     }
 
@@ -382,8 +382,8 @@ function badges_get_certificates($type, $courseid = 0, $sort = '', $dir = '', $p
 
     $params['type'] = $type;
     $where = "bc.type = :type";
-    // Managers can see all badge certificates, regardless of ownership.
-    // Admins can see only the badge cerficates that they own.
+// Managers can see all badge certificates, regardless of ownership.
+// Admins can see only the badge cerficates that they own.
     list($context, $course, $cm) = get_context_info_array($user);
     if (!has_any_capability(array('moodle/role:manage'), $context)) {
         $where .= " AND bc.usercreated = :user";
@@ -618,7 +618,7 @@ function user_can_bulk_generate_certificates_in_course($currentcourseid) {
     $fieldid = $DB->get_field('user_info_field', 'id', array('shortname' => 'bulkGenCerts'));
     $courseid = $DB->get_field('user_info_data', 'data', array('userid' => $USER->id, 'fieldid' => $fieldid));
     if ($courseid == $currentcourseid) {
-        // User has the right to bulk generate badge certificates
+// User has the right to bulk generate badge certificates
         return true;
     } else {
         return false;
@@ -658,13 +658,15 @@ function booking_getbookingoptionsid($bookingid = NULL, $userid = NULL, $certtyp
         case 0:
             $ba = FALSE;
             break;
-        
+
         case 1:
-            $ba = $DB->get_records('booking_answers', array('completed' => '1', 'userid' => $userid, 'bookingid' => $bookingid));
+            $ba = $DB->get_records('booking_answers',
+                    array('completed' => '1', 'userid' => $userid, 'bookingid' => $bookingid));
             break;
-        
+
         case 2:
-            $ba = $DB->get_records('booking_teachers', array('completed' => '1', 'userid' => $userid, 'bookingid' => $bookingid));
+            $ba = $DB->get_records('booking_teachers',
+                    array('completed' => '1', 'userid' => $userid, 'bookingid' => $bookingid));
             break;
 
         default:
@@ -732,13 +734,13 @@ function get_all_certificates($courseid = NULL) {
             $assertion = new core_badges_assertion($badge->hash);
             $cert->issued = $assertion->get_badge_assertion();
             $cert->badgeclass = $assertion->get_badge_class();
-            // Get a recipient from database.
+// Get a recipient from database.
             $namefields = get_all_user_name_fields(true, 'u');
             $user = $DB->get_record_sql("SELECT u.id, $namefields, u.deleted,
                                                     u.email AS accountemail, b.email AS backpackemail
                             FROM {user} u LEFT JOIN {badge_backpack} b ON u.id = b.userid
                             WHERE u.id = :userid", array('userid' => $badge->userid));
-            // Add custom profile field 'Datumrojstva' value
+// Add custom profile field 'Datumrojstva' value
             $fieldid = $DB->get_field('user_info_field', 'id', array('shortname' => 'Datumrojstva'));
             if ($fieldid && $birthdate = $DB->get_field('user_info_data', 'data',
                     array('userid' => $badge->userid, 'fieldid' => $fieldid))) {
@@ -746,7 +748,7 @@ function get_all_certificates($courseid = NULL) {
             } else {
                 $user->birthdate = null;
             }
-            // Add custom profile field 'VIZ' value
+// Add custom profile field 'VIZ' value
             $fieldid = $DB->get_field('user_info_field', 'id', array('shortname' => 'VIZ'));
             if ($fieldid && $institution = $DB->get_field('user_info_data', 'data',
                     array('userid' => $badge->userid, 'fieldid' => $fieldid))) {
@@ -767,29 +769,29 @@ function get_all_certificates($courseid = NULL) {
                 if (isset($optionid) && $optionid > 0) {
                     $coursemodule = get_coursemodule_from_id('booking', $cert->bookingid);
                     $options = booking_getbookingoptions($coursemodule->id, $optionid);
-                    // Set seminar title
+// Set seminar title
                     if (isset($options['text']) && !empty($options['text'])) {
                         $booking->title = $options['text'];
                     }
-                    // Set seminar start date
+// Set seminar start date
                     if (isset($options['coursestarttime']) && !empty($options['coursestarttime'])) {
                         $booking->startdate = userdate((int) $options['coursestarttime'],
                                 get_string('strftimedatefullshort'));
                     }
-                    // Set seminar end date
+// Set seminar end date
                     if (isset($options['courseendtime']) && !empty($options['courseendtime'])) {
                         $booking->enddate = userdate((int) $options['courseendtime'],
                                 get_string('strftimedatefullshort'));
                     }
-                    // Set seminar duration
+// Set seminar duration
                     if (isset($options['duration']) && !empty($options['duration'])) {
                         $booking->title = $options['duration'];
                     }
                 }
             }
-            // Replace all placeholder tags
+// Replace all placeholder tags
             $now = time();
-            // Set account email if backpack email is not set up and/or connected
+// Set account email if backpack email is not set up and/or connected
             if (isset($cert->recipient->backpackemail) && !empty($cert->recipient->backpackemail)) {
                 $recipientemail = $cert->recipient->backpackemail;
             } else {
@@ -832,7 +834,7 @@ function get_placeholders($cert, $booking) {
 
 // Replace all placeholder tags
     $now = time();
-    // Set account email if backpack email is not set up and/or connected
+// Set account email if backpack email is not set up and/or connected
     if (isset($cert->recipient->backpackemail) && !empty($cert->recipient->backpackemail)) {
         $recipientemail = $cert->recipient->backpackemail;
     } else {
@@ -900,26 +902,26 @@ function get_placeholders($cert, $booking) {
 function bulk_generate_certificates($certid, $badges, $context) {
     global $CFG, $DB;
 
-    // Generate badge certificate for each of the issued badges
+// Generate badge certificate for each of the issued badges
     require_once($CFG->libdir . '/tcpdf/tcpdf.php');
 
     $cert = new badge_certificate($certid);
     $pdf = new TCPDF($cert->orientation, $cert->unit, $cert->format, true, 'UTF-8', false);
     $pdf->SetCreator(PDF_CREATOR);
-    // remove default header/footer
+// remove default header/footer
     $pdf->setPrintHeader(false);
     $pdf->setPrintFooter(false);
-    // set default monospaced font
+// set default monospaced font
     $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-    // set margins
-    //$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-    // override default margins
+// set margins
+//$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+// override default margins
     $pdf->SetMargins(0, 0, 0, true);
-    // set auto page breaks
+// set auto page breaks
     $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-    // set image scale factor
+// set image scale factor
     $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-    // set default font subsetting mode
+// set default font subsetting mode
     $pdf->setFontSubsetting(true);
 
     if ($cert->bookingid > 0) {
@@ -927,19 +929,19 @@ function bulk_generate_certificates($certid, $badges, $context) {
         $bookingid = $coursemodule->instance;
     }
 
-    // Add badge certificate background image
+// Add badge certificate background image
     if ($cert->certbgimage && !empty($badges)) {
         foreach ($badges as $badge) {
             $assertion = new core_badges_assertion($badge->hash);
             $cert->issued = $assertion->get_badge_assertion();
             $cert->badgeclass = $assertion->get_badge_class();
-            // Get a recipient from database.
+// Get a recipient from database.
             $namefields = get_all_user_name_fields(true, 'u');
             $user = $DB->get_record_sql("SELECT u.id, $namefields, u.deleted,
                                                     u.email AS accountemail, b.email AS backpackemail
                             FROM {user} u LEFT JOIN {badge_backpack} b ON u.id = b.userid
                             WHERE u.id = :userid", array('userid' => $badge->userid));
-            // Add custom profile field 'Datumrojstva' value
+// Add custom profile field 'Datumrojstva' value
             $fieldid = $DB->get_field('user_info_field', 'id', array('shortname' => 'Datumrojstva'));
             if ($fieldid && $birthdate = $DB->get_field('user_info_data', 'data',
                     array('userid' => $badge->userid, 'fieldid' => $fieldid))) {
@@ -947,7 +949,7 @@ function bulk_generate_certificates($certid, $badges, $context) {
             } else {
                 $user->birthdate = null;
             }
-            // Add custom profile field 'VIZ' value
+// Add custom profile field 'VIZ' value
             $fieldid = $DB->get_field('user_info_field', 'id', array('shortname' => 'VIZ'));
             if ($fieldid && $institution = $DB->get_field('user_info_data', 'data',
                     array('userid' => $badge->userid, 'fieldid' => $fieldid))) {
@@ -957,7 +959,7 @@ function bulk_generate_certificates($certid, $badges, $context) {
             }
             $cert->recipient = $user;
 
-            // Get booking related data
+// Get booking related data
             $booking = new StdClass();
             $booking->title = get_string('titlenotset', 'local_badgecerts');
             $booking->startdate = get_string('datenotdefined', 'local_badgecerts');
@@ -969,27 +971,25 @@ function bulk_generate_certificates($certid, $badges, $context) {
                 foreach ($optionids as $optionid) {
                     if (isset($optionid) && $optionid > 0) {
                         $options = booking_getbookingoptions($coursemodule->id, $optionid);
-                        // Set seminar title
+// Set seminar title
                         if (isset($options['text']) && !empty($options['text'])) {
                             $booking->title = $options['text'];
                         } else {
                             $booking->title = get_string('titlenotset', 'local_badgecerts');
                         }
-                        // Set seminar start date
+// Set seminar start date
                         if (isset($options['coursestarttime']) && !empty($options['coursestarttime'])) {
-                            $booking->startdate = userdate((int) $options['coursestarttime'],
-                                    get_string('strftimedate'));
+                            $booking->startdate = userdate((int) $options['coursestarttime'], get_string('strftimedate'));
                         } else {
                             $booking->startdate = get_string('datenotdefined', 'local_badgecerts');
                         }
-                        // Set seminar end date
+// Set seminar end date
                         if (isset($options['courseendtime']) && !empty($options['courseendtime'])) {
-                            $booking->enddate = userdate((int) $options['courseendtime'],
-                                    get_string('strftimedate'));
+                            $booking->enddate = userdate((int) $options['courseendtime'], get_string('strftimedate'));
                         } else {
                             $booking->enddate = get_string('datenotdefined', 'local_badgecerts');
                         }
-                        // Set seminar duration
+// Set seminar duration
                         if (isset($options['duration']) && !empty($options['duration'])) {
                             $booking->duration = $options['duration'];
                         } else {
@@ -1004,8 +1004,8 @@ function bulk_generate_certificates($certid, $badges, $context) {
             }
         }
 
-        // Close and output PDF document
-        // This method has several options, check the source code documentation for more information.
+// Close and output PDF document
+// This method has several options, check the source code documentation for more information.
         $pdf->Output($cert->badgeclass['name'] . '.pdf', 'D');
     }
 }
@@ -1014,15 +1014,15 @@ function bulk_generate_certificates($certid, $badges, $context) {
  *  Generate certificate in pdf.
  */
 function add_pdf_page($cert, $badge, &$pdf, $booking) {
-    // Add a page
-    // This method has several options, check the source code documentation for more information.
+// Add a page
+// This method has several options, check the source code documentation for more information.
     $pdf->AddPage();
 
-    // get the current page break margin
+// get the current page break margin
     $break_margin = $pdf->getBreakMargin();
-    // get current auto-page-break mode
+// get current auto-page-break mode
     $auto_page_break = $pdf->getAutoPageBreak();
-    // disable auto-page-break
+// disable auto-page-break
     $pdf->SetAutoPageBreak(false, 0);
 
     $template = file_get_contents($cert->certbgimage);
@@ -1031,9 +1031,9 @@ function add_pdf_page($cert, $badge, &$pdf, $booking) {
 
     $template = str_replace($placeholders['placeholders'], $placeholders['values'], $template);
     $pdf->ImageSVG($file = '@' . $template, 0, 0, 0, 0, '', '', '', 0, true);
-    // restore auto-page-break status
+// restore auto-page-break status
     $pdf->SetAutoPageBreak($auto_page_break, $break_margin);
-    // set the starting point for the page content
+// set the starting point for the page content
     $pdf->setPageMark();
 
     local_badgecerts_insert_to_log($cert->id, $badge->userid);
@@ -1044,7 +1044,7 @@ function add_pdf_page($cert, $badge, &$pdf, $booking) {
  */
 function local_badgecerts_extends_navigation(global_navigation $nav) {
     if (isloggedin()) {
-        // Add 'My badge certificates' item to the navigation block.
+// Add 'My badge certificates' item to the navigation block.
         $myprofile = $nav->get('myprofile');
         $myprofile->add(
                 get_string('mybadgecertificates', 'local_badgecerts'), new moodle_url('/local/badgecerts/mycerts.php'),
@@ -1059,18 +1059,22 @@ function local_badgecerts_extends_navigation(global_navigation $nav) {
 function local_badgecerts_extends_settings_navigation(settings_navigation $nav, context $context = null) {
     global $COURSE;
     if (isloggedin()) {
-        // Add 'Manage badge certificates' item to the administration block.
-        $coursenode = $nav->get('courseadmin');
-        if ($coursenode) {
-            $coursebadges = $coursenode->get('coursebadges');
-            if ($coursebadges) {
-                $coursebadges->add(
-                        get_string('managebadgecertificates', 'local_badgecerts'),
-                        new moodle_url('/local/badgecerts/index.php',
-                        array('type' => CERT_TYPE_COURSE, 'id' => $COURSE->id)), navigation_node::TYPE_SETTING, null,
-                        'managecerts'
-                );
-            }
+
+        if (has_any_capability(array(
+                    'local/badgecerts:viewcertificates',
+                    'local/badgecerts:createcertificate',
+                    'local/badgecerts:configurecertificate',
+                    'local/badgecerts:assigncustomcertificate',
+                    'local/badgecerts:printcertificates',
+                    'local/badgecerts:viewcertificates',
+                    'local/badgecerts:certificatemanager'
+                        ), $context)) {
+
+            $coursenode = $nav->get('courseadmin');
+
+            $url = new moodle_url('/local/badgecerts/index.php', array('type' => CERT_TYPE_COURSE, 'id' => $COURSE->id));
+            $coursenode->add(get_string('managebadgecertificates', 'local_badgecerts'), $url,
+                    navigation_node::TYPE_SETTING, null, 'managecerts', new pix_icon('i/report', ''));
         }
     }
 }
