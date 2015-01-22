@@ -194,8 +194,13 @@ class local_badgecerts_renderer extends plugin_renderer_base {
 
         foreach ($certs->certs as $c) {
             $style = !$c->is_active() ? array('class' => 'dimmed') : array();
-            $name = html_writer::link(new moodle_url('/local/badgecerts/overview.php', array('id' => $c->id)), $c->name,
-                            $style);
+
+            if (!$c->is_active() && !has_capability('local/badgecerts:createcertificate', $this->page->context)) {
+                $name = $c->name;
+            } else {
+                $name = html_writer::link(new moodle_url('/local/badgecerts/overview.php', array('id' => $c->id)),
+                                $c->name, $style);
+            }
             $issuer = $c->issuername;
             $status = $c->statstring;
 
@@ -226,13 +231,15 @@ class local_badgecerts_renderer extends plugin_renderer_base {
                 get_string('boverview', 'local_badgecerts')
         );
 
-        if ((has_capability('local/badgecerts:configurecertificate', $context) && $cert->official == '0') || (has_any_capability(array('moodle/role:manage'), $context))) {
+        if ((has_capability('local/badgecerts:configurecertificate', $context) && $cert->official == '0') || (has_any_capability(array(
+                    'moodle/role:manage'), $context))) {
             $row[] = new tabobject('details', new moodle_url('/local/badgecerts/edit.php', array('id' => $certid)),
                     get_string('bdetails', 'local_badgecerts')
             );
         }
 
-        if ((has_capability('local/badgecerts:configurecertificate', $context) && $cert->official == '0') || (has_any_capability(array('moodle/role:manage'), $context))) {
+        if ((has_capability('local/badgecerts:configurecertificate', $context) && $cert->official == '0') || (has_any_capability(array(
+                    'moodle/role:manage'), $context))) {
             $row[] = new tabobject('assign', new moodle_url('/local/badgecerts/assign.php', array('id' => $certid)),
                     get_string('bassign', 'local_badgecerts')
             );
@@ -269,9 +276,9 @@ class local_badgecerts_renderer extends plugin_renderer_base {
 
         echo html_writer::empty_tag('input',
                 array('type' => 'submit', 'value' => get_string('filterreport', 'local_badgecerts')));
-        
+
         echo html_writer::empty_tag('input',
-                array('id' => "buttonclear" , 'type' => 'button', 'value' => get_string('reset', 'local_badgecerts')));
+                array('id' => "buttonclear", 'type' => 'button', 'value' => get_string('reset', 'local_badgecerts')));
 
         echo html_writer::end_div();
         echo html_writer::end_tag('form');
