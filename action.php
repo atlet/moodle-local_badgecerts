@@ -81,12 +81,12 @@ if ($preview) {
 
 if ($download) {
     //require_sesskey();
-    require_capability('local/badgecerts:configurecertificate', $context);
+    require_capability('local/badgecerts:printcertificates', $context);
     bulk_generate_badge_certificates($cert->courseid, $cert->id);
 }
 
 if ($activate) {
-    require_capability('local/badgecerts:configurecertificate', $context);
+    require_capability('local/badgecerts:viewcertificates', $context);
 
     $PAGE->url->param('activate', 1);
     $status = ($cert->status == CERT_STATUS_INACTIVE) ? CERT_STATUS_ACTIVE : CERT_STATUS_ACTIVE_LOCKED;
@@ -116,7 +116,7 @@ if ($activate) {
 
 if ($deactivate) {
     require_sesskey();
-    require_capability('local/badgecerts:configurecriteria', $context);
+    require_capability('local/badgecerts:viewcertificates', $context);
 
     $status = ($cert->status == CERT_STATUS_ACTIVE) ? CERT_STATUS_INACTIVE : CERT_STATUS_INACTIVE_LOCKED;
     $cert->set_status($status);

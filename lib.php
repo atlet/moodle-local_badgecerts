@@ -384,13 +384,6 @@ function badges_get_certificates($type, $courseid = 0, $sort = '', $dir = '', $p
     
     $params['type'] = $type;
     $where = "bc.type = :type";
-// Managers can see all badge certificates, regardless of ownership.
-// Admins can see only the badge cerficates that they own.
-    list($context, $course, $cm) = get_context_info_array($usercontext->id);
-    if (!has_any_capability(array('moodle/role:manage'), $context)) {
-        $where .= " AND bc.usercreated = :user";
-        $params['user'] = $user;
-    }
 
     $userfields = array('bc.id, bc.name, bc.status');
     $usersql = "";

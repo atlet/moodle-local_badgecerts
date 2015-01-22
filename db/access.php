@@ -27,15 +27,6 @@ defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
 
-    // View available badge certificates without using them.
-    'local/badgecerts:viewcertificates' => array(
-        'captype'       => 'read',
-        'contextlevel'  => CONTEXT_COURSE,
-        'archetypes'    => array(
-            'user'          => CAP_ALLOW,
-        )
-    ),
-
     // Create/duplicate badge certificates.
     'local/badgecerts:createcertificate' => array(
         'riskbitmask'  => RISK_SPAM,
@@ -110,6 +101,7 @@ $capabilities = array(
             'manager'        => CAP_ALLOW,
             'teacher'        => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
+            'user'          => CAP_ALLOW
         )
     ),
     

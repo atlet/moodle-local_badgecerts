@@ -87,6 +87,10 @@ if ($cert->type == CERT_TYPE_COURSE) {
     navigation_node::override_active_url($navurl, true);
 }
 
+if (!((has_capability('local/badgecerts:configurecertificate', $context) && $cert->official == '0') || (has_any_capability(array('moodle/role:manage'), $context)))) {
+    redirect(new moodle_url('/local/badgecerts/overview.php', array('id' => $certid)));
+}
+
 $currenturl = new moodle_url('/local/badgecerts/assign.php', array('id' => $cert->id));
 
 $PAGE->set_context($context);

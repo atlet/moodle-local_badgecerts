@@ -40,7 +40,9 @@ $cert = new badge_certificate($certid);
 $context = $cert->get_context();
 $navurl = new moodle_url('/local/badgecerts/index.php', array('type' => $cert->type));
 
-require_capability('local/badgecerts:configurecertificate', $context);
+if (!((has_capability('local/badgecerts:configurecertificate', $context) && $cert->official == '0') || (has_any_capability(array('moodle/role:manage'), $context)))) {
+    redirect(new moodle_url('/local/badgecerts/overview.php', array('id' => $certid)));
+}
 
 if ($cert->type == CERT_TYPE_COURSE) {
     if (empty($CFG->badges_allowcoursebadges)) {

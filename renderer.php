@@ -226,13 +226,13 @@ class local_badgecerts_renderer extends plugin_renderer_base {
                 get_string('boverview', 'local_badgecerts')
         );
 
-        if (has_capability('local/badgecerts:configurecertificate', $context)) {
+        if ((has_capability('local/badgecerts:configurecertificate', $context) && $cert->official == '0') || (has_any_capability(array('moodle/role:manage'), $context))) {
             $row[] = new tabobject('details', new moodle_url('/local/badgecerts/edit.php', array('id' => $certid)),
                     get_string('bdetails', 'local_badgecerts')
             );
         }
 
-        if (has_capability('local/badgecerts:configurecertificate', $context)) {
+        if ((has_capability('local/badgecerts:configurecertificate', $context) && $cert->official == '0') || (has_any_capability(array('moodle/role:manage'), $context))) {
             $row[] = new tabobject('assign', new moodle_url('/local/badgecerts/assign.php', array('id' => $certid)),
                     get_string('bassign', 'local_badgecerts')
             );
