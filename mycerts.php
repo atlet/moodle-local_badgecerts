@@ -77,8 +77,6 @@ if ($download && $hash) {
     }
 }
 
-require_capability('local/badgecerts:manageownbadges', $context);
-
 $PAGE->set_context($context);
 
 $title = get_string('mybadgecertificates', 'local_badgecerts');
