@@ -269,6 +269,9 @@ class local_badgecerts_renderer extends plugin_renderer_base {
 
         echo html_writer::empty_tag('input',
                 array('type' => 'submit', 'value' => get_string('filterreport', 'local_badgecerts')));
+        
+        echo html_writer::empty_tag('input',
+                array('id' => "buttonclear" , 'type' => 'button', 'value' => get_string('reset', 'local_badgecerts')));
 
         echo html_writer::end_div();
         echo html_writer::end_tag('form');

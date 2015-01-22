@@ -250,3 +250,13 @@ if (!$table->is_downloading()) {
 
     echo $OUTPUT->footer();
 }
+?>
+
+<script type="text/javascript">
+    YUI().use('node-event-simulate', function (Y) {
+
+        Y.one('#buttonclear').on('click', function () {
+           window.location.href = '<?php echo new moodle_url('/local/badgecerts/view.php', array('id' => $certid)); ?>';
+        });
+    });
+</script>

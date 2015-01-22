@@ -168,6 +168,7 @@ $string['datetimeformat'] = '%-d. %-m. %Y';
 // renderer.php
 $string['viewcertificates'] = 'Recipients';
 $string['filterreport'] = 'Filter report';
+$string['reset'] = 'Reset';
 
 // all_users.php
 $string['fullname'] = 'Recipient';
