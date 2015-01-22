@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 $capabilities = array(
 
     // View available badge certificates without using them.
-    'moodle/badges:viewcertificates' => array(
+    'local/badgecerts:viewcertificates' => array(
         'captype'       => 'read',
         'contextlevel'  => CONTEXT_COURSE,
         'archetypes'    => array(
@@ -37,7 +37,7 @@ $capabilities = array(
     ),
 
     // Create/duplicate badge certificates.
-    'moodle/badges:createcertificate' => array(
+    'local/badgecerts:createcertificate' => array(
         'riskbitmask'  => RISK_SPAM,
         'captype'      => 'write',
         'contextlevel' => CONTEXT_COURSE,
@@ -49,7 +49,7 @@ $capabilities = array(
     ),
 
     // Delete badge certificates.
-    'moodle/badges:deletecertificate' => array(
+    'local/badgecerts:deletecertificate' => array(
         'riskbitmask'  => RISK_DATALOSS,
         'captype'      => 'write',
         'contextlevel' => CONTEXT_COURSE,
@@ -61,7 +61,7 @@ $capabilities = array(
     ),
 
     // Set up/edit badge certificate details.
-    'moodle/badges:configurecertificate' => array(
+    'local/badgecerts:configurecertificate' => array(
         'riskbitmask'  => RISK_SPAM,
         'captype'      => 'write',
         'contextlevel' => CONTEXT_COURSE,
@@ -73,7 +73,7 @@ $capabilities = array(
     ),
 
     // Set up/edit badge certificate elements.
-    'moodle/badges:configureelements' => array(
+    'local/badgecerts:configureelements' => array(
         'captype'      => 'write',
         'contextlevel' => CONTEXT_COURSE,
         'archetypes'   => array(
@@ -84,7 +84,7 @@ $capabilities = array(
     ),
 
     // Access/use "official" badge certificates.
-    'moodle/badges:assignofficialcertificate' => array(
+    'local/badgecerts:assignofficialcertificate' => array(
         'captype'      => 'write',
         'contextlevel' => CONTEXT_COURSE,
         'archetypes'   => array(
@@ -93,7 +93,7 @@ $capabilities = array(
     ),
 
     // Access/use non "official" badge certificates only.
-    'moodle/badges:assigncustomcertificate' => array(
+    'local/badgecerts:assigncustomcertificate' => array(
         'captype'      => 'write',
         'contextlevel' => CONTEXT_COURSE,
         'archetypes'   => array(
@@ -103,7 +103,7 @@ $capabilities = array(
     ),
     
     // View badge certificates.
-    'moodle/badges:viewcertificates' => array(
+    'local/badgecerts:viewcertificates' => array(
         'captype'      => 'read',
         'contextlevel' => CONTEXT_COURSE,
         'archetypes'   => array(
@@ -114,7 +114,7 @@ $capabilities = array(
     ),
     
     // Print badge certificates.
-    'moodle/badges:printcertificates' => array(
+    'local/badgecerts:printcertificates' => array(
         'captype'      => 'read',
         'contextlevel' => CONTEXT_COURSE,
         'archetypes'   => array(
@@ -125,7 +125,7 @@ $capabilities = array(
     ),
     
     // Print badge certificates.
-    'moodle/badges:certificatemanager' => array(
+    'local/badgecerts:certificatemanager' => array(
         'captype'      => 'read',
         'contextlevel' => CONTEXT_COURSE,
         'archetypes'   => array(

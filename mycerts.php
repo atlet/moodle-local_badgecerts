@@ -77,7 +77,7 @@ if ($download && $hash) {
     }
 }
 
-require_capability('moodle/badges:manageownbadges', $context);
+require_capability('local/badgecerts:manageownbadges', $context);
 
 $PAGE->set_context($context);
 

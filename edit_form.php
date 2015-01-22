@@ -56,7 +56,7 @@ class edit_cert_details_form extends moodleform {
         $mform->setType('description', PARAM_CLEANHTML);
         $mform->addRule('description', null, 'required');
 
-        if (has_capability('moodle/badges:assignofficialcertificate', $PAGE->context)) {
+        if (has_capability('local/badgecerts:assignofficialcertificate', $PAGE->context)) {
             $mform->addElement('checkbox', 'official', get_string('officialtype', 'local_badgecerts'), get_string('officialtypedesc', 'local_badgecerts'));
             $mform->setDefault('official', 0);
         } else {

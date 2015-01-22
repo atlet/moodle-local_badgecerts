@@ -63,11 +63,11 @@ $returnurl->remove_params('awards'); // ???
 
 if ($copy) {
     require_sesskey();
-    require_capability('moodle/badges:createcertificate', $context);
+    require_capability('local/badgecerts:createcertificate', $context);
 
     $cloneid = $cert->make_clone();
     // If a user can edit badge certificate details, they will be redirected to the edit page.
-    if (has_capability('moodle/badges:configurecertificate', $context)) {
+    if (has_capability('local/badgecerts:configurecertificate', $context)) {
         redirect(new moodle_url('/local/badgecerts/edit.php', array('id' => $cloneid)));
     }
     redirect(new moodle_url('/local/badgecerts/overview.php', array('id' => $cloneid)));
@@ -75,18 +75,18 @@ if ($copy) {
 
 if ($preview) {
     //require_sesskey();
-    require_capability('moodle/badges:createcertificate', $context);
+    require_capability('local/badgecerts:createcertificate', $context);
     $cert->preview_badge_certificate();
 }
 
 if ($download) {
     //require_sesskey();
-    require_capability('moodle/badges:configurecertificate', $context);
+    require_capability('local/badgecerts:configurecertificate', $context);
     bulk_generate_badge_certificates($cert->courseid, $cert->id);
 }
 
 if ($activate) {
-    require_capability('moodle/badges:configurecertificate', $context);
+    require_capability('local/badgecerts:configurecertificate', $context);
 
     $PAGE->url->param('activate', 1);
     $status = ($cert->status == CERT_STATUS_INACTIVE) ? CERT_STATUS_ACTIVE : CERT_STATUS_ACTIVE_LOCKED;
@@ -116,7 +116,7 @@ if ($activate) {
 
 if ($deactivate) {
     require_sesskey();
-    require_capability('moodle/badges:configurecriteria', $context);
+    require_capability('local/badgecerts:configurecriteria', $context);
 
     $status = ($cert->status == CERT_STATUS_ACTIVE) ? CERT_STATUS_INACTIVE : CERT_STATUS_INACTIVE_LOCKED;
     $cert->set_status($status);

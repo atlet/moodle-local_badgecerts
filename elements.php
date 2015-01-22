@@ -44,7 +44,7 @@ $cert = new badge_certificate($certid);
 $context = $cert->get_context();
 $navurl = new moodle_url('/local/badgecerts/index.php', array('type' => $cert->type));
 
-require_capability('moodle/badges:configureelements', $context);
+require_capability('local/badgecerts:configureelements', $context);
 
 if ($cert->type == CERT_TYPE_COURSE) {
     if (empty($CFG->badges_allowcoursebadges)) {
@@ -69,7 +69,7 @@ $PAGE->navbar->add($cert->name);
 
 $output = $PAGE->get_renderer('local_badgecerts');
 
-if (($action) && has_capability('moodle/badges:configureelements', $PAGE->context)) {
+if (($action) && has_capability('local/badgecerts:configureelements', $PAGE->context)) {
     $fordb = new stdClass();
     $fordb->id = null;
 
@@ -93,7 +93,7 @@ if (($action) && has_capability('moodle/badges:configureelements', $PAGE->contex
     }
 }
 
-if (($delete) && has_capability('moodle/badges:configureelements', $PAGE->context)) {
+if (($delete) && has_capability('local/badgecerts:configureelements', $PAGE->context)) {
     $DB->delete_records('badge_certificate_elms', array('id' => $delete));
     redirect($currenturl);
 }
@@ -120,7 +120,7 @@ if ($totalcount) {
 } else {
     echo $output->notification(get_string('nobadgecertificateelms', 'local_badgecerts'));
 
-    if (has_capability('moodle/badges:createcertificate', $PAGE->context)) {
+    if (has_capability('local/badgecerts:createcertificate', $PAGE->context)) {
         echo $OUTPUT->single_button(new moodle_url('newelement.php', array('id' => $certid)),
             get_string('newelement', 'local_badgecerts'));
     }

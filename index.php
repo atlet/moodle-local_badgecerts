@@ -92,18 +92,18 @@ if ($type == CERT_TYPE_SITE) {
 }
 
 if (!has_any_capability(array(
-        'moodle/badges:viewcertificates',
-        'moodle/badges:createcertificate',
-        'moodle/badges:configurecertificate',
-        'moodle/badges:configureelements',
-        'moodle/badges:deletecertificate'), $PAGE->context)) {
+        'local/badgecerts:viewcertificates',
+        'local/badgecerts:createcertificate',
+        'local/badgecerts:configurecertificate',
+        'local/badgecerts:configureelements',
+        'local/badgecerts:deletecertificate'), $PAGE->context)) {
     redirect($CFG->wwwroot);
 }
 
 $PAGE->set_title($hdr);
 $output = $PAGE->get_renderer('local_badgecerts');
 
-if (($delete) && has_capability('moodle/badges:deletecertificate', $PAGE->context)) {
+if (($delete) && has_capability('local/badgecerts:deletecertificate', $PAGE->context)) {
     $certid = $delete;
     $cert = new badge_certificate($certid);
     if (!$confirm) {
@@ -127,7 +127,7 @@ if (($delete) && has_capability('moodle/badges:deletecertificate', $PAGE->contex
     }
 }
 
-if ($deactivate && has_capability('moodle/badges:configurecertificate', $PAGE->context)) {
+if ($deactivate && has_capability('local/badgecerts:configurecertificate', $PAGE->context)) {
     require_sesskey();
     $cert = new badge_certificate($deactivate);
     if ($cert->is_locked()) {
@@ -177,7 +177,7 @@ if ($totalcount) {
 } else {
     echo $output->notification(get_string('nobadgecertificates', 'local_badgecerts'));
 
-    if (has_capability('moodle/badges:createcertificate', $PAGE->context)) {
+    if (has_capability('local/badgecerts:createcertificate', $PAGE->context)) {
         echo $OUTPUT->single_button(new moodle_url('/local/badgecerts/new.php', array('type' => $type, 'id' => $courseid)),
             get_string('newbadgecertificate', 'local_badgecerts'));
     }

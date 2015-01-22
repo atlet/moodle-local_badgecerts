@@ -66,11 +66,11 @@ if (empty($CFG->enablebadges)) {
 
 $cert = new badge_certificate($certid);
 $context = $cert->get_context();
-require_capability('moodle/badges:viewcertificates', $context);
+require_capability('local/badgecerts:viewcertificates', $context);
 $navurl = new moodle_url('/local/badgecerts/index.php', array('type' => $cert->type));
 
 $onlyTeachers = "";
-if ($cert->certtype != 0 && $cert->bookingid > 0 && !has_capability('moodle/badges:certificatemanager', $context)) {
+if ($cert->certtype != 0 && $cert->bookingid > 0 && !has_capability('local/badgecerts:certificatemanager', $context)) {
     $onlyTeachers = " JOIN {booking_answers} AS bat ON bat.userid = u.id JOIN {booking_teachers} AS bta ON bta.optionid = bat.optionid ";
 
     $sqlWhere .= ' AND bta.userid = :teacherid ';
@@ -230,7 +230,7 @@ if (!$table->is_downloading()) {
 $table->out(25, true);
 
 if (!$table->is_downloading()) {
-    if (has_capability('moodle/badges:printcertificates', $context)) {
+    if (has_capability('local/badgecerts:printcertificates', $context)) {
         echo '<div class="selectbuttons">';
         echo '<input type="hidden" name="id" value="' . $certid . '" />';
         echo '<input type="button" id="checkall" value="' . get_string('selectall') . '" /> ';

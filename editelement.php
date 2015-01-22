@@ -38,7 +38,7 @@ if (empty($CFG->enablebadges)) {
 $element = new badge_cert_element($elementid);
 $context = $element->get_context();
 
-require_capability('moodle/badges:configuredetails', $context);
+require_capability('local/badgecerts:configuredetails', $context);
 
 if ($element->certtype == CERT_TYPE_COURSE) {
     if (empty($CFG->badges_allowcoursebadges)) {

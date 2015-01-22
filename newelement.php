@@ -62,7 +62,7 @@ if (($type == CERT_TYPE_COURSE) && ($course = $DB->get_record('course', array('i
     $PAGE->set_title($title);
 }
 
-require_capability('moodle/badges:createcertificate', $PAGE->context);
+require_capability('local/badgecerts:createcertificate', $PAGE->context);
 
 $fordb = new stdClass();
 $fordb->id = null;

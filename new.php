@@ -59,7 +59,7 @@ if (($type == CERT_TYPE_COURSE) && ($course = $DB->get_record('course', array('i
     $PAGE->set_title($title);
 }
 
-require_capability('moodle/badges:createcertificate', $PAGE->context);
+require_capability('local/badgecerts:createcertificate', $PAGE->context);
 
 $fordb = new stdClass();
 $fordb->id = null;
@@ -108,12 +108,6 @@ if ($form->is_cancelled()) {
     $newcert = new badge_certificate($newid);
     $form->set_data($newcert);
 
-    // If a user can configure badge certificate elements, they will be redirected to the elements page.
-    /*
-    if (has_capability('moodle/badges:configureelements', $PAGE->context)) {
-        redirect(new moodle_url('/local/badgecerts/elements.php', array('id' => $newid)));
-    }
-    */
     redirect(new moodle_url('/local/badgecerts/overview.php', array('id' => $newid)));
 }
 

@@ -118,7 +118,7 @@ class local_badgecerts_renderer extends plugin_renderer_base {
     public function print_cert_table_actions($cert, $context) {
         $actions = "";
 
-        if (has_capability('moodle/badges:configurecertificate', $context)) {
+        if (has_capability('local/badgecerts:configurecertificate', $context)) {
 // Activate/deactivate badge certificate.
             if ($cert->status == CERT_STATUS_INACTIVE || $cert->status == CERT_STATUS_INACTIVE_LOCKED) {
 // "Activate" will go to another page and ask for confirmation.
@@ -140,20 +140,20 @@ class local_badgecerts_renderer extends plugin_renderer_base {
         }
 
 // Preview badge certificate.
-        if (has_capability('moodle/badges:configurecertificate', $context)) {
+        if (has_capability('local/badgecerts:configurecertificate', $context)) {
             $url = new moodle_url('/local/badgecerts/action.php',
                     array('preview' => '1', 'id' => $cert->id, 'sesskey' => sesskey()));
             $actions .= $this->output->action_icon($url, new pix_icon('t/preview', get_string('preview'))) . " ";
         }
 
 // Edit badge certificate.
-        if (has_capability('moodle/badges:configurecertificate', $context)) {
+        if (has_capability('local/badgecerts:configurecertificate', $context)) {
             $url = new moodle_url('/local/badgecerts/edit.php', array('id' => $cert->id));
             $actions .= $this->output->action_icon($url, new pix_icon('t/edit', get_string('edit'))) . " ";
         }
 
 // Delete badge certificate.
-        if (has_capability('moodle/badges:deletecertificate', $context)) {
+        if (has_capability('local/badgecerts:deletecertificate', $context)) {
             $url = new moodle_url(qualified_me());
             $url->param('delete', $cert->id);
             $actions .= $this->output->action_icon($url, new pix_icon('t/delete', get_string('delete'))) . " ";
@@ -168,7 +168,7 @@ class local_badgecerts_renderer extends plugin_renderer_base {
 
 // New badge certificate button.
         $htmlnew = '';
-        if (has_capability('moodle/badges:createcertificate', $this->page->context)) {
+        if (has_capability('local/badgecerts:createcertificate', $this->page->context)) {
             $n['type'] = $this->page->url->get_param('type');
             $n['id'] = $this->page->url->get_param('id');
             $htmlnew = $this->output->single_button(new moodle_url('/local/badgecerts/new.php', $n),
@@ -226,19 +226,19 @@ class local_badgecerts_renderer extends plugin_renderer_base {
                 get_string('boverview', 'local_badgecerts')
         );
 
-        if (has_capability('moodle/badges:configurecertificate', $context)) {
+        if (has_capability('local/badgecerts:configurecertificate', $context)) {
             $row[] = new tabobject('details', new moodle_url('/local/badgecerts/edit.php', array('id' => $certid)),
                     get_string('bdetails', 'local_badgecerts')
             );
         }
 
-        if (has_capability('moodle/badges:configurecertificate', $context)) {
+        if (has_capability('local/badgecerts:configurecertificate', $context)) {
             $row[] = new tabobject('assign', new moodle_url('/local/badgecerts/assign.php', array('id' => $certid)),
                     get_string('bassign', 'local_badgecerts')
             );
         }
 
-        if (has_capability('moodle/badges:viewcertificates', $context)) {
+        if (has_capability('local/badgecerts:viewcertificates', $context)) {
             $row[] = new tabobject('view', new moodle_url('/local/badgecerts/view.php', array('id' => $certid)),
                     get_string('viewcertificates', 'local_badgecerts')
             );
@@ -279,7 +279,7 @@ class local_badgecerts_renderer extends plugin_renderer_base {
      * @return Either the status box html as a string or null
      */
     public function print_badgecert_status_box(badge_certificate $cert) {
-        if (has_capability('moodle/badges:configurecertificate', $cert->get_context())) {
+        if (has_capability('local/badgecerts:configurecertificate', $cert->get_context())) {
             $table = new html_table();
             $table->attributes['class'] = 'boxaligncenter statustable';
 

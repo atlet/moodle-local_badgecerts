@@ -185,3 +185,15 @@ $string['certificatefor'] = 'Certificate for';
 $string['certificateforbadge'] = 'Badge';
 $string['certificateformodbookingusers'] = 'Booking users';
 $string['certificateformodbookingteachers'] = 'Booking teachers';
+
+// Roles
+$string['badgecerts:assigncustomcertificate'] = 'Assign custom certificate';
+$string['badgecerts:assignofficialcertificate'] = 'Assign official certificate';
+$string['badgecerts:certificatemanager'] = 'Certificate manager';
+$string['badgecerts:configurecertificate'] = 'Configure certificate';
+$string['badgecerts:configureelements'] = 'Configure elements';
+$string['badgecerts:createcertificate'] = 'Create certificate';
+$string['badgecerts:deletecertificate'] = 'Delete certificate';
+$string['badgecerts:printcertificates'] = 'Print certificates';
+$string['badgecerts:viewcertificates'] = 'View certificates';
+$string['badgecerts:configuredetails'] = 'Configure details';
