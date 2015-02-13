@@ -21,7 +21,7 @@
  * @package    local_badgecerts
  * @copyright  2015 onwards Andraž Prinčič
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @author     Andraž Prinčič <atletekj@gmail.com>
+ * @author     Andraž Prinčič <atletek@gmail.com>
  */
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once "$CFG->libdir/tablelib.php";
