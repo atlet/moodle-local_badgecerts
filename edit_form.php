@@ -103,10 +103,11 @@ class edit_cert_details_form extends moodleform {
         $certificatetype[] =& $mform->createElement('radio', 'certtype', '', get_string('certificateformodbookingusers', 'local_badgecerts'), 1);
         $certificatetype[] =& $mform->createElement('static', 'b2', null, '<br/>');
         $certificatetype[] =& $mform->createElement('radio', 'certtype', '', get_string('certificateformodbookingteachers', 'local_badgecerts'), 2);
+        $certificatetype[] =& $mform->createElement('static', 'b3', null, '<br/>');
+        $certificatetype[] =& $mform->createElement('radio', 'certtype', '', get_string('certificateforquizgrading', 'local_badgecerts'), 3);
         $mform->addGroup($certificatetype, 'certtypes', get_string('certificatefor', 'local_badgecerts'), array(' '), false);
         $mform->setDefault('certtype', 0);
         $mform->addRule('certtypes', null, 'required');
-        
 
         $imageoptions = array('maxbytes' => 262144, 'accepted_types' => array('.svg'));
         $mform->addElement('filepicker', 'certbgimage', get_string('backgroundimage', 'local_badgecerts'), null, $imageoptions);
@@ -123,6 +124,10 @@ class edit_cert_details_form extends moodleform {
         $mform->setType('bookingid', PARAM_INT);
         $mform->addHelpButton('bookingid', 'bookingid', 'local_badgecerts');
 
+        $mform->addElement('text', 'quizgradingid', get_string('quizgradingid', 'local_badgecerts'), array('size' => '10'));
+        $mform->setType('quizgradingid', PARAM_INT);
+        $mform->addHelpButton('quizgradingid', 'quizgradingid', 'local_badgecerts');
+        
         $mform->addElement('header', 'issuerdetails', get_string('issuerdetails', 'local_badgecerts'));
 
         $mform->addElement('text', 'issuername', get_string('issuername', 'local_badgecerts'), array('size' => '70'));

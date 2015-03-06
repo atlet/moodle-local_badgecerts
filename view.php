@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of the BadgeCerts plugin for Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -122,6 +121,15 @@ switch ($cert->certtype) {
                                     cm.id = c.bookingid)
                                 AND tch.userid = u.id AND tch.completed = 1),
                     1)) = 1 ";
+        }
+        break;
+
+    case 3:
+        //mod_quizgrading
+        if ($cert->quizgradingid > 0) {
+            $sqlWhere .= " AND c.quizgradingid = :quizgradingid ";
+            $onlyTeachers .= " JOIN {quizgrading_results} AS qr ON qr.userid = u.id ";
+            $sqlValues['quizgradingid'] = $cert->quizgradingid;
         }
         break;
 
@@ -256,7 +264,7 @@ if (!$table->is_downloading()) {
     YUI().use('node-event-simulate', function (Y) {
 
         Y.one('#buttonclear').on('click', function () {
-           window.location.href = '<?php echo new moodle_url('/local/badgecerts/view.php', array('id' => $certid)); ?>';
+            window.location.href = '<?php echo new moodle_url('/local/badgecerts/view.php', array('id' => $certid)); ?>';
         });
     });
 </script>

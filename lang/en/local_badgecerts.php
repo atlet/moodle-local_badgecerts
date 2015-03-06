@@ -78,6 +78,8 @@ $string['belements'] = 'Elements';
 $string['boverview'] = 'Overview';
 $string['bookingid'] = 'Booking ID';
 $string['bookingid_help'] = '**Booking ID** is the id (number) of the seminar in the booking module.';
+$string['quizgradingid'] = 'Quiz grading ID';
+$string['quizgradingid_help'] = '**Quiz grading ID** is the id (number) of the instance ...';
 $string['certificatesavailable'] = 'Number of badge certificates available: {$a}';
 $string['certificate'] = 'Certificate';
 $string['certificateformat'] = 'Format';
@@ -186,6 +188,7 @@ $string['certificatefor'] = 'Certificate for';
 $string['certificateforbadge'] = 'Badge';
 $string['certificateformodbookingusers'] = 'Booking users';
 $string['certificateformodbookingteachers'] = 'Booking teachers';
+$string['certificateforquizgrading'] = 'Quiz grading';
 
 // Roles
 $string['badgecerts:assigncustomcertificate'] = 'Assign custom certificate';
@@ -198,3 +201,7 @@ $string['badgecerts:deletecertificate'] = 'Delete certificate';
 $string['badgecerts:printcertificates'] = 'Print certificates';
 $string['badgecerts:viewcertificates'] = 'View certificates';
 $string['badgecerts:configuredetails'] = 'Configure details';
+
+// Koelsarski izpit
+$string['jeopravil'] =  "DA";
+$string['niopravil'] =  "NI";

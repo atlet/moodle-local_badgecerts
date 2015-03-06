@@ -93,6 +93,7 @@ class badge_certificate {
     public $status = 0;
     public $nextcron;
     public $certtype;
+    public $quizgradingid;
 
     /** @var array Badge certificate elements */
     public $elements = array();
@@ -381,7 +382,7 @@ function badges_get_certificates($type, $courseid = 0, $sort = '', $dir = '', $p
     $params = array();
 
     $usercontext = context_user::instance($user);
-    
+
     $params['type'] = $type;
     $where = "bc.type = :type";
 
@@ -824,8 +825,26 @@ function get_all_certificates($courseid = NULL) {
 /**
  * Generate placeholders
  */
-function get_placeholders($cert, $booking) {
+function get_placeholders($cert, $booking, $quizreporting = NULL) {
     global $DB;
+
+    if (is_null($quizreporting)) {
+        $quizreporting = new stdClass();
+        $quizreporting->quizname = "";
+        $quizreporting->sumgrades = "";
+        $quizreporting->firstname = "";
+        $quizreporting->lastname = "";
+        $quizreporting->email = "";
+        $quizreporting->institution = "";
+        $quizreporting->dosezeno_tock = "";
+        $quizreporting->kazenske_tocke = "";
+        $quizreporting->moznih_tock = "";
+        $quizreporting->procent = "";
+        $quizreporting->vprasanja = "";
+        $quizreporting->status_kviza = "";
+        $quizreporting->datum_resitve = "";
+        $quizreporting->datum_vpisa = "";
+    }
 
 // Replace all placeholder tags
     $now = time();
@@ -860,6 +879,21 @@ function get_placeholders($cert, $booking) {
         '[[recipient-birthdate]]', // Adds the recipient's date of birth
         '[[recipient-institution]]', // Adds the institution where the recipient is employed
         '[[badge-date-issued]]', // Adds the date when badge was issued
+        // Quiz Grading
+        '[[qg-quizname]]',
+        '[[qg-sumgrades]]',
+        '[[qg-firstname]]',
+        '[[qg-lastname]]',
+        '[[qg-email]]',
+        '[[qg-institution]]',
+        '[[qg-dosezeno_tock]]',
+        '[[qg-kazenske_tocke]]',
+        '[[qg-moznih_tock]]',
+        '[[qg-procent]]',
+        '[[qg-vprasanja]]',
+        '[[qg-status_kviza]]',
+        '[[qg-datum_resitve]]',
+        '[[qg-datum_vpisa]]',
     );
     $values = array(
         $cert->recipient->firstname,
@@ -886,6 +920,21 @@ function get_placeholders($cert, $booking) {
         userdate((int) $cert->recipient->birthdate, get_string('datetimeformat', 'local_badgecerts')),
         $cert->recipient->institution,
         userdate((int) $cert->issued['issuedOn'], get_string('datetimeformat', 'local_badgecerts')),
+        // Quiz Grading
+        $quizreporting->quizname,
+        $quizreporting->sumgrades,
+        $quizreporting->firstname,
+        $quizreporting->lastname,
+        $quizreporting->email,
+        $quizreporting->institution,
+        $quizreporting->dosezeno_tock,
+        $quizreporting->kazenske_tocke,
+        $quizreporting->moznih_tock,
+        $quizreporting->procent,
+        $quizreporting->vprasanja,
+        ($quizreporting->status_kviza == 1 ? get_string('jeopravil', 'local_badgecerts') : get_string('niopravil', 'local_badgecerts')),
+        userdate($quizreporting->datum_resitve, get_string('datetimeformat', 'local_badgecerts')),
+        userdate($quizreporting->datum_vpisa, get_string('datetimeformat', 'local_badgecerts')),
     );
 
     return array('placeholders' => $placeholders, 'values' => $values);
@@ -994,6 +1043,14 @@ function bulk_generate_certificates($certid, $badges, $context) {
                         add_pdf_page($cert, $badge, $pdf, $booking);
                     }
                 }
+            } else if ($cert->quizgradingid > 0 && $cert->certtype == 3) {
+                $quizreporting = $DB->get_records_sql("SELECT * 
+                            FROM {quizgrading_results} 
+                            WHERE quizgradingid = :quizgradnigid AND userid = :userid",
+                        array('quizgradnigid' => $cert->quizgradingid, 'userid' => $cert->recipient->id));
+                foreach ($quizreporting as $quizreport) {
+                    add_pdf_page($cert, $badge, $pdf, $booking, $quizreport);
+                }
             } else {
                 add_pdf_page($cert, $badge, $pdf, $booking);
             }
@@ -1008,7 +1065,7 @@ function bulk_generate_certificates($certid, $badges, $context) {
 /**
  *  Generate certificate in pdf.
  */
-function add_pdf_page($cert, $badge, &$pdf, $booking) {
+function add_pdf_page($cert, $badge, &$pdf, $booking, $quizreporting = NULL) {
 // Add a page
 // This method has several options, check the source code documentation for more information.
     $pdf->AddPage();
@@ -1022,7 +1079,7 @@ function add_pdf_page($cert, $badge, &$pdf, $booking) {
 
     $template = file_get_contents($cert->certbgimage);
 
-    $placeholders = get_placeholders($cert, $booking);
+    $placeholders = get_placeholders($cert, $booking, $quizreporting);
 
     $template = str_replace($placeholders['placeholders'], $placeholders['values'], $template);
     $pdf->ImageSVG($file = '@' . $template, 0, 0, 0, 0, '', '', '', 0, true);

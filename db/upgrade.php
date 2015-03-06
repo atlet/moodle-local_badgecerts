@@ -191,7 +191,7 @@ function xmldb_local_badgecerts_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2015011201, 'local', 'badgecerts');
     }
 
-        if ($oldversion < 2015012100) {
+    if ($oldversion < 2015012100) {
 
         // Define field certtype to be added to badge_certificate.
         $table = new xmldb_table('badge_certificate');
@@ -206,6 +206,47 @@ function xmldb_local_badgecerts_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2015012100, 'local', 'badgecerts');
     }
 
-    
+    if ($oldversion < 2015030400) {
+
+        // Define field bookingid to be added to badge_certificate.
+        $table = new xmldb_table('badge_certificate');
+        $field = new xmldb_field('bookingid', XMLDB_TYPE_INTEGER, '11', null, XMLDB_NOTNULL, null, '0', 'certtype');
+
+        // Conditionally launch add field bookingid.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field quizgradingid to be added to badge_certificate.
+        $table = new xmldb_table('badge_certificate');
+        $field = new xmldb_field('quizgradingid', XMLDB_TYPE_INTEGER, '11', null, XMLDB_NOTNULL, null, '0', 'bookingid');
+
+        // Conditionally launch add field quizgradingid.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define index bookingid (not unique) to be added to badge_certificate.
+        $table = new xmldb_table('badge_certificate');
+        $index = new xmldb_index('bookingid', XMLDB_INDEX_NOTUNIQUE, array('bookingid'));
+
+        // Conditionally launch add index bookingid.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Define index quizgradingid (not unique) to be added to badge_certificate.
+        $table = new xmldb_table('badge_certificate');
+        $index = new xmldb_index('quizgradingid', XMLDB_INDEX_NOTUNIQUE, array('quizgradingid'));
+
+        // Conditionally launch add index quizgradingid.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Badgecerts savepoint reached.
+        upgrade_plugin_savepoint(true, 2015030400, 'local', 'badgecerts');
+    }
+
     return true;
 }

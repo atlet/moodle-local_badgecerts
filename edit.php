@@ -87,7 +87,8 @@ if ($form->is_cancelled()) {
     $cert->orientation = $data->orientation;
     $cert->unit = $data->unit;
     $cert->bookingid = $data->bookingid;
-    $cert->certtype = $data->certtype;
+    $cert->quizgradingid = $data->quizgradingid;
+    $cert->certtype = $data->certtype;    
 
     if ($cert->save()) {
         if ($getfilename) {
