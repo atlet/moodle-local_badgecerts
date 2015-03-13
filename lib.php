@@ -277,7 +277,6 @@ class badge_certificate {
                 '[[recipient-flname]]', // Adds the recipient's full name (first, last)
                 '[[recipient-lfname]]', // Adds the recipient's full name (last, first)
                 '[[recipient-email]]', // Adds the recipient's email address
-                '[[recipient-intitution]]', // Adds institution
                 '[[issuer-name]]', // Adds the issuer's name or title
                 '[[issuer-contact]]', // Adds the issuer's contact information
                 '[[badge-name]]', // Adds the badge's name or title
@@ -304,7 +303,6 @@ class badge_certificate {
                 get_string('preview:recipientflname', 'local_badgecerts'),
                 get_string('preview:recipientlfname', 'local_badgecerts'),
                 get_string('preview:recipientemail', 'local_badgecerts'),
-                get_string('preview:recipientinstitution', 'local_badgecerts'),
                 get_string('preview:issuername', 'local_badgecerts'),
                 get_string('preview:issuercontact', 'local_badgecerts'),
                 get_string('preview:badgename', 'local_badgecerts'),
