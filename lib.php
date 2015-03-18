@@ -557,7 +557,7 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
                 AND bc.id = b.certid
                 AND bc.status >= 1
             AND ((SELECT 
-            IF(bc.bookingid > 0,
+            IF(bc.bookingid > 0 AND bc.certtype = 1,
                     (SELECT 
                             IF(COUNT(*) > 0, 1, 0)
                         FROM
@@ -569,10 +569,10 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
                                     {course_modules} AS cm
                                 WHERE
                                     cm.id = bc.bookingid)
-                                AND ans.userid = u.id),
-                    1)
-        ) = 1 OR (SELECT 
-            IF(bc.bookingid > 0,
+                                AND ans.userid = u.id AND ans.completed = 1),
+                    0)
+         = 1 OR (SELECT 
+            IF(bc.bookingid > 0 AND bc.certtype = 2,
                     (SELECT 
                             IF(COUNT(*) > 0, 1, 0)
                         FROM
@@ -585,8 +585,8 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
                                 WHERE
                                     cm.id = bc.bookingid)
                                 AND tch.userid = u.id AND tch.completed = 1),
-                    1)
-        ) = 1)';
+                    0)
+         = 1)))';
 
     if (!empty($search)) {
         $sql .= ' AND (' . $DB->sql_like('b.name', '?', false) . ') ';
