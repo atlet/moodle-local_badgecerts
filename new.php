@@ -90,6 +90,7 @@ if ($form->is_cancelled()) {
     $fordb->courseid = ($type == CERT_TYPE_COURSE) ? $courseid : null;
     $fordb->status = CERT_STATUS_INACTIVE;
     $fordb->certtype = $data->certtype;
+    $fordb->quizgradingid = $data->quizgradingid;    
 
     $newid = $DB->insert_record('badge_certificate', $fordb, true);
 
