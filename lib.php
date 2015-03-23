@@ -253,7 +253,7 @@ class badge_certificate {
 // set image scale factor
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 // set default font subsetting mode
-        $pdf->setFontSubsetting(true);
+        $pdf->setFontSubsetting(FALSE);
 
 // Add badge certificate background image
         if ($this->certbgimage) {
@@ -966,7 +966,7 @@ function bulk_generate_certificates($certid, $badges, $context) {
 // set image scale factor
     $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 // set default font subsetting mode
-    $pdf->setFontSubsetting(true);
+    $pdf->setFontSubsetting(FALSE);
 
     if ($cert->bookingid > 0) {
         $coursemodule = get_coursemodule_from_id('booking', $cert->bookingid);
