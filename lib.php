@@ -556,7 +556,17 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
                 AND b.certid IS NOT NULL
                 AND bc.id = b.certid
                 AND bc.status >= 1
-            AND ((SELECT 
+            AND ( 
+            (SELECT IF(bc.certtype = 0, 1, 0)) = 1
+            OR (SELECT IF(bc.quizgradingid > 0 AND bc.certtype = 3, 
+                        (SELECT 
+                            IF(COUNT(*) > 0, 1, 0)
+                        FROM
+                            {quizgrading_results} AS qr
+                        WHERE
+                            qr.userid = u.id)            
+                , 0)) = 1
+            OR (SELECT 
             IF(bc.bookingid > 0 AND bc.certtype = 1,
                     (SELECT 
                             IF(COUNT(*) > 0, 1, 0)
