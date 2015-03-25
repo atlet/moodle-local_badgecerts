@@ -904,6 +904,7 @@ function get_placeholders($cert, $booking, $quizreporting = NULL) {
         '[[qg-status_kviza]]',
         '[[qg-datum_resitve]]',
         '[[qg-datum_vpisa]]',
+        '[[qg-datum_rojstva]]',
     );
     $values = array(
         $cert->recipient->firstname,
@@ -945,6 +946,7 @@ function get_placeholders($cert, $booking, $quizreporting = NULL) {
         ($quizreporting->status_kviza == 1 ? get_string('jeopravil', 'local_badgecerts') : get_string('niopravil', 'local_badgecerts')),
         userdate($quizreporting->datum_resitve, get_string('datetimeformat', 'local_badgecerts')),
         userdate($quizreporting->datum_vpisa, get_string('datetimeformat', 'local_badgecerts')),
+        userdate($quizreporting->datum_rojstva, get_string('datetimeformat', 'local_badgecerts')),
     );
 
     return array('placeholders' => $placeholders, 'values' => $values);

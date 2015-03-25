@@ -28,6 +28,6 @@ $plugin->maturity = MATURITY_BETA;
 $plugin->release = '1.0';
 $plugin->dependencies = array(
     'mod_booking' => 2014100100, // The Booking plugin version 2014100100 or higher must be present.
-    'mod_quizgrading' => 2015021711,
+//    'mod_quizgrading' => 2015021711,
 );
 
