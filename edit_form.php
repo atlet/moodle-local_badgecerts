@@ -145,6 +145,26 @@ class edit_cert_details_form extends moodleform {
         $mform->setType('issuercontact', PARAM_RAW);
         $mform->addHelpButton('issuercontact', 'contact', 'local_badgecerts');
 
+        $mform->addElement('header', 'qrcode', get_string('qrcode', 'local_badgecerts'));
+        
+        $mform->addElement('checkbox', 'qrshow', get_string('qrshow', 'local_badgecerts'));
+        $mform->setType('qrshow', PARAM_INT);
+        
+        $mform->addElement('text', 'qrx', get_string('qrx', 'local_badgecerts'), array('size' => '10'));
+        $mform->setType('qrx', PARAM_INT);
+        
+        $mform->addElement('text', 'qry', get_string('qry', 'local_badgecerts'), array('size' => '10'));
+        $mform->setType('qry', PARAM_INT);
+        
+        $mform->addElement('text', 'qrw', get_string('qrw', 'local_badgecerts'), array('size' => '10'));
+        $mform->setType('qrw', PARAM_INT);
+        
+        $mform->addElement('text', 'qrh', get_string('qrh', 'local_badgecerts'), array('size' => '10'));
+        $mform->setType('qrh', PARAM_INT);
+        
+        $mform->addElement('select', 'qrdata', get_string('qrdata', 'local_badgecerts'), array(0 => get_string('userid', 'local_badgecerts'), 1 => get_string('username', 'local_badgecerts')));
+        $mform->setType('qrdata', PARAM_INT);
+        
         $mform->addElement('hidden', 'action', $action);
         $mform->setType('action', PARAM_TEXT);
 

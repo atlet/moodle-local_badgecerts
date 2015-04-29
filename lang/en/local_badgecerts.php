@@ -204,6 +204,17 @@ $string['certificateforbadge'] = 'Badge';
 $string['certificateformodbookingusers'] = 'Booking users';
 $string['certificateformodbookingteachers'] = 'Booking teachers';
 $string['certificateforquizgrading'] = 'Quiz grading';
+$string['qrcode'] = 'QR code';
+$string['qrshow'] = 'Print QR code on certificate?';
+$string['qrx'] = 'X position';
+$string['qry'] = 'Y position';
+$string['qrw'] = 'Width';
+$string['qrh'] = 'Height';
+$string['qrdata'] = 'Which field to use as QR code data';
+$string['userid'] = 'User ID';
+$string['username'] = 'User username';
+
+
 
 // Roles
 $string['badgecerts:assigncustomcertificate'] = 'Assign custom certificate';

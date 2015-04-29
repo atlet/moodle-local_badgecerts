@@ -94,6 +94,12 @@ class badge_certificate {
     public $nextcron;
     public $certtype;
     public $quizgradingid;
+    public $qrshow;
+    public $qrx;
+    public $qry;
+    public $qrw;
+    public $qrh;
+    public $qrdata;
 
     /** @var array Badge certificate elements */
     public $elements = array();
@@ -944,9 +950,9 @@ function get_placeholders($cert, $booking, $quizreporting = NULL) {
         $quizreporting->procent,
         $quizreporting->vprasanja,
         ($quizreporting->status_kviza == 1 ? get_string('jeopravil', 'local_badgecerts') : get_string('niopravil', 'local_badgecerts')),
-        userdate($quizreporting->datum_resitve, get_string('datetimeformat', 'local_badgecerts')),
-        userdate($quizreporting->datum_vpisa, get_string('datetimeformat', 'local_badgecerts')),
-        userdate($quizreporting->datum_rojstva, get_string('datetimeformat', 'local_badgecerts')),
+        isset($quizreporting->datum_resitve) ? userdate($quizreporting->datum_resitve, get_string('datetimeformat', 'local_badgecerts')) : '',
+        isset($quizreporting->datum_vpisa) ? userdate($quizreporting->datum_vpisa, get_string('datetimeformat', 'local_badgecerts')) : '',
+        isset($quizreporting->datum_rojstva) ? userdate($quizreporting->datum_rojstva, get_string('datetimeformat', 'local_badgecerts')) : '',
     );
 
     return array('placeholders' => $placeholders, 'values' => $values);
@@ -993,7 +999,7 @@ function bulk_generate_certificates($certid, $badges, $context) {
             $cert->badgeclass = $assertion->get_badge_class();
 // Get a recipient from database.
             $namefields = get_all_user_name_fields(true, 'u');
-            $user = $DB->get_record_sql("SELECT u.id, $namefields, u.deleted,
+            $user = $DB->get_record_sql("SELECT u.id, $namefields, u.deleted, u.username, 
                                                     u.email AS accountemail, b.email AS backpackemail
                             FROM {user} u LEFT JOIN {badge_backpack} b ON u.id = b.userid
                             WHERE u.id = :userid", array('userid' => $badge->userid));
@@ -1052,7 +1058,7 @@ function bulk_generate_certificates($certid, $badges, $context) {
                             $booking->duration = 0;
                         }
 
-                        add_pdf_page($cert, $badge, $pdf, $booking);
+                        add_pdf_page($cert, $badge, $pdf, $booking, NULL, $user);
                     }
                 }
             } else if ($cert->quizgradingid > 0 && $cert->certtype == 3) {
@@ -1061,10 +1067,10 @@ function bulk_generate_certificates($certid, $badges, $context) {
                             WHERE quizgradingid = :quizgradnigid AND userid = :userid",
                         array('quizgradnigid' => $cert->quizgradingid, 'userid' => $cert->recipient->id));
                 foreach ($quizreporting as $quizreport) {
-                    add_pdf_page($cert, $badge, $pdf, $booking, $quizreport);
+                    add_pdf_page($cert, $badge, $pdf, $booking, $quizreport, $user);
                 }
             } else {
-                add_pdf_page($cert, $badge, $pdf, $booking);
+                add_pdf_page($cert, $badge, $pdf, $booking, NULL, $user);
             }
         }
 
@@ -1077,7 +1083,7 @@ function bulk_generate_certificates($certid, $badges, $context) {
 /**
  *  Generate certificate in pdf.
  */
-function add_pdf_page($cert, $badge, &$pdf, $booking, $quizreporting = NULL) {
+function add_pdf_page($cert, $badge, &$pdf, $booking, $quizreporting = NULL, $user) {
 // Add a page
 // This method has several options, check the source code documentation for more information.
     $pdf->AddPage();
@@ -1099,6 +1105,26 @@ function add_pdf_page($cert, $badge, &$pdf, $booking, $quizreporting = NULL) {
     $pdf->SetAutoPageBreak($auto_page_break, $break_margin);
 // set the starting point for the page content
     $pdf->setPageMark();
+    
+    if ($cert->qrshow) {
+                
+                $tmpQrData = '';
+                
+                switch ($cert->qrdata) {
+                    case 0:
+                        $tmpQrData = $user->id;
+                        break;
+                    
+                    case 1:
+                        $tmpQrData = $user->username;
+                        break;
+
+                    default:
+                        break;
+                }
+                
+                $pdf->write2DBarcode($tmpQrData, 'QRCODE,H', $cert->qrx, $cert->qry, $cert->qrw, $cert->qrh);
+            }
 
     local_badgecerts_insert_to_log($cert->id, $badge->userid);
 }

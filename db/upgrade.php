@@ -248,5 +248,56 @@ function xmldb_local_badgecerts_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2015030400, 'local', 'badgecerts');
     }
 
+    if ($oldversion < 2015042800) {
+
+        // Define field qrshow to be added to badge_certificate.
+        $table = new xmldb_table('badge_certificate');
+        $field = new xmldb_field('qrshow', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'quizgradingid');
+
+        // Conditionally launch add field qrshow.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $field = new xmldb_field('qrx', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'qrshow');
+
+        // Conditionally launch add field qrx.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        
+        $field = new xmldb_field('qry', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'qrx');
+
+        // Conditionally launch add field qry.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        
+        $field = new xmldb_field('qrw', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'qry');
+
+        // Conditionally launch add field qrw.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        
+        $field = new xmldb_field('qrh', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'qrw');
+
+        // Conditionally launch add field qrh.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        
+        $field = new xmldb_field('qrdata', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, '0', 'qrh');
+
+        // Conditionally launch add field qrdata.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Badgecerts savepoint reached.
+        upgrade_plugin_savepoint(true, 2015042800, 'local', 'badgecerts');
+    }
+
+
     return true;
 }

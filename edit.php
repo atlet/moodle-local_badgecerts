@@ -89,6 +89,12 @@ if ($form->is_cancelled()) {
     $cert->bookingid = $data->bookingid;
     $cert->quizgradingid = $data->quizgradingid;
     $cert->certtype = $data->certtype;    
+    $cert->qrdata = $data->qrdata;
+    $cert->qrh = $data->qrh;
+    $cert->qrw = $data->qrw;
+    $cert->qrx = $data->qrx;
+    $cert->qry = $data->qry;
+    $cert->qrshow = $data->qrshow;
 
     if ($cert->save()) {
         if ($getfilename) {
