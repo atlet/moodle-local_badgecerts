@@ -162,6 +162,8 @@ $from = ' {badge_issued} AS d JOIN {badge} AS b ON d.badgeid = b.id JOIN {user} 
 
 $where = ' b.certid = :certid ' . $sqlWhere;
 
+$table->set_count_sql("SELECT COUNT(*) FROM (SELECT COUNT(u.id) FROM {$from} WHERE {$where} GROUP BY u.id) AS ccc", $sqlValues);
+
 $table->set_sql(
         $fields, $from, $where, $sqlValues);
 
