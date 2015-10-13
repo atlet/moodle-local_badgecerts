@@ -128,7 +128,7 @@ switch ($cert->certtype) {
         //mod_quizgrading
         if ($cert->quizgradingid > 0) {
             $sqlWhere .= " AND c.quizgradingid = :quizgradingid ";
-            $onlyTeachers .= " JOIN {quizgrading_results} AS qr ON qr.userid = u.id ";
+            //$onlyTeachers .= " JOIN {quizgrading_results} AS qr ON qr.userid = u.id "; // če to vključiš ne deluje, ker se ponavljajo polja ...
             $sqlValues['quizgradingid'] = $cert->quizgradingid;
         }
         break;
@@ -152,17 +152,17 @@ if ($cert->type == CERT_TYPE_COURSE) {
 
 $currenturl = new moodle_url('/local/badgecerts/view.php', $urlParams);
 
-$table = new all_users('all_users');
-$table->is_downloading($download, 'all_users', 'testing123');
+$table = new all_users('all_users_bcde');
+$table->is_downloading($download, 'all_users_bcde', 'testing123456');
 
-$fields = 'DISTINCT u.id, ' . get_all_user_name_fields(true, 'u') . ', u.username, u.firstname, u.lastname, d.dateissued, d.uniquehash, '
+$fields = 'DISTINCT u.id, ' . get_all_user_name_fields(true, 'u') . ', u.username, d.dateissued, d.uniquehash, '
         . '(SELECT COUNT(*) AS nctransfers FROM {badge_certificate_trasnfers} AS bcf WHERE bcf.userid = u.id AND bcf.badgecertificateid = c.id AND bcf.transfereruserid = u.id) AS nctransfers,'
         . '(SELECT created AS ndatelasttransfer FROM {badge_certificate_trasnfers} AS bcf WHERE bcf.userid = u.id AND bcf.badgecertificateid = c.id AND bcf.transfereruserid = u.id ORDER BY created DESC LIMIT 1) AS ndatelasttransfer';
 $from = ' {badge_issued} AS d JOIN {badge} AS b ON d.badgeid = b.id JOIN {user} AS u ON d.userid = u.id JOIN {badge_certificate} AS c ON b.certid = c.id ' . $onlyTeachers;
 
 $where = ' b.certid = :certid ' . $sqlWhere;
 
-$table->set_count_sql("SELECT COUNT(*) FROM (SELECT COUNT(u.id) FROM {$from} WHERE {$where} GROUP BY u.id) AS ccc", $sqlValues);
+$table->set_count_sql("SELECT COUNT(*) FROM (SELECT {$fields} FROM {$from} WHERE {$where}) AS abcd WHERE 1=1", $sqlValues);
 
 $table->set_sql(
         $fields, $from, $where, $sqlValues);
