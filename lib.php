@@ -838,6 +838,15 @@ function get_all_certificates($courseid = NULL) {
     return $bulkCerts;
 }
 
+function fixEncoding($in_str) {
+    $cur_encoding = mb_detect_encoding($in_str);
+    if ($cur_encoding == "UTF-8" && mb_check_encoding($in_str, "UTF-8")) {
+        return $in_str;
+    } else {
+        return utf8_encode($in_str);
+    }
+}
+
 /**
  * Generate placeholders
  */
@@ -1029,6 +1038,7 @@ function bulk_generate_certificates($certid, $badges, $context) {
             $booking->duration = 0;
 
             if ($cert->bookingid > 0 && in_array($cert->certtype, array(1, 2))) {
+                
                 $optionids = booking_getbookingoptionsid($bookingid, $badge->userid, $cert->certtype);
                 foreach ($optionids as $optionid) {
                     if (isset($optionid) && $optionid > 0) {
@@ -1062,10 +1072,12 @@ function bulk_generate_certificates($certid, $badges, $context) {
                     }
                 }
             } else if ($cert->quizgradingid > 0 && $cert->certtype == 3) {
+
                 $quizreporting = $DB->get_records_sql("SELECT * 
                             FROM {quizgrading_results} 
                             WHERE quizgradingid = :quizgradnigid AND userid = :userid",
                         array('quizgradnigid' => $cert->quizgradingid, 'userid' => $cert->recipient->id));
+                
                 foreach ($quizreporting as $quizreport) {
                     add_pdf_page($cert, $badge, $pdf, $booking, $quizreport, $user);
                 }
@@ -1076,7 +1088,7 @@ function bulk_generate_certificates($certid, $badges, $context) {
 
 // Close and output PDF document
 // This method has several options, check the source code documentation for more information.
-        $pdf->Output($cert->badgeclass['name'] . '.pdf', 'D');
+       $pdf->Output($cert->badgeclass['name'] . '.pdf', 'D');
     }
 }
 

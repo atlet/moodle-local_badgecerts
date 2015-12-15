@@ -69,10 +69,17 @@ require_capability('local/badgecerts:viewcertificates', $context);
 $navurl = new moodle_url('/local/badgecerts/index.php', array('type' => $cert->type));
 
 $onlyTeachers = "";
-if ($cert->certtype != 0 && $cert->bookingid > 0 && !has_capability('local/badgecerts:certificatemanager', $context)) {
+if (in_array($cert->certtype, array(1, 2)) && $cert->bookingid > 0 && !has_capability('local/badgecerts:certificatemanager', $context)) {
     $onlyTeachers = " JOIN {booking_answers} AS bat ON bat.userid = u.id JOIN {booking_teachers} AS bta ON bta.optionid = bat.optionid ";
 
     $sqlWhere .= ' AND bta.userid = :teacherid ';
+    $sqlValues['teacherid'] = $USER->id;
+}
+
+if (in_array($cert->certtype, array(3)) && !has_capability('local/badgecerts:certificatemanager', $context)) {
+    $onlyTeachers = " JOIN {quizgrading_results} AS qr ON qr.userid = u.id ";
+
+    $sqlWhere .= ' AND qr.mentorid = :teacherid ';
     $sqlValues['teacherid'] = $USER->id;
 }
 
