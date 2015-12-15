@@ -94,7 +94,7 @@ if ($form->is_cancelled()) {
     $cert->qrw = $data->qrw;
     $cert->qrx = $data->qrx;
     $cert->qry = $data->qry;
-    $cert->qrshow = $data->qrshow;
+    $cert->qrshow = isset($data->qrshow) ? 1 : 0;
 
     if ($cert->save()) {
         if ($getfilename) {
