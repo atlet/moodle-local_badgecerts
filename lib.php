@@ -1144,7 +1144,7 @@ function add_pdf_page($cert, $badge, &$pdf, $booking, $quizreporting = NULL, $us
 /**
  *  Hook function to add items to the navigation block.
  */
-function local_badgecerts_extends_navigation(global_navigation $nav) {
+function local_badgecerts_extend_navigation(global_navigation $nav) {
     if (isloggedin()) {
 // Add 'My badge certificates' item to the navigation block.
         $myprofile = $nav->get('myprofile');
@@ -1158,7 +1158,7 @@ function local_badgecerts_extends_navigation(global_navigation $nav) {
 /**
  *  Hook function to add items to the administration block.
  */
-function local_badgecerts_extends_settings_navigation(settings_navigation $nav, context $context = null) {
+function local_badgecerts_extend_settings_navigation(settings_navigation $nav, context $context = null) {
     global $COURSE;
 
     if (isloggedin()) {
