@@ -1158,7 +1158,35 @@ function local_badgecerts_extend_navigation(global_navigation $nav) {
 /**
  *  Hook function to add items to the administration block.
  */
-function local_badgecerts_extend_settings_navigation(settings_navigation $nav, context $context = null) {
+function local_badgecerts_extends_setting_navigation(settings_navigation $nav, context $context = null) {
+    global $COURSE;
+
+    if (isloggedin()) {
+        $coursenode = $nav->get('courseadmin');
+        if (has_any_capability(array(
+                    'local/badgecerts:viewcertificates',
+                    'local/badgecerts:createcertificate',
+                    'local/badgecerts:configurecertificate',
+                    'local/badgecerts:assigncustomcertificate',
+                    'local/badgecerts:printcertificates',
+                    'local/badgecerts:viewcertificates',
+                    'local/badgecerts:certificatemanager'
+                        ), $context)) {
+
+            if ($coursenode) {
+                $url = new moodle_url('/local/badgecerts/index.php',
+                        array('type' => CERT_TYPE_COURSE, 'id' => $COURSE->id));
+                $coursenode->add(get_string('managebadgecertificates', 'local_badgecerts'), $url,
+                        navigation_node::TYPE_SETTING, null, 'managecerts', new pix_icon('i/report', ''));
+            }
+        }
+    }
+}
+
+/**
+ *  Hook function to add items to the administration block.
+ */
+function local_badgecerts_extends_settings_navigation(settings_navigation $nav, context $context = null) {
     global $COURSE;
 
     if (isloggedin()) {
