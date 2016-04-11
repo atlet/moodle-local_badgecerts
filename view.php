@@ -69,7 +69,8 @@ require_capability('local/badgecerts:viewcertificates', $context);
 $navurl = new moodle_url('/local/badgecerts/index.php', array('type' => $cert->type));
 
 $onlyTeachers = "";
-if (in_array($cert->certtype, array(1, 2)) && $cert->bookingid > 0 && !has_capability('local/badgecerts:certificatemanager', $context)) {
+if (in_array($cert->certtype, array(1, 2)) && $cert->bookingid > 0 && !has_capability('local/badgecerts:certificatemanager',
+                $context)) {
     $onlyTeachers = " JOIN {booking_answers} AS bat ON bat.userid = u.id JOIN {booking_teachers} AS bta ON bta.optionid = bat.optionid ";
 
     $sqlWhere .= ' AND bta.userid = :teacherid ';
@@ -77,9 +78,7 @@ if (in_array($cert->certtype, array(1, 2)) && $cert->bookingid > 0 && !has_capab
 }
 
 if (in_array($cert->certtype, array(3)) && !has_capability('local/badgecerts:certificatemanager', $context)) {
-    $onlyTeachers = " JOIN {quizgrading_results} AS qr ON qr.userid = u.id ";
-
-    $sqlWhere .= ' AND qr.mentorid = :teacherid ';
+    $sqlWhere .= ' AND u.id IN (SELECT userid FROM {quizgrading_results} WHERE mentorid = :teacherid) ';
     $sqlValues['teacherid'] = $USER->id;
 }
 
@@ -169,7 +168,8 @@ $from = ' {badge_issued} AS d JOIN {badge} AS b ON d.badgeid = b.id JOIN {user} 
 
 $where = ' b.certid = :certid ' . $sqlWhere;
 
-$table->set_count_sql("SELECT COUNT(*) FROM (SELECT {$fields} FROM {$from} WHERE {$where}) AS abcd WHERE 1=1", $sqlValues);
+$table->set_count_sql("SELECT COUNT(*) FROM (SELECT {$fields} FROM {$from} WHERE {$where}) AS abcd WHERE 1=1",
+        $sqlValues);
 
 $table->set_sql(
         $fields, $from, $where, $sqlValues);
@@ -245,6 +245,7 @@ if (!$table->is_downloading()) {
 }
 
 $table->out(25, true);
+//$table->out(1, true);
 
 if (!$table->is_downloading()) {
     if (has_capability('local/badgecerts:printcertificates', $context)) {
