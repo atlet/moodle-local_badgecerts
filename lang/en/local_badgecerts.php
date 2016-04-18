@@ -64,10 +64,13 @@ The SVG file can contain the following (case sensitive) placeholders (in form of
 * **[[recipient-lname]]** - Adds the recipient\'s last name
 * **[[qg-quizname]]** - 
 * **[[qg-sumgrades]]** - 
-* **[[qg-firstname]]** - 
-* **[[qg-lastname]]** - 
+* **[[qg-firstname]]** -
+* **[[qg-up-firstname]]** - upper case first name from quiz grading 
+* **[[qg-lastname]]** -
+* **[[qg-up-lastname]]** -  upper case last name from quiz grading
 * **[[qg-email]]** - 
 * **[[qg-institution]]** - 
+* **[[qg-up-institution]]** - upper case institution from quiz grading
 * **[[qg-dosezeno_tock]]** - 
 * **[[qg-kazenske_tocke]]** - 
 * **[[qg-moznih_tock]]** - 
@@ -77,6 +80,8 @@ The SVG file can contain the following (case sensitive) placeholders (in form of
 * **[[qg-datum_resitve]]** - 
 * **[[qg-datum_vpisa]]** - 
 * **[[qg-datum_rojstva]]** - Rojstni datum
+* **[[qg-uvrstitev_posamezniki]]** - 
+* **[[qg-uvrstitev_skupina]]** -
 ';
 $string['badgecertificatedetails'] = 'Badge certificate details';
 $string['badgecertificateelement'] = 'Badge certificate element';

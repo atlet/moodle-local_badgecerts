@@ -869,6 +869,8 @@ function get_placeholders($cert, $booking, $quizreporting = NULL) {
         $quizreporting->status_kviza = "";
         $quizreporting->datum_resitve = "";
         $quizreporting->datum_vpisa = "";
+        $quizreporting->uvrstitev_posamezniki = "";
+        $quizreporting->uvrstitev_skupina = "";
     }
 
 // Replace all placeholder tags
@@ -908,9 +910,12 @@ function get_placeholders($cert, $booking, $quizreporting = NULL) {
         '[[qg-quizname]]',
         '[[qg-sumgrades]]',
         '[[qg-firstname]]',
+        '[[qg-up-firstname]]',
         '[[qg-lastname]]',
+        '[[qg-up-lastname]]',
         '[[qg-email]]',
         '[[qg-institution]]',
+        '[[qg-up-institution]]',
         '[[qg-dosezeno_tock]]',
         '[[qg-kazenske_tocke]]',
         '[[qg-moznih_tock]]',
@@ -920,6 +925,8 @@ function get_placeholders($cert, $booking, $quizreporting = NULL) {
         '[[qg-datum_resitve]]',
         '[[qg-datum_vpisa]]',
         '[[qg-datum_rojstva]]',
+        '[[qg-uvrstitev_posamezniki]]',
+        '[[qg-uvrstitev_skupina]]'
     );
     $values = array(
         $cert->recipient->firstname,
@@ -950,9 +957,12 @@ function get_placeholders($cert, $booking, $quizreporting = NULL) {
         $quizreporting->quizname,
         $quizreporting->sumgrades,
         $quizreporting->firstname,
+        strtoupper($quizreporting->firstname),
         $quizreporting->lastname,
+        strtoupper($quizreporting->lastname),
         $quizreporting->email,
         $quizreporting->institution,
+        strtoupper($quizreporting->institution),
         $quizreporting->dosezeno_tock,
         $quizreporting->kazenske_tocke,
         $quizreporting->moznih_tock,
@@ -962,6 +972,8 @@ function get_placeholders($cert, $booking, $quizreporting = NULL) {
         isset($quizreporting->datum_resitve) ? userdate($quizreporting->datum_resitve, get_string('datetimeformat', 'local_badgecerts')) : '',
         isset($quizreporting->datum_vpisa) ? userdate($quizreporting->datum_vpisa, get_string('datetimeformat', 'local_badgecerts')) : '',
         isset($quizreporting->datum_rojstva) ? userdate($quizreporting->datum_rojstva, get_string('datetimeformat', 'local_badgecerts')) : '',
+        $quizreporting->uvrstitev_posamezniki,
+        $quizreporting->uvrstitev_skupina
     );
 
     return array('placeholders' => $placeholders, 'values' => $values);
