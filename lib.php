@@ -871,6 +871,8 @@ function get_placeholders($cert, $booking, $quizreporting = NULL) {
         $quizreporting->datum_vpisa = "";
         $quizreporting->uvrstitev_posamezniki = "";
         $quizreporting->uvrstitev_skupina = "";
+        $quizreporting->organizator = "";
+        $quizreporting->lokacija = "";
     }
 
 // Replace all placeholder tags
@@ -926,7 +928,9 @@ function get_placeholders($cert, $booking, $quizreporting = NULL) {
         '[[qg-datum_vpisa]]',
         '[[qg-datum_rojstva]]',
         '[[qg-uvrstitev_posamezniki]]',
-        '[[qg-uvrstitev_skupina]]'
+        '[[qg-uvrstitev_skupina]]',
+        '[[qg-organizator]]',
+        '[[qg-lokacija]]'
     );
     $values = array(
         $cert->recipient->firstname,
@@ -973,7 +977,9 @@ function get_placeholders($cert, $booking, $quizreporting = NULL) {
         isset($quizreporting->datum_vpisa) ? userdate($quizreporting->datum_vpisa, get_string('datetimeformat', 'local_badgecerts')) : '',
         isset($quizreporting->datum_rojstva) ? userdate($quizreporting->datum_rojstva, get_string('datetimeformat', 'local_badgecerts')) : '',
         $quizreporting->uvrstitev_posamezniki,
-        $quizreporting->uvrstitev_skupina
+        $quizreporting->uvrstitev_skupina,
+        $quizreporting->organizator,
+        $quizreporting->lokacija
     );
 
     return array('placeholders' => $placeholders, 'values' => $values);
