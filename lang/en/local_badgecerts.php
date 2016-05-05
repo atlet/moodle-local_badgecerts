@@ -84,6 +84,8 @@ The SVG file can contain the following (case sensitive) placeholders (in form of
 * **[[qg-uvrstitev_skupina]]** -
 * **[[qg-organizator]]** -
 * **[[qg-lokacija]]** -
+* **[[qg-up-organizator]]** - Upper case
+* **[[qg-up-lokacija]]** - Upper case
 ';
 $string['badgecertificatedetails'] = 'Badge certificate details';
 $string['badgecertificateelement'] = 'Badge certificate element';

@@ -930,7 +930,9 @@ function get_placeholders($cert, $booking, $quizreporting = NULL) {
         '[[qg-uvrstitev_posamezniki]]',
         '[[qg-uvrstitev_skupina]]',
         '[[qg-organizator]]',
-        '[[qg-lokacija]]'
+        '[[qg-lokacija]]',
+        '[[qg-up-organizator]]',
+        '[[qg-up-lokacija]]'
     );
     $values = array(
         $cert->recipient->firstname,
@@ -979,7 +981,9 @@ function get_placeholders($cert, $booking, $quizreporting = NULL) {
         $quizreporting->uvrstitev_posamezniki,
         $quizreporting->uvrstitev_skupina,
         $quizreporting->organizator,
-        $quizreporting->lokacija
+        $quizreporting->lokacija,
+        strtoupper($quizreporting->organizator),
+        strtoupper($quizreporting->lokacija)
     );
 
     return array('placeholders' => $placeholders, 'values' => $values);
