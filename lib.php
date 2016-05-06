@@ -963,12 +963,12 @@ function get_placeholders($cert, $booking, $quizreporting = NULL) {
         $quizreporting->quizname,
         $quizreporting->sumgrades,
         $quizreporting->firstname,
-        strtoupper($quizreporting->firstname),
+        mb_strtoupper($quizreporting->firstname, 'UTF-8'),
         $quizreporting->lastname,
-        strtoupper($quizreporting->lastname),
+        mb_strtoupper($quizreporting->lastname, 'UTF-8'),
         $quizreporting->email,
         $quizreporting->institution,
-        strtoupper($quizreporting->institution),
+        mb_strtoupper($quizreporting->institution, 'UTF-8'),
         $quizreporting->dosezeno_tock,
         $quizreporting->kazenske_tocke,
         $quizreporting->moznih_tock,
@@ -982,8 +982,8 @@ function get_placeholders($cert, $booking, $quizreporting = NULL) {
         $quizreporting->uvrstitev_skupina,
         $quizreporting->organizator,
         $quizreporting->lokacija,
-        strtoupper($quizreporting->organizator),
-        strtoupper($quizreporting->lokacija)
+        mb_strtoupper($quizreporting->organizator, 'UTF-8'),
+        mb_strtoupper($quizreporting->lokacija, 'UTF-8')
     );
 
     return array('placeholders' => $placeholders, 'values' => $values);
