@@ -122,7 +122,7 @@ class badge_certificate {
         foreach ((array) $data as $field => $value) {
             if (property_exists($this, $field)) {
                 if ($field == "certbgimage") {
-                     $this->{$field} = $CFG->dataroot.$value;
+                    $this->{$field} = $CFG->dataroot . $value;
                 } else {
                     $this->{$field} = $value;
                 }
@@ -978,10 +978,14 @@ function get_placeholders($cert, $booking, $quizreporting = NULL) {
         $quizreporting->moznih_tock,
         $quizreporting->procent,
         $quizreporting->vprasanja,
-        ($quizreporting->status_kviza == 1 ? get_string('jeopravil', 'local_badgecerts') : get_string('niopravil', 'local_badgecerts')),
-        isset($quizreporting->datum_resitve) ? userdate($quizreporting->datum_resitve, get_string('datetimeformat', 'local_badgecerts')) : '',
-        isset($quizreporting->datum_vpisa) ? userdate($quizreporting->datum_vpisa, get_string('datetimeformat', 'local_badgecerts')) : '',
-        isset($quizreporting->datum_rojstva) ? userdate($quizreporting->datum_rojstva, get_string('datetimeformat', 'local_badgecerts')) : '',
+        ($quizreporting->status_kviza == 1 ? get_string('jeopravil', 'local_badgecerts') : get_string('niopravil',
+                        'local_badgecerts')),
+        isset($quizreporting->datum_resitve) ? userdate($quizreporting->datum_resitve,
+                        get_string('datetimeformat', 'local_badgecerts')) : '',
+        isset($quizreporting->datum_vpisa) ? userdate($quizreporting->datum_vpisa,
+                        get_string('datetimeformat', 'local_badgecerts')) : '',
+        isset($quizreporting->datum_rojstva) ? userdate($quizreporting->datum_rojstva,
+                        get_string('datetimeformat', 'local_badgecerts')) : '',
         $quizreporting->uvrstitev_posamezniki,
         $quizreporting->uvrstitev_skupina,
         $quizreporting->organizator,
@@ -1064,7 +1068,7 @@ function bulk_generate_certificates($certid, $badges, $context) {
             $booking->duration = 0;
 
             if ($cert->bookingid > 0 && in_array($cert->certtype, array(1, 2))) {
-                
+
                 $optionids = booking_getbookingoptionsid($bookingid, $badge->userid, $cert->certtype);
                 foreach ($optionids as $optionid) {
                     if (isset($optionid) && $optionid > 0) {
@@ -1103,7 +1107,7 @@ function bulk_generate_certificates($certid, $badges, $context) {
                             FROM {quizgrading_results} 
                             WHERE quizgradingid = :quizgradnigid AND userid = :userid",
                         array('quizgradnigid' => $cert->quizgradingid, 'userid' => $cert->recipient->id));
-                
+
                 foreach ($quizreporting as $quizreport) {
                     add_pdf_page($cert, $badge, $pdf, $booking, $quizreport, $user);
                 }
@@ -1114,7 +1118,7 @@ function bulk_generate_certificates($certid, $badges, $context) {
 
 // Close and output PDF document
 // This method has several options, check the source code documentation for more information.
-       $pdf->Output($cert->badgeclass['name'] . '.pdf', 'D');
+        $pdf->Output($cert->badgeclass['name'] . '.pdf', 'D');
     }
 }
 
@@ -1143,28 +1147,42 @@ function add_pdf_page($cert, $badge, &$pdf, $booking, $quizreporting = NULL, $us
     $pdf->SetAutoPageBreak($auto_page_break, $break_margin);
 // set the starting point for the page content
     $pdf->setPageMark();
-    
-    if ($cert->qrshow) {
-                
-                $tmpQrData = '';
-                
-                switch ($cert->qrdata) {
-                    case 0:
-                        $tmpQrData = $user->id;
-                        break;
-                    
-                    case 1:
-                        $tmpQrData = $user->username;
-                        break;
 
-                    default:
-                        break;
-                }
-                
-                $pdf->write2DBarcode($tmpQrData, 'QRCODE,H', $cert->qrx, $cert->qry, $cert->qrw, $cert->qrh);
-            }
+    if ($cert->qrshow) {
+
+        $tmpQrData = '';
+
+        switch ($cert->qrdata) {
+            case 0:
+                $tmpQrData = $user->id;
+                break;
+
+            case 1:
+                $tmpQrData = $user->username;
+                break;
+
+            default:
+                break;
+        }
+
+        $pdf->write2DBarcode($tmpQrData, 'QRCODE,H', $cert->qrx, $cert->qry, $cert->qrw, $cert->qrh);
+    }
 
     local_badgecerts_insert_to_log($cert->id, $badge->userid);
+}
+
+/**
+ *  Hook function to add items to the user navigation block.
+ */
+function local_badgecerts_extend_navigation_user(navigation_node $parentnode, stdClass $user, context_user $context,
+        stdClass $course, context_course $coursecontext) {
+    if (isloggedin()) {
+// Add 'My badge certificates' item to the navigation block.
+        $parentnode->add(
+                get_string('mybadgecertificates', 'local_badgecerts'), new moodle_url('/local/badgecerts/mycerts.php'),
+                navigation_node::TYPE_USER, null, 'mybadgecerts'
+        );
+    }
 }
 
 /**
@@ -1184,35 +1202,7 @@ function local_badgecerts_extend_navigation(global_navigation $nav) {
 /**
  *  Hook function to add items to the administration block.
  */
-function local_badgecerts_extends_setting_navigation(settings_navigation $nav, context $context = null) {
-    global $COURSE;
-
-    if (isloggedin()) {
-        $coursenode = $nav->get('courseadmin');
-        if (has_any_capability(array(
-                    'local/badgecerts:viewcertificates',
-                    'local/badgecerts:createcertificate',
-                    'local/badgecerts:configurecertificate',
-                    'local/badgecerts:assigncustomcertificate',
-                    'local/badgecerts:printcertificates',
-                    'local/badgecerts:viewcertificates',
-                    'local/badgecerts:certificatemanager'
-                        ), $context)) {
-
-            if ($coursenode) {
-                $url = new moodle_url('/local/badgecerts/index.php',
-                        array('type' => CERT_TYPE_COURSE, 'id' => $COURSE->id));
-                $coursenode->add(get_string('managebadgecertificates', 'local_badgecerts'), $url,
-                        navigation_node::TYPE_SETTING, null, 'managecerts', new pix_icon('i/report', ''));
-            }
-        }
-    }
-}
-
-/**
- *  Hook function to add items to the administration block.
- */
-function local_badgecerts_extends_settings_navigation(settings_navigation $nav, context $context = null) {
+function local_badgecerts_extend_settings_navigation(settings_navigation $nav, context $context = null) {
     global $COURSE;
 
     if (isloggedin()) {
