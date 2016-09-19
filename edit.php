@@ -96,16 +96,20 @@ if ($form->is_cancelled()) {
     $cert->qry = $data->qry;
     $cert->qrshow = isset($data->qrshow) ? 1 : 0;
 
-    if ($cert->save()) {
+    $dirname = '/filedir/cert';
+    if (!$getfilename) {        
+        $cert->certbgimage = $dirname . '/' . basename($cert->certbgimage);
+    }
+    
+    if ($cert->save()) {        
         if ($getfilename) {
-            // Create folder if it doesn't exist.
-            $dirname = $CFG->dataroot.'/filedir/cert';
-            if (!file_exists($dirname) and !is_dir($dirname)) {
-                mkdir($dirname);         
+            // Create folder if it doesn't exist.            
+            if (!file_exists($CFG->dataroot.$dirname) and !is_dir($CFG->dataroot.$dirname)) {
+                mkdir($CFG->dataroot.$dirname);
             }
             $filename = $dirname . '/' . $cert->id . '_' . $getfilename;
             // Save file to standard filesystem.
-            $form->save_file('certbgimage', $filename, true);
+            $form->save_file('certbgimage', $CFG->dataroot.$filename, true);
             // Update record in the database.
             $DB->set_field('badge_certificate', 'certbgimage', $filename, array('id' => $cert->id));
         }

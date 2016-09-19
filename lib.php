@@ -110,7 +110,7 @@ class badge_certificate {
      * @param int $certid badge certificate ID.
      */
     public function __construct($certid) {
-        global $DB;
+        global $DB, $CFG;
         $this->id = $certid;
 
         $data = $DB->get_record('badge_certificate', array('id' => $certid));
@@ -121,7 +121,11 @@ class badge_certificate {
 
         foreach ((array) $data as $field => $value) {
             if (property_exists($this, $field)) {
-                $this->{$field} = $value;
+                if ($field == "certbgimage") {
+                     $this->{$field} = $CFG->dataroot.$value;
+                } else {
+                    $this->{$field} = $value;
+                }
             }
         }
     }

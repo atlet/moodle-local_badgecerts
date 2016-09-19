@@ -96,13 +96,13 @@ if ($form->is_cancelled()) {
 
     if ($getfilename) {
         // Create folder if it doesn't exist.
-        $dirname = $CFG->dataroot.'/filedir/cert';
-        if (!file_exists($dirname) and !is_dir($dirname)) {
-            mkdir($dirname);         
+        $dirname = '/filedir/cert';
+        if (!file_exists($CFG->dataroot.$dirname) and !is_dir($CFG->dataroot.$dirname)) {
+            mkdir($CFG->dataroot.$dirname);         
         }
         $filename = $dirname . '/' . $newid . '_' . $getfilename;
         // Save file to standard filesystem.
-        $form->save_file('certbgimage', $filename, true);
+        $form->save_file('certbgimage', $CFG->dataroot.$filename, true);
         // Update record in the database.
         $DB->set_field('badge_certificate', 'certbgimage', $filename, array('id' => $newid));
     }
