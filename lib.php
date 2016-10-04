@@ -1174,8 +1174,7 @@ function add_pdf_page($cert, $badge, &$pdf, $booking, $quizreporting = NULL, $us
 /**
  *  Hook function to add items to the user navigation block.
  */
-function local_badgecerts_extend_navigation_user(navigation_node $parentnode, stdClass $user, context_user $context,
-        stdClass $course, context_course $coursecontext) {
+function local_badgecerts_extend_navigation_user(navigation_node $parentnode, stdClass $user, context_user $context) {
     if (isloggedin()) {
 // Add 'My badge certificates' item to the navigation block.
         $parentnode->add(
