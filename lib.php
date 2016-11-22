@@ -198,6 +198,7 @@ class badge_certificate {
      */
     public function set_status($status = 0) {
         $this->status = $status;
+        unset($this->certbgimage);
         $this->save();
     }
 
