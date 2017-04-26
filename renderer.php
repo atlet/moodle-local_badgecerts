@@ -66,7 +66,8 @@ class local_badgecerts_renderer extends plugin_renderer_base {
             if (($userid == $USER->id) && !$profile) {
                 $url = new moodle_url('mycerts.php',
                         array('download' => $badge->id, 'hash' => $badge->uniquehash, 'sesskey' => sesskey()));
-                $badgeview = $this->output->action_icon($burl, new pix_icon('i/info', get_string('download')));
+                $badgeview = $this->output->action_icon($burl, new pix_icon('i/info', get_string('info')));
+                $badgeview .= $this->output->action_icon($url, new pix_icon('a/download_all', get_string('download')));
             }
 
             $actions = html_writer::tag('div', $push . $badgeview . $status, array('class' => 'badge-actions'));
