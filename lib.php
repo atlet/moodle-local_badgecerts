@@ -423,7 +423,7 @@ function badges_get_certificates($type, $courseid = 0, $sort = '', $dir = '', $p
 /**
  * Get all badge certificates for courseid.
  *
- * @param int Course ID for course badges 
+ * @param int Course ID for course badges
  * @return array $badge Array of records matching criteria
  */
 function badges_get_certificates_for_courseid($courseid = 0) {
@@ -567,24 +567,24 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
                 AND b.certid IS NOT NULL
                 AND bc.id = b.certid
                 AND bc.status >= 1
-            AND ( 
+            AND (
             (SELECT IF(bc.certtype = 0, 1, 0)) = 1
-            OR (SELECT IF(bc.quizgradingid > 0 AND bc.certtype = 3, 
-                        (SELECT 
+            OR (SELECT IF(bc.quizgradingid > 0 AND bc.certtype = 3,
+                        (SELECT
                             IF(COUNT(*) > 0, 1, 0)
                         FROM
                             {quizgrading_results} AS qr
                         WHERE
-                            qr.userid = u.id)            
+                            qr.userid = u.id)
                 , 0)) = 1
-            OR (SELECT 
+            OR (SELECT
             IF(bc.bookingid > 0 AND bc.certtype = 1,
-                    (SELECT 
+                    (SELECT
                             IF(COUNT(*) > 0, 1, 0)
                         FROM
                             {booking_answers} AS ans
                         WHERE
-                            bookingid = (SELECT 
+                            bookingid = (SELECT
                                     instance
                                 FROM
                                     {course_modules} AS cm
@@ -592,14 +592,14 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
                                     cm.id = bc.bookingid)
                                 AND ans.userid = u.id AND ans.completed = 1),
                     0)
-         = 1 OR (SELECT 
+         = 1 OR (SELECT
             IF(bc.bookingid > 0 AND bc.certtype = 2,
-                    (SELECT 
+                    (SELECT
                             IF(COUNT(*) > 0, 1, 0)
                         FROM
                             {booking_teachers} AS tch
                         WHERE
-                            bookingid = (SELECT 
+                            bookingid = (SELECT
                                     instance
                                 FROM
                                     {course_modules} AS cm
@@ -999,7 +999,7 @@ function get_placeholders($cert, $booking, $quizreporting = NULL) {
 }
 
 /**
- * Bulk generate badge certificates - only for submited users. 
+ * Bulk generate badge certificates - only for submited users.
  */
 function bulk_generate_certificates($certid, $badges, $context) {
     global $CFG, $DB;
@@ -1039,7 +1039,7 @@ function bulk_generate_certificates($certid, $badges, $context) {
             $cert->badgeclass = $assertion->get_badge_class();
 // Get a recipient from database.
             $namefields = get_all_user_name_fields(true, 'u');
-            $user = $DB->get_record_sql("SELECT u.id, $namefields, u.deleted, u.username, 
+            $user = $DB->get_record_sql("SELECT u.id, $namefields, u.deleted, u.username,
                                                     u.email AS accountemail, b.email AS backpackemail
                             FROM {user} u LEFT JOIN {badge_backpack} b ON u.id = b.userid
                             WHERE u.id = :userid", array('userid' => $badge->userid));
@@ -1104,8 +1104,8 @@ function bulk_generate_certificates($certid, $badges, $context) {
                 }
             } else if ($cert->quizgradingid > 0 && $cert->certtype == 3) {
 
-                $quizreporting = $DB->get_records_sql("SELECT * 
-                            FROM {quizgrading_results} 
+                $quizreporting = $DB->get_records_sql("SELECT *
+                            FROM {quizgrading_results}
                             WHERE quizgradingid = :quizgradnigid AND userid = :userid",
                         array('quizgradnigid' => $cert->quizgradingid, 'userid' => $cert->recipient->id));
 
@@ -1202,9 +1202,8 @@ function local_badgecerts_extend_navigation(global_navigation $nav) {
 /**
  *  Hook function to add items to the administration block.
  */
-function local_badgecerts_extend_settings_navigation(settings_navigation $nav, context $context = null) {
+function local_badgecerts_extend_settings_navigation(settings_navigation $nav, context $context) {
     global $COURSE;
-
     if (isloggedin()) {
         $coursenode = $nav->get('courseadmin');
         if (has_any_capability(array(
