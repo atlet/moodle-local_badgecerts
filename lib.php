@@ -386,8 +386,7 @@ function local_badgecerts_insert_to_log($certid = NULL, $userid = NULL) {
  * @param int $user User specific search
  * @return array $badge Array of records matching criteria
  */
-function badges_get_certificates($type, $courseid = 0, $sort = '', $dir = '', $page = 0, $perpage = CERT_PERPAGE,
-        $user = 0) {
+function badges_get_certificates($type, $courseid = 0, $sort = '', $dir = '', $page = 0, $perpage = CERT_PERPAGE, $user = 0) {
     global $DB;
     $records = array();
     $params = array();
@@ -677,13 +676,11 @@ function booking_getbookingoptionsid($bookingid = NULL, $userid = NULL, $certtyp
             break;
 
         case 1:
-            $ba = $DB->get_records('booking_answers',
-                    array('completed' => '1', 'userid' => $userid, 'bookingid' => $bookingid));
+            $ba = $DB->get_records('booking_answers', array('completed' => '1', 'userid' => $userid, 'bookingid' => $bookingid));
             break;
 
         case 2:
-            $ba = $DB->get_records('booking_teachers',
-                    array('completed' => '1', 'userid' => $userid, 'bookingid' => $bookingid));
+            $ba = $DB->get_records('booking_teachers', array('completed' => '1', 'userid' => $userid, 'bookingid' => $bookingid));
             break;
 
         default:
@@ -759,16 +756,14 @@ function get_all_certificates($courseid = NULL) {
                             WHERE u.id = :userid", array('userid' => $badge->userid));
 // Add custom profile field 'Datumrojstva' value
             $fieldid = $DB->get_field('user_info_field', 'id', array('shortname' => 'Datumrojstva'));
-            if ($fieldid && $birthdate = $DB->get_field('user_info_data', 'data',
-                    array('userid' => $badge->userid, 'fieldid' => $fieldid))) {
+            if ($fieldid && $birthdate = $DB->get_field('user_info_data', 'data', array('userid' => $badge->userid, 'fieldid' => $fieldid))) {
                 $user->birthdate = $birthdate;
             } else {
                 $user->birthdate = null;
             }
 // Add custom profile field 'VIZ' value
             $fieldid = $DB->get_field('user_info_field', 'id', array('shortname' => 'VIZ'));
-            if ($fieldid && $institution = $DB->get_field('user_info_data', 'data',
-                    array('userid' => $badge->userid, 'fieldid' => $fieldid))) {
+            if ($fieldid && $institution = $DB->get_field('user_info_data', 'data', array('userid' => $badge->userid, 'fieldid' => $fieldid))) {
                 $user->institution = $institution;
             } else {
                 $user->institution = null;
@@ -792,13 +787,11 @@ function get_all_certificates($courseid = NULL) {
                     }
 // Set seminar start date
                     if (isset($options['coursestarttime']) && !empty($options['coursestarttime'])) {
-                        $booking->startdate = userdate((int) $options['coursestarttime'],
-                                get_string('strftimedatefullshort'));
+                        $booking->startdate = userdate((int) $options['coursestarttime'], get_string('strftimedatefullshort'));
                     }
 // Set seminar end date
                     if (isset($options['courseendtime']) && !empty($options['courseendtime'])) {
-                        $booking->enddate = userdate((int) $options['courseendtime'],
-                                get_string('strftimedatefullshort'));
+                        $booking->enddate = userdate((int) $options['courseendtime'], get_string('strftimedatefullshort'));
                     }
 // Set seminar duration
                     if (isset($options['duration']) && !empty($options['duration'])) {
@@ -831,8 +824,7 @@ function get_all_certificates($courseid = NULL) {
             $ownCert['bookingStartdate'] = $booking->startdate;
             $ownCert['bookingEnddate'] = $booking->enddate;
             $ownCert['bookingDuration'] = $booking->duration;
-            $ownCert['recipientBirthdate'] = userdate((int) $cert->recipient->birthdate,
-                    get_string('strftimedatefullshort'));
+            $ownCert['recipientBirthdate'] = userdate((int) $cert->recipient->birthdate, get_string('strftimedatefullshort'));
             $ownCert['recipientInstitution'] = $cert->recipient->institution;
             $ownCert['badgeDateIssued'] = userdate((int) $cert->issued, get_string('strftimedatefullshort'));
 
@@ -979,14 +971,10 @@ function get_placeholders($cert, $booking, $quizreporting = NULL) {
         $quizreporting->moznih_tock,
         $quizreporting->procent,
         $quizreporting->vprasanja,
-        ($quizreporting->status_kviza == 1 ? get_string('jeopravil', 'local_badgecerts') : get_string('niopravil',
-                        'local_badgecerts')),
-        isset($quizreporting->datum_resitve) ? userdate($quizreporting->datum_resitve,
-                        get_string('datetimeformat', 'local_badgecerts')) : '',
-        isset($quizreporting->datum_vpisa) ? userdate($quizreporting->datum_vpisa,
-                        get_string('datetimeformat', 'local_badgecerts')) : '',
-        isset($quizreporting->datum_rojstva) ? userdate($quizreporting->datum_rojstva,
-                        get_string('datetimeformat', 'local_badgecerts')) : '',
+        ($quizreporting->status_kviza == 1 ? get_string('jeopravil', 'local_badgecerts') : get_string('niopravil', 'local_badgecerts')),
+        isset($quizreporting->datum_resitve) ? userdate($quizreporting->datum_resitve, get_string('datetimeformat', 'local_badgecerts')) : '',
+        isset($quizreporting->datum_vpisa) ? userdate($quizreporting->datum_vpisa, get_string('datetimeformat', 'local_badgecerts')) : '',
+        isset($quizreporting->datum_rojstva) ? userdate($quizreporting->datum_rojstva, get_string('datetimeformat', 'local_badgecerts')) : '',
         $quizreporting->uvrstitev_posamezniki,
         $quizreporting->uvrstitev_skupina,
         $quizreporting->organizator,
@@ -1045,16 +1033,14 @@ function bulk_generate_certificates($certid, $badges, $context) {
                             WHERE u.id = :userid", array('userid' => $badge->userid));
 // Add custom profile field 'Datumrojstva' value
             $fieldid = $DB->get_field('user_info_field', 'id', array('shortname' => 'Datumrojstva'));
-            if ($fieldid && $birthdate = $DB->get_field('user_info_data', 'data',
-                    array('userid' => $badge->userid, 'fieldid' => $fieldid))) {
+            if ($fieldid && $birthdate = $DB->get_field('user_info_data', 'data', array('userid' => $badge->userid, 'fieldid' => $fieldid))) {
                 $user->birthdate = $birthdate;
             } else {
                 $user->birthdate = null;
             }
 // Add custom profile field 'VIZ' value
             $fieldid = $DB->get_field('user_info_field', 'id', array('shortname' => 'VIZ'));
-            if ($fieldid && $institution = $DB->get_field('user_info_data', 'data',
-                    array('userid' => $badge->userid, 'fieldid' => $fieldid))) {
+            if ($fieldid && $institution = $DB->get_field('user_info_data', 'data', array('userid' => $badge->userid, 'fieldid' => $fieldid))) {
                 $user->institution = $institution;
             } else {
                 $user->institution = null;
@@ -1106,8 +1092,7 @@ function bulk_generate_certificates($certid, $badges, $context) {
 
                 $quizreporting = $DB->get_records_sql("SELECT *
                             FROM {quizgrading_results}
-                            WHERE quizgradingid = :quizgradnigid AND userid = :userid",
-                        array('quizgradnigid' => $cert->quizgradingid, 'userid' => $cert->recipient->id));
+                            WHERE quizgradingid = :quizgradnigid AND userid = :userid", array('quizgradnigid' => $cert->quizgradingid, 'userid' => $cert->recipient->id));
 
                 foreach ($quizreporting as $quizreport) {
                     add_pdf_page($cert, $badge, $pdf, $booking, $quizreport, $user);
@@ -1172,17 +1157,37 @@ function add_pdf_page($cert, $badge, &$pdf, $booking, $quizreporting = NULL, $us
     local_badgecerts_insert_to_log($cert->id, $badge->userid);
 }
 
-/**
- *  Hook function to add items to the user navigation block.
- */
-function local_badgecerts_extend_navigation_user(navigation_node $parentnode, stdClass $user, context_user $context) {
+function local_badgecerts_extend_navigation_user_settings(navigation_node $parentnode, stdClass $user, context_user $context, stdClass $course, context_course $coursecontext) {
+    $parentnode->add(get_string('mybadgecertificates', 'local_badgecerts'), new moodle_url('/local/badgecerts/mycerts.php'));
+}
+
+function local_badgecerts_extend_navigation_user(navigation_node $parentnode, stdClass $user, context_user $context, stdClass $course, context_course $coursecontext) {
+    global $PAGE;
+
     if (isloggedin()) {
-// Add 'My badge certificates' item to the navigation block.
-        $parentnode->add(
-                get_string('mybadgecertificates', 'local_badgecerts'), new moodle_url('/local/badgecerts/mycerts.php'),
-                navigation_node::TYPE_USER, null, 'mybadgecerts'
-        );
+        if (has_any_capability(array(
+                    'local/badgecerts:viewcertificates',
+                    'local/badgecerts:createcertificate',
+                    'local/badgecerts:configurecertificate',
+                    'local/badgecerts:assigncustomcertificate',
+                    'local/badgecerts:printcertificates',
+                    'local/badgecerts:viewcertificates',
+                    'local/badgecerts:certificatemanager'
+                        ), $context)) {
+
+            $url = new moodle_url('/local/badgecerts/index.php', array('type' => CERT_TYPE_COURSE, 'id' => $course->id));
+            $coursenode = $PAGE->navigation->find($course->id, navigation_node::TYPE_COURSE);
+            $thingnode = $coursenode->add(get_string('managebadgecertificates', 'local_badgecerts'), $url);
+        }
     }
+}
+
+function local_badgecerts_myprofile_navigation(core_user\output\myprofile\tree $tree, $user, $iscurrentuser, $course) {
+    $url = new moodle_url('/local/badgecerts/mycerts.php');
+    $string = get_string('mybadgecertificates', 'local_badgecerts');
+    $node = new core_user\output\myprofile\node('miscellaneous', 'badgecerts', $string, null, $url);
+
+    $tree->add_node($node);
 }
 
 /**
@@ -1193,8 +1198,7 @@ function local_badgecerts_extend_navigation(global_navigation $nav) {
 // Add 'My badge certificates' item to the navigation block.
         $myprofile = $nav->get('myprofile');
         $myprofile->add(
-                get_string('mybadgecertificates', 'local_badgecerts'), new moodle_url('/local/badgecerts/mycerts.php'),
-                navigation_node::TYPE_USER, null, 'mybadgecerts'
+                get_string('mybadgecertificates', 'local_badgecerts'), new moodle_url('/local/badgecerts/mycerts.php'), navigation_node::TYPE_USER, null, 'mybadgecerts'
         );
     }
 }
@@ -1204,6 +1208,7 @@ function local_badgecerts_extend_navigation(global_navigation $nav) {
  */
 function local_badgecerts_extend_settings_navigation(settings_navigation $nav, context $context) {
     global $COURSE;
+
     if (isloggedin()) {
         $coursenode = $nav->get('courseadmin');
         if (has_any_capability(array(
@@ -1217,10 +1222,8 @@ function local_badgecerts_extend_settings_navigation(settings_navigation $nav, c
                         ), $context)) {
 
             if ($coursenode) {
-                $url = new moodle_url('/local/badgecerts/index.php',
-                        array('type' => CERT_TYPE_COURSE, 'id' => $COURSE->id));
-                $coursenode->add(get_string('managebadgecertificates', 'local_badgecerts'), $url,
-                        navigation_node::TYPE_SETTING, null, 'managecerts', new pix_icon('i/report', ''));
+                $url = new moodle_url('/local/badgecerts/index.php', array('type' => CERT_TYPE_COURSE, 'id' => $COURSE->id));
+                $coursenode->add(get_string('managebadgecertificates', 'local_badgecerts'), $url, navigation_node::TYPE_SETTING, null, 'managecerts', new pix_icon('i/report', ''));
             }
         }
     }
