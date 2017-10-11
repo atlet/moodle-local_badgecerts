@@ -705,13 +705,12 @@ function booking_getbookingoptionsid($bookingid = NULL, $userid = NULL, $certtyp
  */
 function booking_getbookingoptions($cmid = NULL, $optionid = NULL) {
     global $CFG;
-    require_once($CFG->dirroot . '/mod/booking/locallib.php');
 
     if (is_null($optionid)) {
         return FALSE;
     }
 
-    $booking = new booking_option($cmid, $optionid);
+    $booking = new \mod_booking\booking_option($cmid, $optionid);
     $booking->apply_tags();
 
     if (empty($booking)) {
