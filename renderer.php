@@ -267,21 +267,20 @@ class local_badgecerts_renderer extends plugin_renderer_base {
 
         echo html_writer::start_tag('form',
                 array('class' => 'reportbadgesselecform', 'action' => $url, 'method' => 'get'));
-        echo html_writer::start_div();
 
         echo html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'id', 'value' => $cert->id));
 
+        echo "<div class=\"form-inline\">";
         echo html_writer::select_time('days', 'day', $cTime);
         echo html_writer::select_time('months', 'month', $cTime);
         echo html_writer::select_time('years', 'year', $cTime);
-
+        echo "&nbsp;";
         echo html_writer::empty_tag('input',
-                array('type' => 'submit', 'value' => get_string('filterreport', 'local_badgecerts')));
-
+                array('class' => 'btn btn-primary', 'type' => 'submit', 'value' => get_string('filterreport', 'local_badgecerts')));
+        echo "&nbsp;";
         echo html_writer::empty_tag('input',
-                array('id' => "buttonclear", 'type' => 'button', 'value' => get_string('reset', 'local_badgecerts')));
-
-        echo html_writer::end_div();
+                array('class' => 'btn btn-secondary', 'id' => "buttonclear", 'type' => 'button', 'value' => get_string('reset', 'local_badgecerts')));
+        echo "</div>";
         echo html_writer::end_tag('form');
     }
 
@@ -476,7 +475,7 @@ class cert_collection implements renderable {
  * Collection of badge certificates used at the index.php page
  */
 class cert_management extends cert_collection implements renderable {
-    
+
 }
 
 /**

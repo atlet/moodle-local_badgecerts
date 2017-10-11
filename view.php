@@ -91,14 +91,14 @@ switch ($cert->certtype) {
     case 1:
         //mod_booking users
         if ($cert->bookingid > 0) {
-            $sqlWhere .= " AND (SELECT 
+            $sqlWhere .= " AND (SELECT
             IF(c.bookingid > 0,
-                    (SELECT 
+                    (SELECT
                             IF(COUNT(*) > 0, 1, 0)
                         FROM
                             {booking_answers} AS ans
                         WHERE
-                            bookingid = (SELECT 
+                            bookingid = (SELECT
                                     instance
                                 FROM
                                     {course_modules} AS cm
@@ -112,14 +112,14 @@ switch ($cert->certtype) {
     case 2:
         //mod_booking teachers
         if ($cert->bookingid > 0) {
-            $sqlWhere .= " AND (SELECT 
+            $sqlWhere .= " AND (SELECT
             IF(c.bookingid > 0,
-                    (SELECT 
+                    (SELECT
                             IF(COUNT(*) > 0, 1, 0)
                         FROM
                             {booking_teachers} AS tch
                         WHERE
-                            bookingid = (SELECT 
+                            bookingid = (SELECT
                                     instance
                                 FROM
                                     {course_modules} AS cm
@@ -251,13 +251,10 @@ if (!$table->is_downloading()) {
     if (has_capability('local/badgecerts:printcertificates', $context)) {
         echo '<div class="selectbuttons">';
         echo '<input type="hidden" name="id" value="' . $certid . '" />';
-        echo '<input type="button" id="checkall" value="' . get_string('selectall') . '" /> ';
-        echo '<input type="button" id="checknone" value="' . get_string('deselectall') . '" /> ';
-
-        echo '</div>';
-        echo '<div>';
-        echo '<input type="submit" name="printselected" value="' . get_string('printselected', 'local_badgecerts') . '" />';
-        echo '<input type="submit" name="printall" value="' . get_string('printall', 'local_badgecerts') . '" />';
+        echo '<input class="btn btn-secondary" type="button" id="checkall" value="' . get_string('selectall') . '" /> ';
+        echo '<input class="btn btn-secondary" type="button" id="checknone" value="' . get_string('deselectall') . '" /> ';
+        echo '<input class="btn btn-secondary" type="submit" name="printselected" value="' . get_string('printselected', 'local_badgecerts') . '" /> ';
+        echo '<input class="btn btn-secondary" type="submit" name="printall" value="' . get_string('printall', 'local_badgecerts') . '" />';
         echo '</div>';
         echo '</div>';
         echo '</form>';
