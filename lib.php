@@ -1156,11 +1156,7 @@ function add_pdf_page($cert, $badge, &$pdf, $booking, $quizreporting = NULL, $us
     local_badgecerts_insert_to_log($cert->id, $badge->userid);
 }
 
-function local_badgecerts_extend_navigation_user_settings(navigation_node $parentnode, stdClass $user, context_user $context, stdClass $course, context_course $coursecontext) {
-    $parentnode->add(get_string('mybadgecertificates', 'local_badgecerts'), new moodle_url('/local/badgecerts/mycerts.php'));
-}
-
-function local_badgecerts_extend_navigation_user(navigation_node $parentnode, stdClass $user, context_user $context, stdClass $course, context_course $coursecontext) {
+function local_badgecerts_extend_navigation_user(navigation_node $parentnode, stdClass $user, context_user $context, stdClass $course) {
     global $PAGE;
 
     if (isloggedin()) {
@@ -1168,10 +1164,8 @@ function local_badgecerts_extend_navigation_user(navigation_node $parentnode, st
                     'local/badgecerts:viewcertificates',
                     'local/badgecerts:createcertificate',
                     'local/badgecerts:configurecertificate',
-                    'local/badgecerts:assigncustomcertificate',
-                    'local/badgecerts:printcertificates',
-                    'local/badgecerts:viewcertificates',
-                    'local/badgecerts:certificatemanager'
+                    'local/badgecerts:configureelements',
+                    'local/badgecerts:deletecertificate'
                         ), $context)) {
 
             $url = new moodle_url('/local/badgecerts/index.php', array('type' => CERT_TYPE_COURSE, 'id' => $course->id));
@@ -1181,24 +1175,14 @@ function local_badgecerts_extend_navigation_user(navigation_node $parentnode, st
     }
 }
 
+// See link to download own badges only on your own profile
 function local_badgecerts_myprofile_navigation(core_user\output\myprofile\tree $tree, $user, $iscurrentuser, $course) {
-    $url = new moodle_url('/local/badgecerts/mycerts.php');
-    $string = get_string('mybadgecertificates', 'local_badgecerts');
-    $node = new core_user\output\myprofile\node('miscellaneous', 'badgecerts', $string, null, $url);
+    if ($iscurrentuser) {
+        $url = new moodle_url('/local/badgecerts/mycerts.php');
+        $string = get_string('mybadgecertificates', 'local_badgecerts');
+        $node = new core_user\output\myprofile\node('miscellaneous', 'badgecerts', $string, null, $url);
 
-    $tree->add_node($node);
-}
-
-/**
- *  Hook function to add items to the navigation block.
- */
-function local_badgecerts_extend_navigation(global_navigation $nav) {
-    if (isloggedin()) {
-// Add 'My badge certificates' item to the navigation block.
-        $myprofile = $nav->get('myprofile');
-        $myprofile->add(
-                get_string('mybadgecertificates', 'local_badgecerts'), new moodle_url('/local/badgecerts/mycerts.php'), navigation_node::TYPE_USER, null, 'mybadgecerts'
-        );
+        $tree->add_node($node);
     }
 }
 
@@ -1214,10 +1198,8 @@ function local_badgecerts_extend_settings_navigation(settings_navigation $nav, c
                     'local/badgecerts:viewcertificates',
                     'local/badgecerts:createcertificate',
                     'local/badgecerts:configurecertificate',
-                    'local/badgecerts:assigncustomcertificate',
-                    'local/badgecerts:printcertificates',
-                    'local/badgecerts:viewcertificates',
-                    'local/badgecerts:certificatemanager'
+                    'local/badgecerts:configureelements',
+                    'local/badgecerts:deletecertificate'
                         ), $context)) {
 
             if ($coursenode) {

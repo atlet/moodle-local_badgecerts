@@ -21,8 +21,8 @@
  * @author     Gregor Anželj <gregor.anzelj@gmail.com>
  */
 
-$plugin->version = 2017101600;
-$plugin->requires = 2013111800; // Moodle 2.6.0 or newer
+$plugin->version = 2017101700;
+$plugin->requires = 2016052300; // Moodle 3.1 or newer
 $plugin->component = 'local_badgecerts';
 $plugin->maturity = MATURITY_BETA;
 $plugin->release = '1.0';

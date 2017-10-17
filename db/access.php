@@ -92,7 +92,7 @@ $capabilities = array(
             'editingteacher' => CAP_ALLOW,
         )
     ),
-    
+
     // View badge certificates.
     'local/badgecerts:viewcertificates' => array(
         'captype'      => 'read',
@@ -100,11 +100,10 @@ $capabilities = array(
         'archetypes'   => array(
             'manager'        => CAP_ALLOW,
             'teacher'        => CAP_ALLOW,
-            'editingteacher' => CAP_ALLOW,
-            'user'          => CAP_ALLOW
+            'editingteacher' => CAP_ALLOW
         )
     ),
-    
+
     // Print badge certificates.
     'local/badgecerts:printcertificates' => array(
         'captype'      => 'read',
@@ -115,7 +114,7 @@ $capabilities = array(
             'editingteacher' => CAP_ALLOW,
         )
     ),
-    
+
     // Print badge certificates.
     'local/badgecerts:certificatemanager' => array(
         'captype'      => 'read',
