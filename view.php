@@ -39,24 +39,6 @@ $urlParams = array();
 $sqlValues['certid'] = $certid;
 $urlParams['id'] = $certid;
 
-if ($day > 0) {
-    $sqlValues['day'] = $day;
-    $urlParams['day'] = $day;
-    $sqlWhere .= " AND FROM_UNIXTIME(d.dateissued, '%e') = :day ";
-}
-
-if ($month > 0) {
-    $sqlValues['month'] = $month;
-    $urlParams['month'] = $month;
-    $sqlWhere .= " AND FROM_UNIXTIME(d.dateissued, '%c') = :month ";
-}
-
-if ($year > 0) {
-    $sqlValues['year'] = $year;
-    $urlParams['year'] = $year;
-    $sqlWhere .= " AND FROM_UNIXTIME(d.dateissued, '%Y') = :year ";
-}
-
 require_login();
 
 if (empty($CFG->enablebadges)) {
@@ -64,13 +46,44 @@ if (empty($CFG->enablebadges)) {
 }
 
 $cert = new badge_certificate($certid);
+
+if (in_array($cert->certtype, array(0, 1))) {
+    if ($day > 0) {
+        $sqlValues['day'] = $day;
+        $urlParams['day'] = $day;
+        $sqlWhere .= " AND FROM_UNIXTIME(d.dateissued, '%e') = :day ";
+    }
+
+    if ($month > 0) {
+        $sqlValues['month'] = $month;
+        $urlParams['month'] = $month;
+        $sqlWhere .= " AND FROM_UNIXTIME(d.dateissued, '%c') = :month ";
+    }
+
+    if ($year > 0) {
+        $sqlValues['year'] = $year;
+        $urlParams['year'] = $year;
+        $sqlWhere .= " AND FROM_UNIXTIME(d.dateissued, '%Y') = :year ";
+    }
+} else {
+    if ($day > 0 && $month > 0 && $year > 0) {
+        $sqlValues['day'] = $day;
+        $urlParams['day'] = $day;
+        $sqlValues['month'] = $month;
+        $urlParams['month'] = $month;
+        $sqlValues['year'] = $year;
+        $urlParams['year'] = $year;
+
+        $sqlWhere .= " AND (SELECT COUNT(*) FROM {quizgrading_results} qr WHERE qr.userid = u.id AND qr.quizgradingid = c.quizgradingid AND FROM_UNIXTIME(qr.datum_resitve, '%e') = :day AND FROM_UNIXTIME(qr.datum_resitve, '%c') = :month AND FROM_UNIXTIME(qr.datum_resitve, '%Y') = :year) > 0 ";
+    }
+}
+
 $context = $cert->get_context();
 require_capability('local/badgecerts:viewcertificates', $context);
 $navurl = new moodle_url('/local/badgecerts/index.php', array('type' => $cert->type));
 
 $onlyTeachers = "";
-if (in_array($cert->certtype, array(1, 2)) && $cert->bookingid > 0 && !has_capability('local/badgecerts:certificatemanager',
-                $context)) {
+if (in_array($cert->certtype, array(1, 2)) && $cert->bookingid > 0 && !has_capability('local/badgecerts:certificatemanager', $context)) {
     $onlyTeachers = " JOIN {booking_answers} AS bat ON bat.userid = u.id JOIN {booking_teachers} AS bta ON bta.optionid = bat.optionid ";
 
     $sqlWhere .= ' AND bta.userid = :teacherid ';
@@ -134,7 +147,7 @@ switch ($cert->certtype) {
         //mod_quizgrading
         if ($cert->quizgradingid > 0) {
             $sqlWhere .= " AND c.quizgradingid = :quizgradingid ";
-            //$onlyTeachers .= " JOIN {quizgrading_results} AS qr ON qr.userid = u.id "; // če to vključiš ne deluje, ker se ponavljajo polja ...
+            //$onlyTeachers .= " LEFT JOIN {quizgrading_results} AS qr ON qr.userid = u.id AND qr.quizgradingid = c.quizgradingid "; // če to vključiš ne deluje, ker se ponavljajo polja ...
             $sqlValues['quizgradingid'] = $cert->quizgradingid;
         }
         break;
@@ -168,8 +181,7 @@ $from = ' {badge_issued} AS d JOIN {badge} AS b ON d.badgeid = b.id JOIN {user} 
 
 $where = ' b.certid = :certid ' . $sqlWhere;
 
-$table->set_count_sql("SELECT COUNT(*) FROM (SELECT {$fields} FROM {$from} WHERE {$where}) AS abcd WHERE 1=1",
-        $sqlValues);
+$table->set_count_sql("SELECT COUNT(*) FROM (SELECT {$fields} FROM {$from} WHERE {$where}) AS abcd WHERE 1=1", $sqlValues);
 
 $table->set_sql(
         $fields, $from, $where, $sqlValues);
