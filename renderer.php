@@ -199,7 +199,7 @@ class local_badgecerts_renderer extends plugin_renderer_base {
             if (!$c->is_active() && !has_capability('local/badgecerts:createcertificate', $this->page->context)) {
                 $name = $c->name;
             } else {
-                $name = html_writer::link(new moodle_url('/local/badgecerts/overview.php', array('id' => $c->id)),
+                $name = html_writer::link(new moodle_url('/local/badgecerts/view.php', array('id' => $c->id)),
                                 $c->name, $style);
             }
             $issuer = $c->issuername;
