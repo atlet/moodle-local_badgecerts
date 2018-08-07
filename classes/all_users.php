@@ -24,6 +24,7 @@ class all_users extends table_sql {
             'fullname',
             'dateissued',
             'nctransfers',
+            'nctransfersteacher',
             'ndatelasttransfer'
         );
         $this->define_columns($columns);
@@ -34,6 +35,7 @@ class all_users extends table_sql {
             get_string('fullname', 'local_badgecerts'),
             get_string('dateissued', 'local_badgecerts'),
             get_string('nctransfers', 'local_badgecerts'),
+            get_string('nctransfersteacher', 'local_badgecerts'),
             get_string('ndatelasttransfer', 'local_badgecerts')
         );
         $this->define_headers($headers);
@@ -80,7 +82,7 @@ class all_users extends table_sql {
      *     been made.
      */
     function other_cols($colname, $value) {
-        
+
     }
 
 }

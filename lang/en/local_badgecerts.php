@@ -62,25 +62,25 @@ The SVG file can contain the following (case sensitive) placeholders (in form of
 * **[[recipient-flname]]** - Adds the recipient\'s full name (first, last)
 * **[[recipient-lfname]]** - Adds the recipient\'s full name (last, first)
 * **[[recipient-lname]]** - Adds the recipient\'s last name
-* **[[qg-quizname]]** - 
-* **[[qg-sumgrades]]** - 
+* **[[qg-quizname]]** -
+* **[[qg-sumgrades]]** -
 * **[[qg-firstname]]** -
-* **[[qg-up-firstname]]** - upper case first name from quiz grading 
+* **[[qg-up-firstname]]** - upper case first name from quiz grading
 * **[[qg-lastname]]** -
 * **[[qg-up-lastname]]** -  upper case last name from quiz grading
-* **[[qg-email]]** - 
-* **[[qg-institution]]** - 
+* **[[qg-email]]** -
+* **[[qg-institution]]** -
 * **[[qg-up-institution]]** - upper case institution from quiz grading
-* **[[qg-dosezeno_tock]]** - 
-* **[[qg-kazenske_tocke]]** - 
-* **[[qg-moznih_tock]]** - 
-* **[[qg-procent]]** - 
-* **[[qg-vprasanja]]** - 
-* **[[qg-status_kviza]]** - 
-* **[[qg-datum_resitve]]** - 
-* **[[qg-datum_vpisa]]** - 
+* **[[qg-dosezeno_tock]]** -
+* **[[qg-kazenske_tocke]]** -
+* **[[qg-moznih_tock]]** -
+* **[[qg-procent]]** -
+* **[[qg-vprasanja]]** -
+* **[[qg-status_kviza]]** -
+* **[[qg-datum_resitve]]** -
+* **[[qg-datum_vpisa]]** -
 * **[[qg-datum_rojstva]]** - Rojstni datum
-* **[[qg-uvrstitev_posamezniki]]** - 
+* **[[qg-uvrstitev_posamezniki]]** -
 * **[[qg-uvrstitev_skupina]]** -
 * **[[qg-organizator]]** -
 * **[[qg-lokacija]]** -
@@ -199,8 +199,9 @@ $string['reset'] = 'Reset';
 // all_users.php
 $string['fullname'] = 'Recipient';
 $string['dateissued'] = 'Date issued';
-$string['nctransfers'] = 'N. of trasnfers';
+$string['nctransfers'] = 'Transfered by user';
 $string['ndatelasttransfer'] = 'Last time of trasnfer';
+$string['nctransfersteacher'] = 'Transfered by you';
 
 // view.php
 $string['printselected'] = 'Print certificate for selected users';
@@ -222,8 +223,6 @@ $string['qrh'] = 'Height';
 $string['qrdata'] = 'Which field to use as QR code data';
 $string['userid'] = 'User ID';
 $string['username'] = 'User username';
-
-
 
 // Roles
 $string['badgecerts:assigncustomcertificate'] = 'Assign custom certificate';
