@@ -255,12 +255,14 @@ class local_badgecerts_renderer extends plugin_renderer_base {
         echo $this->tabtree($row, $current);
     }
 
-    public function print_badgecert_filter_box(badge_certificate $cert, $url, $day = 0, $month = 0, $year = 0) {
+    public function print_badgecert_filter_box(badge_certificate $cert, $url, $day = 0, $month = 0, $year = 0, $dayend = 0, $monthend = 0, $yearend = 0) {
 
         $cTime = 0;
+        $cTimeEnd = 0;
 
         if ($year > 0) {
             $cTime = mktime(0, 0, 0, $month, $day, $year);
+            $cTimeEnd = mktime(0, 0, 0, $monthend, $dayend, $yearend);
         }
 
 
@@ -274,6 +276,10 @@ class local_badgecerts_renderer extends plugin_renderer_base {
         echo html_writer::select_time('days', 'day', $cTime);
         echo html_writer::select_time('months', 'month', $cTime);
         echo html_writer::select_time('years', 'year', $cTime);
+        echo "&nbsp;-&nbsp;";
+        echo html_writer::select_time('days', 'dayend', $cTimeEnd);
+        echo html_writer::select_time('months', 'monthend', $cTimeEnd);
+        echo html_writer::select_time('years', 'yearend', $cTimeEnd);
         echo "&nbsp;";
         echo html_writer::empty_tag('input',
                 array('class' => 'btn btn-primary', 'type' => 'submit', 'value' => get_string('filterreport', 'local_badgecerts')));

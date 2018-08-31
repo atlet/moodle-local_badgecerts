@@ -33,6 +33,10 @@ $day = optional_param('day', 0, PARAM_INT);
 $month = optional_param('month', 0, PARAM_INT);
 $year = optional_param('year', 0, PARAM_INT);
 
+$dayend = optional_param('dayend', 0, PARAM_INT);
+$monthend = optional_param('monthend', 0, PARAM_INT);
+$yearend = optional_param('yearend', 0, PARAM_INT);
+
 $sqlWhere = '';
 $sqlValues = array();
 $urlParams = array();
@@ -47,35 +51,27 @@ if (empty($CFG->enablebadges)) {
 
 $cert = new badge_certificate($certid);
 
-if (in_array($cert->certtype, array(0, 1))) {
-    if ($day > 0) {
-        $sqlValues['day'] = $day;
-        $urlParams['day'] = $day;
-        $sqlWhere .= " AND FROM_UNIXTIME(d.dateissued, '%e') = :day ";
+if ($day > 0) {
+    $urlParams['day'] = $day;
+    $urlParams['month'] = $month;
+    $urlParams['year'] = $year;
+    $urlParams['dayend'] = $dayend;
+    $urlParams['monthend'] = $monthend;
+    $urlParams['yearend'] = $yearend;
+
+    // Badge - 0
+    // Booking users - 1
+    // Booking teachers - 2
+    // Quiz grading - 3
+
+    if (in_array($cert->certtype, array(0, 1, 2))) {
+        $sqlWhere .= " AND d.dateissued BETWEEN :startdate AND :enddate";
+    } else {
+        $sqlWhere .= " AND (SELECT COUNT(*) FROM {quizgrading_results} qr WHERE qr.userid = u.id AND qr.quizgradingid = c.quizgradingid AND qr.datum_resitve BETWEEN :startdate AND :enddate) > 0 ";
     }
 
-    if ($month > 0) {
-        $sqlValues['month'] = $month;
-        $urlParams['month'] = $month;
-        $sqlWhere .= " AND FROM_UNIXTIME(d.dateissued, '%c') = :month ";
-    }
-
-    if ($year > 0) {
-        $sqlValues['year'] = $year;
-        $urlParams['year'] = $year;
-        $sqlWhere .= " AND FROM_UNIXTIME(d.dateissued, '%Y') = :year ";
-    }
-} else {
-    if ($day > 0 && $month > 0 && $year > 0) {
-        $sqlValues['day'] = $day;
-        $urlParams['day'] = $day;
-        $sqlValues['month'] = $month;
-        $urlParams['month'] = $month;
-        $sqlValues['year'] = $year;
-        $urlParams['year'] = $year;
-
-        $sqlWhere .= " AND (SELECT COUNT(*) FROM {quizgrading_results} qr WHERE qr.userid = u.id AND qr.quizgradingid = c.quizgradingid AND FROM_UNIXTIME(qr.datum_resitve, '%e') = :day AND FROM_UNIXTIME(qr.datum_resitve, '%c') = :month AND FROM_UNIXTIME(qr.datum_resitve, '%Y') = :year) > 0 ";
-    }
+    $sqlValues['startdate'] = mktime(0, 0, 0, $month, $day, $year);
+        $sqlValues['enddate'] = mktime(23, 59, 59, $monthend, $dayend, $yearend);
 }
 
 $context = $cert->get_context();
@@ -251,14 +247,13 @@ if (!$table->is_downloading()) {
     $output->print_badgecert_tabs($certid, $context, 'view');
     echo $output->print_badgecert_view($cert, $context);
 
-    $output->print_badgecert_filter_box($cert, $currenturl, $day, $month, $year);
+    $output->print_badgecert_filter_box($cert, $currenturl, $day, $month, $year, $dayend, $monthend, $yearend);
 
     echo '<form action="' . $currenturl . '" method="post" id="studentsform">' . "\n";
     echo '<div>' . "\n";
 }
 
 $table->out(25, true);
-//$table->out(1, true);
 
 if (!$table->is_downloading()) {
     if (has_capability('local/badgecerts:printcertificates', $context)) {
