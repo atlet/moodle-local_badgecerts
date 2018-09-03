@@ -124,4 +124,12 @@ $capabilities = array(
         )
     ),
 
+    // Print badge certificates only for own institution.
+    'local/badgecerts:certificatemanagerowninstitution' => array(
+        'captype'      => 'read',
+        'contextlevel' => CONTEXT_COURSE,
+        'archetypes'   => array(
+        )
+    ),
+
 );

@@ -228,6 +228,7 @@ $string['username'] = 'User username';
 $string['badgecerts:assigncustomcertificate'] = 'Assign custom certificate';
 $string['badgecerts:assignofficialcertificate'] = 'Assign official certificate';
 $string['badgecerts:certificatemanager'] = 'Certificate manager';
+$string['badgecerts:certificatemanagerowninstitution'] = 'Certificate manager - only own institution';
 $string['badgecerts:configurecertificate'] = 'Configure certificate';
 $string['badgecerts:configureelements'] = 'Configure elements';
 $string['badgecerts:createcertificate'] = 'Create certificate';

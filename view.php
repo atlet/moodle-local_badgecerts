@@ -71,7 +71,7 @@ if ($day > 0) {
     }
 
     $sqlValues['startdate'] = mktime(0, 0, 0, $month, $day, $year);
-        $sqlValues['enddate'] = mktime(23, 59, 59, $monthend, $dayend, $yearend);
+    $sqlValues['enddate'] = mktime(23, 59, 59, $monthend, $dayend, $yearend);
 }
 
 $context = $cert->get_context();
@@ -80,10 +80,17 @@ $navurl = new moodle_url('/local/badgecerts/index.php', array('type' => $cert->t
 
 $onlyTeachers = "";
 if (in_array($cert->certtype, array(1, 2)) && $cert->bookingid > 0 && !has_capability('local/badgecerts:certificatemanager', $context)) {
-    $onlyTeachers = " JOIN {booking_answers} AS bat ON bat.userid = u.id JOIN {booking_teachers} AS bta ON bta.optionid = bat.optionid ";
+    if (has_capability('local/badgecerts:certificatemanagerowninstitution', $context)) {
+        $userObj = $DB->get_record('user', array('id' => $USER->id));
+        $sqlWhere .= ' AND u.institution = :institution ';
+        $sqlValues['institution'] = $userObj->institution;
+            error_log(print_r($userObj, true));
+    } else {
+        $onlyTeachers = " JOIN {booking_answers} AS bat ON bat.userid = u.id JOIN {booking_teachers} AS bta ON bta.optionid = bat.optionid ";
 
-    $sqlWhere .= ' AND bta.userid = :teacherid ';
-    $sqlValues['teacherid'] = $USER->id;
+        $sqlWhere .= ' AND bta.userid = :teacherid ';
+        $sqlValues['teacherid'] = $USER->id;
+    }
 }
 
 if (in_array($cert->certtype, array(3)) && !has_capability('local/badgecerts:certificatemanager', $context)) {
