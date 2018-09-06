@@ -96,18 +96,16 @@ class edit_cert_details_form extends moodleform {
         $mform->addGroup($unitoptions, 'unitgr', get_string('certificateunit', 'local_badgecerts'), array(' '), false);
         $mform->setDefault('unit', 'mm');
         $mform->addRule('unitgr', null, 'required');
-        
-        $certificatetype = array();
-        $certificatetype[] =& $mform->createElement('radio', 'certtype', '', get_string('certificateforbadge', 'local_badgecerts'), 0);
-        $certificatetype[] =& $mform->createElement('static', 'b1', null, '<br/>');
-        $certificatetype[] =& $mform->createElement('radio', 'certtype', '', get_string('certificateformodbookingusers', 'local_badgecerts'), 1);
-        $certificatetype[] =& $mform->createElement('static', 'b2', null, '<br/>');
-        $certificatetype[] =& $mform->createElement('radio', 'certtype', '', get_string('certificateformodbookingteachers', 'local_badgecerts'), 2);
-        $certificatetype[] =& $mform->createElement('static', 'b3', null, '<br/>');
-        $certificatetype[] =& $mform->createElement('radio', 'certtype', '', get_string('certificateforquizgrading', 'local_badgecerts'), 3);
-        $mform->addGroup($certificatetype, 'certtypes', get_string('certificatefor', 'local_badgecerts'), array(' '), false);
+
+        $CERT_TYPES = array();
+        $CERT_TYPES[0] = get_string('certificateforbadge', 'local_badgecerts');
+        $CERT_TYPES[1] = get_string('certificateformodbookingusers', 'local_badgecerts');
+        $CERT_TYPES[4] = get_string('certificateformodbookinguserssum', 'local_badgecerts');
+        $CERT_TYPES[2] = get_string('certificateformodbookingteachers', 'local_badgecerts');
+        $CERT_TYPES[3] = get_string('certificateforquizgrading', 'local_badgecerts');
+
+        $mform->addElement('select', 'certtype', get_string('certificatefor', 'local_badgecerts'), $CERT_TYPES);
         $mform->setDefault('certtype', 0);
-        $mform->addRule('certtypes', null, 'required');
 
         $imageoptions = array('maxbytes' => 262144, 'accepted_types' => array('.svg'));
         $mform->addElement('filepicker', 'certbgimage', get_string('backgroundimage', 'local_badgecerts'), null, $imageoptions);
@@ -127,7 +125,7 @@ class edit_cert_details_form extends moodleform {
         $mform->addElement('text', 'quizgradingid', get_string('quizgradingid', 'local_badgecerts'), array('size' => '10'));
         $mform->setType('quizgradingid', PARAM_INT);
         $mform->addHelpButton('quizgradingid', 'quizgradingid', 'local_badgecerts');
-        
+
         $mform->addElement('header', 'issuerdetails', get_string('issuerdetails', 'local_badgecerts'));
 
         $mform->addElement('text', 'issuername', get_string('issuername', 'local_badgecerts'), array('size' => '70'));
@@ -146,25 +144,25 @@ class edit_cert_details_form extends moodleform {
         $mform->addHelpButton('issuercontact', 'contact', 'local_badgecerts');
 
         $mform->addElement('header', 'qrcode', get_string('qrcode', 'local_badgecerts'));
-        
+
         $mform->addElement('checkbox', 'qrshow', get_string('qrshow', 'local_badgecerts'));
         $mform->setType('qrshow', PARAM_INT);
-        
+
         $mform->addElement('text', 'qrx', get_string('qrx', 'local_badgecerts'), array('size' => '10'));
         $mform->setType('qrx', PARAM_INT);
-        
+
         $mform->addElement('text', 'qry', get_string('qry', 'local_badgecerts'), array('size' => '10'));
         $mform->setType('qry', PARAM_INT);
-        
+
         $mform->addElement('text', 'qrw', get_string('qrw', 'local_badgecerts'), array('size' => '10'));
         $mform->setType('qrw', PARAM_INT);
-        
+
         $mform->addElement('text', 'qrh', get_string('qrh', 'local_badgecerts'), array('size' => '10'));
         $mform->setType('qrh', PARAM_INT);
-        
+
         $mform->addElement('select', 'qrdata', get_string('qrdata', 'local_badgecerts'), array(0 => get_string('userid', 'local_badgecerts'), 1 => get_string('username', 'local_badgecerts')));
         $mform->setType('qrdata', PARAM_INT);
-        
+
         $mform->addElement('hidden', 'action', $action);
         $mform->setType('action', PARAM_TEXT);
 

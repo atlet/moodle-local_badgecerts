@@ -1046,7 +1046,7 @@ function bulk_generate_certificates($certid, $badges, $context) {
             }
             $cert->recipient = $user;
 
-// Get booking related data
+            // Get booking related data
             $booking = new StdClass();
             $booking->title = get_string('titlenotset', 'local_badgecerts');
             $booking->startdate = get_string('datenotdefined', 'local_badgecerts');
@@ -1054,30 +1054,33 @@ function bulk_generate_certificates($certid, $badges, $context) {
             $booking->duration = 0;
 
             if ($cert->bookingid > 0 && in_array($cert->certtype, array(1, 2))) {
-
                 $optionids = booking_getbookingoptionsid($bookingid, $badge->userid, $cert->certtype);
                 foreach ($optionids as $optionid) {
                     if (isset($optionid) && $optionid > 0) {
                         $options = booking_getbookingoptions($coursemodule->id, $optionid);
-// Set seminar title
+
+                        // Set seminar title
                         if (isset($options['text']) && !empty($options['text'])) {
                             $booking->title = $options['text'];
                         } else {
                             $booking->title = get_string('titlenotset', 'local_badgecerts');
                         }
-// Set seminar start date
+
+                        // Set seminar start date
                         if (isset($options['coursestarttime']) && !empty($options['coursestarttime'])) {
                             $booking->startdate = userdate((int) $options['coursestarttime'], get_string('strftimedate'));
                         } else {
                             $booking->startdate = get_string('datenotdefined', 'local_badgecerts');
                         }
-// Set seminar end date
+
+                        // Set seminar end date
                         if (isset($options['courseendtime']) && !empty($options['courseendtime'])) {
                             $booking->enddate = userdate((int) $options['courseendtime'], get_string('strftimedate'));
                         } else {
                             $booking->enddate = get_string('datenotdefined', 'local_badgecerts');
                         }
-// Set seminar duration
+
+                        // Set seminar duration
                         if (isset($options['duration']) && !empty($options['duration'])) {
                             $booking->duration = $options['duration'];
                         } else {
@@ -1087,6 +1090,13 @@ function bulk_generate_certificates($certid, $badges, $context) {
                         add_pdf_page($cert, $badge, $pdf, $booking, NULL, $user);
                     }
                 }
+            } else if ($cert->bookingid > 0 && $cert->certtype == 4) {
+                $result = $DB->get_record_sql("SELECT ROUND(bo.duration / 60 / 60, 0) duration, GROUP_CONCAT(bo.text SEPARATOR ', ') text FROM {booking_answers} ba LEFT JOIN {booking_options} bo ON ba.optionid = bo.id WHERE ba.userid = ? AND ba.completed = 1 AND bo.bookingid = ?", array($badge->userid, $bookingid));
+
+                $booking->duration = $result->duration;
+                $booking->title = $result->text;
+
+                add_pdf_page($cert, $badge, $pdf, $booking, NULL, $user);
             } else if ($cert->quizgradingid > 0 && $cert->certtype == 3) {
 
                 $quizreporting = $DB->get_records_sql("SELECT *

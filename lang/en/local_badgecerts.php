@@ -212,6 +212,7 @@ $string['nousers'] = 'Can\'t print certificates, because no users found!';
 $string['certificatefor'] = 'Certificate for';
 $string['certificateforbadge'] = 'Badge';
 $string['certificateformodbookingusers'] = 'Booking users';
+$string['certificateformodbookinguserssum'] = 'Booking users - sum of options';
 $string['certificateformodbookingteachers'] = 'Booking teachers';
 $string['certificateforquizgrading'] = 'Quiz grading';
 $string['qrcode'] = 'QR code';
