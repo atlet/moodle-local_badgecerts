@@ -1091,7 +1091,7 @@ function bulk_generate_certificates($certid, $badges, $context) {
                     }
                 }
             } else if ($cert->bookingid > 0 && $cert->certtype == 4) {
-                $result = $DB->get_record_sql("SELECT ROUND(bo.duration / 60 / 60, 0) duration, GROUP_CONCAT(bo.text SEPARATOR ', ') text FROM {booking_answers} ba LEFT JOIN {booking_options} bo ON ba.optionid = bo.id WHERE ba.userid = ? AND ba.completed = 1 AND bo.bookingid = ?", array($badge->userid, $bookingid));
+                $result = $DB->get_record_sql("SELECT SUM(ROUND(bo.duration / 60 / 60, 0)) duration, GROUP_CONCAT(bo.text SEPARATOR ', ') text FROM {booking_answers} ba LEFT JOIN {booking_options} bo ON ba.optionid = bo.id WHERE ba.userid = ? AND ba.completed = 1 AND bo.bookingid = ?", array($badge->userid, $bookingid));
 
                 $booking->duration = $result->duration;
                 $booking->title = $result->text;
