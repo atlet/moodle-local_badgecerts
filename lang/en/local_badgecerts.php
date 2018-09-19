@@ -45,6 +45,7 @@ The SVG file can contain the following (case sensitive) placeholders (in form of
 * **[[badge-hash]]** - Adds the badge hash value
 * **[[badge-date-issued]]** - Adds the date when badge was issued
 * **[[booking-title]]** - Adds the seminar title
+* **[[booking-title-n]]** - Add title of option - n is number... it starts wit 1 end finish with 10
 * **[[booking-startdate]]** - Adds the seminar start date
 * **[[booking-enddate]]** - Adds the seminar end date
 * **[[booking-duration]]** - Adds the seminar duration
