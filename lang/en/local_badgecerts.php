@@ -242,3 +242,10 @@ $string['badgecerts:configuredetails'] = 'Configure details';
 // Koelsarski izpit
 $string['jeopravil'] =  "DA";
 $string['niopravil'] =  "NI";
+
+// edit.php
+$string['datelimit'] = 'Limit conditions';
+$string['whenisthisfiltervalid'] = 'Only valid for Booking module!';
+$string['usestartandenddate'] = 'Use start and end time';
+$string['starttime'] = 'Start time';
+$string['endtime'] = 'End time';

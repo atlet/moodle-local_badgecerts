@@ -63,8 +63,9 @@ if ($day > 0) {
     // Booking users - 1
     // Booking teachers - 2
     // Quiz grading - 3
+    // Booking users - SUM - 4
 
-    if (in_array($cert->certtype, array(0, 1, 2))) {
+    if (in_array($cert->certtype, array(0, 1, 2, 4))) {
         $sqlWhere .= " AND d.dateissued BETWEEN :startdate AND :enddate";
     } else {
         $sqlWhere .= " AND (SELECT COUNT(*) FROM {quizgrading_results} qr WHERE qr.userid = u.id AND qr.quizgradingid = c.quizgradingid AND qr.datum_resitve BETWEEN :startdate AND :enddate) > 0 ";
@@ -79,12 +80,12 @@ require_capability('local/badgecerts:viewcertificates', $context);
 $navurl = new moodle_url('/local/badgecerts/index.php', array('type' => $cert->type));
 
 $onlyTeachers = "";
-if (in_array($cert->certtype, array(1, 2)) && $cert->bookingid > 0 && !has_capability('local/badgecerts:certificatemanager', $context)) {
+if (in_array($cert->certtype, array(1, 2, 4)) && $cert->bookingid > 0 && !has_capability('local/badgecerts:certificatemanager', $context)) {
     if (has_capability('local/badgecerts:certificatemanagerowninstitution', $context)) {
         $userObj = $DB->get_record('user', array('id' => $USER->id));
         $sqlWhere .= ' AND u.institution = :institution ';
         $sqlValues['institution'] = $userObj->institution;
-            error_log(print_r($userObj, true));
+        error_log(print_r($userObj, true));
     } else {
         $onlyTeachers = " JOIN {booking_answers} AS bat ON bat.userid = u.id JOIN {booking_teachers} AS bta ON bta.optionid = bat.optionid ";
 
@@ -105,11 +106,26 @@ switch ($cert->certtype) {
         break;
 
     case 1:
+    case 4:
         //mod_booking users
         if ($cert->bookingid > 0) {
-            $sqlWhere .= " AND (SELECT
-            IF(c.bookingid > 0,
-                    (SELECT
+            if ($cert->startdate != 0) {
+                $sqlWhere .= " AND (SELECT
+                            IF(COUNT(*) > 0, 1, 0)
+                        FROM
+                            {booking_answers} AS ans
+                        LEFT JOIN
+                            {booking_options} bo ON bo.id = ans.optionid
+                        WHERE
+                            ans.bookingid = (SELECT
+                                    instance
+                                FROM
+                                    {course_modules} AS cm
+                                WHERE
+                                    cm.id = c.bookingid)
+                                AND ans.userid = u.id AND ans.completed = 1 AND bo.coursestarttime >= c.startdate AND bo.courseendtime <= c.enddate) = 1 ";
+            } else {
+                $sqlWhere .= " AND (SELECT
                             IF(COUNT(*) > 0, 1, 0)
                         FROM
                             {booking_answers} AS ans
@@ -120,8 +136,8 @@ switch ($cert->certtype) {
                                     {course_modules} AS cm
                                 WHERE
                                     cm.id = c.bookingid)
-                                AND ans.userid = u.id AND ans.completed = 1),
-                    1)) = 1 ";
+                                AND ans.userid = u.id AND ans.completed = 1) = 1 ";
+            }
         }
         break;
 
@@ -157,6 +173,10 @@ switch ($cert->certtype) {
 
     default:
         break;
+}
+
+if (in_array($cert->certtype, array(1, 2, 4)) && $cert->startdate != 0) {
+    $sqlWhere .= " ";
 }
 
 if ($cert->type == CERT_TYPE_COURSE) {

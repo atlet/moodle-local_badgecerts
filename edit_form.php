@@ -143,6 +143,24 @@ class edit_cert_details_form extends moodleform {
         $mform->setType('issuercontact', PARAM_RAW);
         $mform->addHelpButton('issuercontact', 'contact', 'local_badgecerts');
 
+        $mform->addElement('header', 'datelimit', get_string('datelimit', 'local_badgecerts'));
+
+        $mform->addElement('static', 'whenisthisfiltervalid', '', get_string('whenisthisfiltervalid', 'local_badgecerts'));
+
+        $mform->addElement('checkbox', 'restricttocertaindate',
+                get_string('usestartandenddate', 'local_badgecerts'));
+        $mform->disabledIf('restricttocertaindate', 'certtype', 'in', array(0, 2, 3));
+
+        $mform->addElement('date_time_selector', 'startdate',
+                get_string("starttime", "local_badgecerts"));
+        $mform->setType('startdate', PARAM_INT);
+        $mform->disabledIf('startdate', 'restricttocertaindate', 'notchecked');
+
+        $mform->addElement('date_time_selector', 'enddate',
+                get_string("endtime", "local_badgecerts"));
+        $mform->setType('enddate', PARAM_INT);
+        $mform->disabledIf('enddate', 'restricttocertaindate', 'notchecked');
+
         $mform->addElement('header', 'qrcode', get_string('qrcode', 'local_badgecerts'));
 
         $mform->addElement('checkbox', 'qrshow', get_string('qrshow', 'local_badgecerts'));
@@ -193,6 +211,10 @@ class edit_cert_details_form extends moodleform {
         parent::set_data($cert);
 
         $default_values['currentimage'] = $cert->certbgimage;
+        if ($cert->startdate != 0) {
+            $default_values['restricttocertaindate'] = 'checked';
+        }
+
         parent::set_data($default_values);
     }
 

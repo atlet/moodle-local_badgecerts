@@ -100,6 +100,8 @@ class badge_certificate {
     public $qrw;
     public $qrh;
     public $qrdata;
+    public $startdate;
+    public $enddate;
 
     /** @var array Badge certificate elements */
     public $elements = array();
@@ -590,8 +592,23 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
                                 WHERE
                                     cm.id = bc.bookingid)
                                 AND ans.userid = u.id AND ans.completed = 1),
-                    0)
-         = 1 OR (SELECT
+                    0) = 1
+            OR (SELECT
+            IF(bc.bookingid > 0 AND bc.certtype = 4,
+                    (SELECT
+                            IF(COUNT(*) > 0, 1, 0)
+                        FROM
+                            {booking_answers} AS ans
+                        WHERE
+                            bookingid = (SELECT
+                                    instance
+                                FROM
+                                    {course_modules} AS cm
+                                WHERE
+                                    cm.id = bc.bookingid)
+                                AND ans.userid = u.id AND ans.completed = 1),
+                    0)) = 1
+            OR (SELECT
             IF(bc.bookingid > 0 AND bc.certtype = 2,
                     (SELECT
                             IF(COUNT(*) > 0, 1, 0)
@@ -663,41 +680,54 @@ function booking_getbookingoptionid($bookingid = NULL, $userid = NULL) {
 /**
  * Get bookingoptionid - from booking module
  */
-function booking_getbookingoptionsid($bookingid = NULL, $userid = NULL, $certtype = NULL) {
+function booking_getbookingoptionsid($bookingid = NULL, $userid = NULL, $cert = NULL) {
     global $DB;
 
     if (is_null($userid) || is_null($bookingid)) {
         return FALSE;
     }
 
-    switch ($certtype) {
-        case 0:
-            $ba = FALSE;
-            break;
+    $sql = "SELECT ba.optionid FROM ";
 
+    switch ($cert->certtype) {
         case 1:
-            $ba = $DB->get_records('booking_answers', array('completed' => '1', 'userid' => $userid, 'bookingid' => $bookingid));
+            $sql .= "{booking_answers} ba ";
             break;
 
         case 2:
-            $ba = $DB->get_records('booking_teachers', array('completed' => '1', 'userid' => $userid, 'bookingid' => $bookingid));
+            $sql .= "{booking_teachers} ba ";
             break;
 
         default:
+            return (int) 0;
             break;
     }
 
-    if ($ba === FALSE) {
-        return (int) 0;
-    } else {
-        $r = array();
+    $r = array();
 
-        foreach ($ba as $value) {
-            $r[] = (int) $value->optionid;
-        }
-
-        return array_unique($r);
+    if ($cert->startdate != 0) {
+        $sql .= "LEFT JOIN {booking_options} bo ON bo.id = ba.optionid ";
     }
+
+    $sql .= "WHERE ba.completed = 1 AND ba.userid = ? AND ba.bookingid = ? ";
+
+    $conditions = array();
+    $conditions[] = $userid;
+    $conditions[] = $bookingid;
+
+    if ($cert->startdate != 0) {
+        $sql .= "AND bo.coursestarttime >= ? AND bo.courseendtime <= ? ";
+        $conditions[] = $cert->startdate;
+        $conditions[] = $cert->enddate;
+    }
+
+    $ba = $DB->get_records_sql($sql, $conditions);
+
+    foreach ($ba as $value) {
+        $r[] = (int) $value->optionid;
+    }
+
+    return array_unique($r);
 }
 
 /**
@@ -982,31 +1012,29 @@ function get_placeholders($cert, $booking, $quizreporting = NULL) {
         mb_strtoupper($quizreporting->lokacija, 'UTF-8')
     );
 
-    if (strpos($booking->title, '||') !== false) {
-        $i = 1;
+    $i = 1;
 
-        $r = explode("||", $booking->title);
+    $r = explode("||", $booking->title);
 
-        $pl = array();
-        $val = array();
+    $pl = array();
+    $val = array();
 
-        foreach ($r as $key => $value) {
-            $pl[] = "[[booking-title-{$i}]]";
-            $val[] = $value;
+    foreach ($r as $key => $value) {
+        $pl[] = "[[booking-title-{$i}]]";
+        $val[] = $value;
 
-            $i++;
-        }
-
-        while ($i <= 10) {
-            $pl[] = "[[booking-title-{$i}]]";
-            $val[] = "";
-
-            $i++;
-        }
-
-        $placeholders = array_merge($placeholders, $pl);
-        $values = array_merge($values, $val);
+        $i++;
     }
+
+    while ($i <= 10) {
+        $pl[] = "[[booking-title-{$i}]]";
+        $val[] = "";
+
+        $i++;
+    }
+
+    $placeholders = array_merge($placeholders, $pl);
+    $values = array_merge($values, $val);
 
     return array('placeholders' => $placeholders, 'values' => $values);
 }
@@ -1080,7 +1108,7 @@ function bulk_generate_certificates($certid, $badges, $context) {
             $booking->duration = 0;
 
             if ($cert->bookingid > 0 && in_array($cert->certtype, array(1, 2))) {
-                $optionids = booking_getbookingoptionsid($bookingid, $badge->userid, $cert->certtype);
+                $optionids = booking_getbookingoptionsid($bookingid, $badge->userid, $cert);
                 foreach ($optionids as $optionid) {
                     if (isset($optionid) && $optionid > 0) {
                         $options = booking_getbookingoptions($coursemodule->id, $optionid);
@@ -1117,7 +1145,17 @@ function bulk_generate_certificates($certid, $badges, $context) {
                     }
                 }
             } else if ($cert->bookingid > 0 && $cert->certtype == 4) {
-                $result = $DB->get_record_sql("SELECT SUM(ROUND(bo.duration / 60 / 60, 0)) duration, GROUP_CONCAT(bo.text SEPARATOR '||') text FROM {booking_answers} ba LEFT JOIN {booking_options} bo ON ba.optionid = bo.id WHERE ba.userid = ? AND ba.completed = 1 AND bo.bookingid = ?", array($badge->userid, $bookingid));
+                $conditions = array();
+                $conditions[] = $badge->userid;
+                $conditions[] = $bookingid;
+
+                if ($cert->startdate != 0) {
+                    $timeLimit = "AND bo.coursestarttime >= ? AND bo.courseendtime <= ?";
+                    $conditions[] = $cert->startdate;
+                    $conditions[] = $cert->enddate;
+                }
+
+                $result = $DB->get_record_sql("SELECT SUM(ROUND(bo.duration / 60 / 60, 0)) duration, GROUP_CONCAT(bo.text SEPARATOR '||') text FROM {booking_answers} ba LEFT JOIN {booking_options} bo ON ba.optionid = bo.id WHERE ba.userid = ? AND ba.completed = 1 AND bo.bookingid = ? {$timeLimit}", $conditions);
 
                 $booking->duration = $result->duration;
                 $booking->title = $result->text;

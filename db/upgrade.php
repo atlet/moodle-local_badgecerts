@@ -172,8 +172,7 @@ function xmldb_local_badgecerts_upgrade($oldversion) {
 
         // Define field transfereruserid to be added to badge_certificate_trasnfers.
         $table = new xmldb_table('badge_certificate_trasnfers');
-        $field = new xmldb_field('transfereruserid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null,
-                'created');
+        $field = new xmldb_field('transfereruserid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, 'created');
 
         // Conditionally launch add field transfereruserid.
         if (!$dbman->field_exists($table, $field)) {
@@ -265,28 +264,28 @@ function xmldb_local_badgecerts_upgrade($oldversion) {
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
-        
+
         $field = new xmldb_field('qry', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'qrx');
 
         // Conditionally launch add field qry.
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
-        
+
         $field = new xmldb_field('qrw', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'qry');
 
         // Conditionally launch add field qrw.
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
-        
+
         $field = new xmldb_field('qrh', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'qrw');
 
         // Conditionally launch add field qrh.
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
-        
+
         $field = new xmldb_field('qrdata', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, '0', 'qrh');
 
         // Conditionally launch add field qrdata.
@@ -297,6 +296,29 @@ function xmldb_local_badgecerts_upgrade($oldversion) {
         // Badgecerts savepoint reached.
         upgrade_plugin_savepoint(true, 2015042800, 'local', 'badgecerts');
     }
+
+    if ($oldversion < 2018091900) {
+
+        // Define field startdate to be added to badge_certificate.
+        $table = new xmldb_table('badge_certificate');
+        $field = new xmldb_field('startdate', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'qrdata');
+
+        // Conditionally launch add field startdate.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $field = new xmldb_field('enddate', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'startdate');
+
+        // Conditionally launch add field enddate.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Badgecerts savepoint reached.
+        upgrade_plugin_savepoint(true, 2018091900, 'local', 'badgecerts');
+    }
+
 
 
     return true;

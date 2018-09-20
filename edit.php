@@ -88,7 +88,7 @@ if ($form->is_cancelled()) {
     $cert->unit = $data->unit;
     $cert->bookingid = $data->bookingid;
     $cert->quizgradingid = $data->quizgradingid;
-    $cert->certtype = $data->certtype;    
+    $cert->certtype = $data->certtype;
     $cert->qrdata = $data->qrdata;
     $cert->qrh = $data->qrh;
     $cert->qrw = $data->qrw;
@@ -96,14 +96,22 @@ if ($form->is_cancelled()) {
     $cert->qry = $data->qry;
     $cert->qrshow = isset($data->qrshow) ? 1 : 0;
 
+    if (isset($data->restricttocertaindate)) {
+        $cert->startdate = $data->startdate;
+        $cert->enddate = $data->enddate;
+    } else {
+        $cert->startdate = 0;
+        $cert->enddate = 0;
+    }
+
     $dirname = '/filedir/cert';
-    if (!$getfilename) {        
+    if (!$getfilename) {
         $cert->certbgimage = $dirname . '/' . basename($cert->certbgimage);
     }
-    
-    if ($cert->save()) {        
+
+    if ($cert->save()) {
         if ($getfilename) {
-            // Create folder if it doesn't exist.            
+            // Create folder if it doesn't exist.
             if (!file_exists($CFG->dataroot.$dirname) and !is_dir($CFG->dataroot.$dirname)) {
                 mkdir($CFG->dataroot.$dirname);
             }
