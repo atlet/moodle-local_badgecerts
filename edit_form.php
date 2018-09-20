@@ -149,7 +149,7 @@ class edit_cert_details_form extends moodleform {
 
         $mform->addElement('checkbox', 'restricttocertaindate',
                 get_string('usestartandenddate', 'local_badgecerts'));
-        $mform->disabledIf('restricttocertaindate', 'certtype', 'in', array(0, 2, 3));
+        $mform->disabledIf('restricttocertaindate', 'certtype', 'in', array(0, 3));
 
         $mform->addElement('date_time_selector', 'startdate',
                 get_string("starttime", "local_badgecerts"));

@@ -144,7 +144,23 @@ switch ($cert->certtype) {
     case 2:
         //mod_booking teachers
         if ($cert->bookingid > 0) {
-            $sqlWhere .= " AND (SELECT
+            if ($cert->startdate != 0) {
+                $sqlWhere .= " AND (SELECT
+                            IF(COUNT(*) > 0, 1, 0)
+                        FROM
+                            {booking_teachers} AS tch
+                        LEFT JOIN
+                            {booking_options} bo ON bo.id = tch.optionid
+                        WHERE
+                            tch.bookingid = (SELECT
+                                    instance
+                                FROM
+                                    {course_modules} AS cm
+                                WHERE
+                                    cm.id = c.bookingid)
+                                AND tch.userid = u.id AND tch.completed = 1 AND bo.coursestarttime >= c.startdate AND bo.courseendtime <= c.enddate) = 1 ";
+            } else {
+                $sqlWhere .= " AND (SELECT
             IF(c.bookingid > 0,
                     (SELECT
                             IF(COUNT(*) > 0, 1, 0)
@@ -159,6 +175,7 @@ switch ($cert->certtype) {
                                     cm.id = c.bookingid)
                                 AND tch.userid = u.id AND tch.completed = 1),
                     1)) = 1 ";
+            }
         }
         break;
 

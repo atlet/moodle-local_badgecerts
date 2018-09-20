@@ -64,15 +64,15 @@ if ($download && $hash) {
     $ibadgecert = new issued_badgecert($hash);
     // Generate badge certificate if a badge have assigned one.
     if (!is_null($ibadgecert->certid)) {
-        
-        $badges = array(); 
+
+        $badges = array();
         $user = new stdClass();
 
         $user->userid = $USER->id;
         $user->hash = $hash;
 
         $badges[$USER->id] = $user;
-        
+
         $ibadgecert->generate_badge_certificate($context, $badges);
     }
 }
@@ -85,12 +85,11 @@ $PAGE->set_heading($title);
 $PAGE->set_pagelayout('mydashboard');
 
 $output = $PAGE->get_renderer('local_badgecerts');
-$certs = badges_get_user_certificates($USER->id);
 
 echo $OUTPUT->header();
 
-$totalcount = count($certs);
 $records = badges_get_user_certificates($USER->id, null, $page, CERT_PERPAGE, $search);
+$totalcount = count($records);
 
 $usercerts             = new cert_user_collection($records, $USER->id);
 $usercerts->sort       = 'dateissued';

@@ -583,15 +583,17 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
                     (SELECT
                             IF(COUNT(*) > 0, 1, 0)
                         FROM
-                            {booking_answers} AS ans
+                            {booking_answers} ans
+                        LEFT JOIN
+                            {booking_options} bo ON ans.optionid = bo.id
                         WHERE
-                            bookingid = (SELECT
+                            ans.bookingid = (SELECT
                                     instance
                                 FROM
                                     {course_modules} AS cm
                                 WHERE
                                     cm.id = bc.bookingid)
-                                AND ans.userid = u.id AND ans.completed = 1),
+                                AND ans.userid = u.id AND ans.completed = 1 AND CASE WHEN bc.startdate != 0 THEN bo.coursestarttime >= bc.startdate AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END),
                     0) = 1
             OR (SELECT
             IF(bc.bookingid > 0 AND bc.certtype = 4,
@@ -599,29 +601,33 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
                             IF(COUNT(*) > 0, 1, 0)
                         FROM
                             {booking_answers} AS ans
+                        LEFT JOIN
+                            {booking_options} bo ON ans.optionid = bo.id
                         WHERE
-                            bookingid = (SELECT
+                            ans.bookingid = (SELECT
                                     instance
                                 FROM
                                     {course_modules} AS cm
                                 WHERE
                                     cm.id = bc.bookingid)
-                                AND ans.userid = u.id AND ans.completed = 1),
+                                AND ans.userid = u.id AND ans.completed = 1 AND CASE WHEN bc.startdate != 0 THEN bo.coursestarttime >= bc.startdate AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END),
                     0)) = 1
             OR (SELECT
             IF(bc.bookingid > 0 AND bc.certtype = 2,
                     (SELECT
                             IF(COUNT(*) > 0, 1, 0)
                         FROM
-                            {booking_teachers} AS tch
+                            {booking_teachers} tch
+                        LEFT JOIN
+                            {booking_options} bo ON tch.optionid = bo.id
                         WHERE
-                            bookingid = (SELECT
+                            tch.bookingid = (SELECT
                                     instance
                                 FROM
                                     {course_modules} AS cm
                                 WHERE
                                     cm.id = bc.bookingid)
-                                AND tch.userid = u.id AND tch.completed = 1),
+                                AND tch.userid = u.id AND tch.completed = 1 AND CASE WHEN bc.startdate != 0 THEN bo.coursestarttime >= bc.startdate AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END),
                     0)
          = 1)))';
 
@@ -1148,6 +1154,8 @@ function bulk_generate_certificates($certid, $badges, $context) {
                 $conditions = array();
                 $conditions[] = $badge->userid;
                 $conditions[] = $bookingid;
+
+                $timeLimit = '';
 
                 if ($cert->startdate != 0) {
                     $timeLimit = "AND bo.coursestarttime >= ? AND bo.courseendtime <= ?";
