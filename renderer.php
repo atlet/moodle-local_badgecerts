@@ -36,12 +36,11 @@ class local_badgecerts_renderer extends plugin_renderer_base {
         global $USER, $CFG;
         foreach ($badges as $badge) {
             $context = ($badge->type == CERT_TYPE_SITE) ? context_system::instance() : context_course::instance($badge->courseid);
-            $bname = $badge->name;
 
-            $imageurl = moodle_url::make_pluginfile_url($context->id, 'badges', 'badgeimage', $badge->id, '/', 'f1',
+            $imageurl = moodle_url::make_pluginfile_url($context->id, 'badges', 'badgeimage', $badge->badgeid, '/', 'f1',
                             false);
 
-            $name = html_writer::tag('span', $bname, array('class' => 'badge-name'));
+            $name = html_writer::tag('span', $badge->name, array('class' => 'badge-name'));
 
             $image = html_writer::empty_tag('img', array('src' => $imageurl, 'class' => 'badge-image'));
             if (!empty($badge->dateexpire) && $badge->dateexpire < time()) {
@@ -71,7 +70,7 @@ class local_badgecerts_renderer extends plugin_renderer_base {
             }
 
             $actions = html_writer::tag('div', $push . $badgeview . $status, array('class' => 'badge-actions'));
-            $items[] = html_writer::link($url, $image . $actions . $name, array('title' => $bname));
+            $items[] = html_writer::link($url, $image . $actions . $name, array('title' => $badge->name));
         }
 
         return html_writer::alist($items, array('class' => 'badges'));
@@ -236,13 +235,6 @@ class local_badgecerts_renderer extends plugin_renderer_base {
                     'moodle/role:manage'), $context))) {
             $row[] = new tabobject('details', new moodle_url('/local/badgecerts/edit.php', array('id' => $certid)),
                     get_string('bdetails', 'local_badgecerts')
-            );
-        }
-
-        if ((has_capability('local/badgecerts:configurecertificate', $context) && $cert->official == '0') || (has_any_capability(array(
-                    'moodle/role:manage'), $context))) {
-            $row[] = new tabobject('assign', new moodle_url('/local/badgecerts/assign.php', array('id' => $certid)),
-                    get_string('bassign', 'local_badgecerts')
             );
         }
 
@@ -501,93 +493,6 @@ class cert_user_collection extends cert_collection implements renderable {
     public function __construct($certs, $userid) {
         global $CFG;
         parent::__construct($certs);
-    }
-
-}
-
-/**
- * An issued badge certificates for mycerts.php page
- */
-class issued_badgecert implements renderable {
-
-    /** @var issued badge ID */
-    public $id;
-
-    /** @var issued badge */
-    public $issued;
-
-    /** @var badge recipient */
-    public $recipient;
-
-    /** @var badge class */
-    public $badgeclass;
-
-    /** @var badge visibility to others */
-    public $visible = 0;
-
-    /** @var badge class */
-    public $badgeid = 0;
-
-    /** @var badge certificate class */
-    public $certid = 0;
-
-    /**
-     * Initializes the badge to display
-     *
-     * @param string $hash Issued badge hash
-     */
-    public function __construct($hash) {
-        global $DB;
-
-        $assertion = new core_badges_assertion($hash);
-        $this->issued = $assertion->get_badge_assertion();
-        $this->badgeclass = $assertion->get_badge_class();
-
-        $rec = $DB->get_record_sql('SELECT id, userid, visible, badgeid
-                FROM {badge_issued}
-                WHERE ' . $DB->sql_compare_text('uniquehash', 40) . ' = ' . $DB->sql_compare_text(':hash', 40),
-                array('hash' => $hash), IGNORE_MISSING);
-        if ($rec) {
-// Get a recipient from database.
-            $namefields = get_all_user_name_fields(true, 'u');
-            $user = $DB->get_record_sql("SELECT u.id, $namefields, u.deleted,
-                                                u.email AS accountemail, b.email AS backpackemail
-                        FROM {user} u LEFT JOIN {badge_backpack} b ON u.id = b.userid
-                        WHERE u.id = :userid", array('userid' => $rec->userid));
-// Add custom profile field 'Datumrojstva' value
-            $fieldid = $DB->get_field('user_info_field', 'id', array('shortname' => 'Datumrojstva'));
-            if ($fieldid && $birthdate = $DB->get_field('user_info_data', 'data',
-                    array('userid' => $rec->userid, 'fieldid' => $fieldid))) {
-                $user->birthdate = $birthdate;
-            } else {
-                $user->birthdate = null;
-            }
-// Add custom profile field 'VIZ' value
-            $fieldid = $DB->get_field('user_info_field', 'id', array('shortname' => 'VIZ'));
-            if ($fieldid && $institution = $DB->get_field('user_info_data', 'data',
-                    array('userid' => $rec->userid, 'fieldid' => $fieldid))) {
-                $user->institution = $institution;
-            } else {
-                $user->institution = null;
-            }
-
-            $this->recipient = $user;
-            $this->id = $rec->id;
-            $this->visible = $rec->visible;
-            $this->badgeid = $rec->badgeid;
-// Get badge certificate for this badge from database.
-            $certid = $DB->get_field('badge', 'certid', array('id' => $rec->badgeid));
-            $this->certid = $certid;
-        }
-    }
-
-    /**
-     * Generates badge certificate in PDF format.
-     */
-    public function generate_badge_certificate($context = NULL, $badges = array()) {
-        global $CFG, $DB, $USER;
-
-        bulk_generate_certificates($this->certid, $badges, $context);
     }
 
 }

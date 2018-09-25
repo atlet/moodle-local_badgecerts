@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="local/badgecerts/db" VERSION="20180919" COMMENT="XMLDB file for Moodle local/badgecerts"
+<XMLDB PATH="local/badgecerts/db" VERSION="20180924" COMMENT="XMLDB file for Moodle local/badgecerts"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -35,6 +35,7 @@
         <FIELD NAME="qrdata" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="startdate" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="enddate" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="certid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -46,6 +47,7 @@
         <INDEX NAME="type" UNIQUE="false" FIELDS="type"/>
         <INDEX NAME="bookingid" UNIQUE="false" FIELDS="bookingid"/>
         <INDEX NAME="quizgradingid" UNIQUE="false" FIELDS="quizgradingid"/>
+        <INDEX NAME="certid" UNIQUE="false" FIELDS="certid"/>
       </INDEXES>
     </TABLE>
     <TABLE NAME="badge_certificate_trasnfers" COMMENT="Log of certificate downloads/prints.">

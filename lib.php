@@ -102,6 +102,7 @@ class badge_certificate {
     public $qrdata;
     public $startdate;
     public $enddate;
+    public $certid;
 
     /** @var array Badge certificate elements */
     public $elements = array();
@@ -229,15 +230,6 @@ class badge_certificate {
 // Delete badge certificate images.
         $certcontext = $this->get_context();
         $fs->delete_area_files($certcontext->id, 'certificates', 'certbgimage', $this->id);
-
-// Detach badge certificate from badge(s).
-        $ids = $DB->get_fieldset_sql("SELECT id FROM {badge} WHERE certid = :certid", array('certid' => $this->id));
-        foreach ($ids as $id) {
-            $record = new StdClass();
-            $record->id = $id;
-            $record->certid = null;
-            $DB->update_record('badge', $record);
-        }
 
 // Finally, remove badge certificate itself.
         $DB->delete_records('badge_certificate', array('id' => $this->id));
@@ -423,7 +415,7 @@ function badges_get_certificates($type, $courseid = 0, $sort = '', $dir = '', $p
 
 /**
  * Get all badge certificates for courseid.
- *
+ * TO-DO: Odstrani, ker se ne potrebuje več!
  * @param int Course ID for course badges
  * @return array $badge Array of records matching criteria
  */
@@ -451,37 +443,6 @@ function badges_get_certificates_for_courseid($courseid = 0) {
 }
 
 /**
- * Returns array of available badges that badge certificates
- * can be assigned to.
- *
- * @param int $courseid course ID
- * @return array Array containing all the badges
- */
-function get_available_badge_options($courseid) {
-    global $DB;
-    $records = array();
-    $params = array();
-    $where = ' b.courseid = :courseid AND (b.status = 1 OR b.status = 3) AND b.certid IS NULL ';
-    $params['courseid'] = $courseid;
-
-    $userfields = array('b.id, b.name');
-    $usersql = '';
-    $fields = implode(', ', $userfields);
-
-    $sorting = 'ORDER BY b.name ASC ';
-
-    $sql = "SELECT $fields FROM {badge} b $usersql WHERE $where $sorting";
-    $records = $DB->get_records_sql($sql, $params);
-
-    $options = array();
-    foreach ($records as $record) {
-        $options[$record->id] = $record->name;
-    }
-
-    return $options;
-}
-
-/**
  * Returns array of assigned badges that badge certificates
  * are already assigned to.
  *
@@ -490,9 +451,10 @@ function get_available_badge_options($courseid) {
  */
 function get_assigned_badge_options($courseid, $certid) {
     global $DB;
+
     $records = array();
     $params = array();
-    $where = ' b.courseid = :courseid AND (b.status = 1 OR b.status = 3) AND b.certid = :certid ';
+    $where = ' b.courseid = :courseid AND (b.status = 1 OR b.status = 3) AND b.id = :certid ';
     $params['courseid'] = $courseid;
     $params['certid'] = $certid;
 
@@ -546,29 +508,23 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
     global $DB;
     $certs = array();
 
-    $params[] = $userid;
     $sql = 'SELECT
+                bc.id,
+                bc.name,
+                b.courseid,
+                b.id badgeid,
                 bi.uniquehash,
-                bi.dateissued,
-                bi.dateexpire,
-                bi.id as issuedid,
-                bi.visible,
-                u.email,
-                u.id as userid,
-                b.*,
-                bc.status as certstatus
-            FROM
-                {badge} b,
-                {badge_issued} bi,
-                {user} u,
-                {badge_certificate} bc
-            WHERE b.id = bi.badgeid
-                AND u.id = bi.userid
-                AND bi.userid = ?
-                AND b.certid IS NOT NULL
-                AND bc.id = b.certid
-                AND bc.status >= 1
-            AND (
+                b.type
+            FROM {badge_certificate} bc
+            LEFT JOIN {badge_issued} bi
+                ON bi.badgeid = bc.certid
+            LEFT JOIN {user} u
+                ON u.id = bi.userid
+            LEFT JOIN {badge} b
+                ON b.id = bi.badgeid
+            WHERE bi.userid = ?
+                AND bc.certid IS NOT NULL
+                AND bc.status >= 1 AND (
             (SELECT IF(bc.certtype = 0, 1, 0)) = 1
             OR (SELECT IF(bc.quizgradingid > 0 AND bc.certtype = 3,
                         (SELECT
@@ -630,6 +586,7 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
                                 AND tch.userid = u.id AND tch.completed = 1 AND CASE WHEN bc.startdate != 0 THEN bo.coursestarttime >= bc.startdate AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END),
                     0)
          = 1)))';
+    $params[] = $userid;
 
     if (!empty($search)) {
         $sql .= ' AND (' . $DB->sql_like('b.name', '?', false) . ') ';
@@ -640,9 +597,12 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
     }
 
     if ($courseid != 0) {
-        $sql .= ' AND (b.courseid = ' . $courseid . ') ';
+        $sql .= ' AND (b.courseid = ?) ';
+        $params[] = $courseid;
     }
+
     $sql .= ' ORDER BY bi.dateissued DESC';
+
     $certs = $DB->get_records_sql($sql, $params, $page * $perpage, $perpage);
 
     return $certs;
@@ -766,6 +726,7 @@ function get_all_certificates($courseid = NULL) {
         return FALSE;
     }
 
+    // TO-DO: Popravi, ker sem spremenil...
     $allCertificates = badges_get_certificates_for_courseid($courseid);
 
     $bulkCerts = array();

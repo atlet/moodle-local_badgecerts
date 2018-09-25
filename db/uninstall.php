@@ -26,26 +26,5 @@
 defined('MOODLE_INTERNAL') || die();
 
 function xmldb_local_badgecerts_uninstall() {
-    global $DB;
-
-    $dbman = $DB->get_manager(); // loads ddl manager and xmldb classes
-
-    // Define field variant to be added to badge.
-    $table = new xmldb_table('badge');
-    $field = new xmldb_field('certid');
-
-    // Drop field (the function checks if it exists)
-    $dbman->drop_field($table, $field);
-
-    // Delete all the capabilities
-    $capabilities = array(
-        'moodle/badges:viewcertificates',
-        'moodle/badges:createcertificate',
-        'moodle/badges:deletecertificate',
-        'moodle/badges:configurecertificate',
-        'moodle/badges:configureelements',
-        'moodle/badges:assignofficialcertificate',
-        'moodle/badges:assigncustomcertificate'
-    );
-    $DB->delete_records_list('capabilities', 'name', $capabilities);
+    
 }

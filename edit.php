@@ -70,7 +70,7 @@ $statusmsg = '';
 $errormsg  = '';
 
 $form_class = 'edit_cert_details_form';
-$form = new $form_class($currenturl, array('badgecertificate' => $cert, 'action' => 'details'));
+$form = new $form_class($currenturl, array('badgecertificate' => $cert, 'action' => 'details', 'courseid' => $cert->courseid));
 
 if ($form->is_cancelled()) {
     redirect(new moodle_url('/local/badgecerts/overview.php', array('id' => $certid)));
@@ -95,6 +95,7 @@ if ($form->is_cancelled()) {
     $cert->qrx = $data->qrx;
     $cert->qry = $data->qry;
     $cert->qrshow = isset($data->qrshow) ? 1 : 0;
+    $cert->certid = $data->certid;
 
     if (isset($data->restricttocertaindate)) {
         $cert->startdate = $data->startdate;

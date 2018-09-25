@@ -249,3 +249,4 @@ $string['whenisthisfiltervalid'] = 'Only valid for Booking module!';
 $string['usestartandenddate'] = 'Use start and end time';
 $string['starttime'] = 'Start time';
 $string['endtime'] = 'End time';
+$string['certid'] = 'Badge';

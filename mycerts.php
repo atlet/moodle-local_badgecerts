@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of the BadgeCerts plugin for Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -22,16 +23,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author     Gregor Anželj <gregor.anzelj@gmail.com>
  */
-
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once($CFG->dirroot . '/local/badgecerts/lib.php');
 require_once($CFG->dirroot . '/local/badgecerts/renderer.php');
 
-$page        = optional_param('page', 0, PARAM_INT);
-$search      = optional_param('search', '', PARAM_CLEAN);
+$page = optional_param('page', 0, PARAM_INT);
+$search = optional_param('search', '', PARAM_CLEAN);
 $clearsearch = optional_param('clearsearch', '', PARAM_TEXT);
-$download    = optional_param('download', 0, PARAM_INT);
-$hash        = optional_param('hash', '', PARAM_ALPHANUM);
+$download = optional_param('download', 0, PARAM_INT);
+$hash = optional_param('hash', '', PARAM_ALPHANUM);
 
 require_login();
 
@@ -61,20 +61,16 @@ if ($clearsearch) {
 $context = context_user::instance($USER->id);
 
 if ($download && $hash) {
-    $ibadgecert = new issued_badgecert($hash);
-    // Generate badge certificate if a badge have assigned one.
-    if (!is_null($ibadgecert->certid)) {
+    $badges = array();
 
-        $badges = array();
-        $user = new stdClass();
+    $user = new stdClass();
 
-        $user->userid = $USER->id;
-        $user->hash = $hash;
+    $user->userid = $USER->id;
+    $user->hash = $hash;
 
-        $badges[$USER->id] = $user;
+    $badges[$USER->id] = $user;
 
-        $ibadgecert->generate_badge_certificate($context, $badges);
-    }
+    bulk_generate_certificates($download, $badges, $context);
 }
 
 $PAGE->set_context($context);
@@ -91,13 +87,13 @@ echo $OUTPUT->header();
 $records = badges_get_user_certificates($USER->id, null, $page, CERT_PERPAGE, $search);
 $totalcount = count($records);
 
-$usercerts             = new cert_user_collection($records, $USER->id);
-$usercerts->sort       = 'dateissued';
-$usercerts->dir        = 'DESC';
-$usercerts->page       = $page;
-$usercerts->perpage    = CERT_PERPAGE;
+$usercerts = new cert_user_collection($records, $USER->id);
+$usercerts->sort = 'dateissued';
+$usercerts->dir = 'DESC';
+$usercerts->page = $page;
+$usercerts->perpage = CERT_PERPAGE;
 $usercerts->totalcount = $totalcount;
-$usercerts->search     = $search;
+$usercerts->search = $search;
 
 echo $output->render($usercerts);
 

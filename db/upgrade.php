@@ -319,7 +319,52 @@ function xmldb_local_badgecerts_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2018091900, 'local', 'badgecerts');
     }
 
+    if ($oldversion < 2018092400) {
 
+        // Define field certid to be added to badge_certificate.
+        $table = new xmldb_table('badge_certificate');
+        $field = new xmldb_field('certid', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'enddate');
+
+        // Conditionally launch add field certid.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define index certid (not unique) to be added to badge_certificate.
+        $index = new xmldb_index('certid', XMLDB_INDEX_NOTUNIQUE, array('certid'));
+
+        // Conditionally launch add index certid.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Badgecerts savepoint reached.
+        upgrade_plugin_savepoint(true, 2018092400, 'local', 'badgecerts');
+    }
+
+    if ($oldversion < 2018092404) {
+        $rec = $DB->get_records_sql('SELECT id, certid FROM {badge} WHERE certid IS NOT NULL');
+
+        foreach ($rec as $value) {
+            $updO = new stdClass();
+            $updO->id = $value->certid;
+            $updO->certid = $value->id;
+
+            $DB->update_record('badge_certificate', $updO, true);
+        }
+
+        upgrade_plugin_savepoint(true, 2018092404, 'local', 'badgecerts');
+    }
+
+    if ($oldversion < 2018092405) {
+        $table = new xmldb_table('badge');
+        $field = new xmldb_field('certid');
+
+        // Drop field (the function checks if it exists)
+        $dbman->drop_field($table, $field);
+
+        upgrade_plugin_savepoint(true, 2018092405, 'local', 'badgecerts');
+    }
 
     return true;
 }

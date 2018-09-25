@@ -26,17 +26,5 @@
 defined('MOODLE_INTERNAL') || die();
 
 function xmldb_local_badgecerts_install() {
-    global $DB;
-
-    $dbman = $DB->get_manager(); // loads ddl manager and xmldb classes
-
-    // Define field variant to be added to badge.
-    $table = new xmldb_table('badge');
-    $field = new xmldb_field('certid', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'courseid');
-
-    // Conditionally launch add field variant.
-    if (!$dbman->field_exists($table, $field)) {
-        $dbman->add_field($table, $field);
-    }
-
+    
 }

@@ -218,9 +218,9 @@ $fields = 'DISTINCT u.id, ' . get_all_user_name_fields(true, 'u') . ', u.usernam
         . '(SELECT COUNT(*) AS nctransfers FROM {badge_certificate_trasnfers} AS bcf WHERE bcf.userid = u.id AND bcf.badgecertificateid = c.id AND bcf.transfereruserid = u.id) AS nctransfers,'
         . '(SELECT COUNT(*) AS nctransfers FROM {badge_certificate_trasnfers} AS bcf WHERE bcf.userid = u.id AND bcf.badgecertificateid = c.id AND bcf.transfereruserid = ' . $USER->id . ') AS nctransfersteacher,'
         . '(SELECT created AS ndatelasttransfer FROM {badge_certificate_trasnfers} AS bcf WHERE bcf.userid = u.id AND bcf.badgecertificateid = c.id AND bcf.transfereruserid = u.id ORDER BY created DESC LIMIT 1) AS ndatelasttransfer';
-$from = ' {badge_issued} AS d JOIN {badge} AS b ON d.badgeid = b.id JOIN {user} AS u ON d.userid = u.id JOIN {badge_certificate} AS c ON b.certid = c.id ' . $onlyTeachers;
+$from = ' {badge_issued} AS d JOIN {badge} AS b ON d.badgeid = b.id JOIN {user} AS u ON d.userid = u.id JOIN {badge_certificate} AS c ON b.id = c.certid ' . $onlyTeachers;
 
-$where = ' b.certid = :certid ' . $sqlWhere;
+$where = ' c.id = :certid ' . $sqlWhere;
 
 $table->set_count_sql("SELECT COUNT(*) FROM (SELECT {$fields} FROM {$from} WHERE {$where}) AS abcd WHERE 1=1", $sqlValues);
 
