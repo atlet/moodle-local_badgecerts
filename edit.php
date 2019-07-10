@@ -40,7 +40,8 @@ $cert = new badge_certificate($certid);
 $context = $cert->get_context();
 $navurl = new moodle_url('/local/badgecerts/index.php', array('type' => $cert->type));
 
-if (!((has_capability('local/badgecerts:configurecertificate', $context) && $cert->official == '0') || (has_any_capability(array('moodle/role:manage'), $context)))) {
+if (!((has_capability('local/badgecerts:configurecertificate', $context)
+    && $cert->official == '0') || (has_any_capability(array('moodle/role:manage'), $context)))) {
     redirect(new moodle_url('/local/badgecerts/overview.php', array('id' => $certid)));
 }
 
@@ -69,8 +70,8 @@ $output = $PAGE->get_renderer('local_badgecerts');
 $statusmsg = '';
 $errormsg  = '';
 
-$form_class = 'edit_cert_details_form';
-$form = new $form_class($currenturl, array('badgecertificate' => $cert, 'action' => 'details', 'courseid' => $cert->courseid));
+$formclass = 'edit_cert_details_form';
+$form = new $formclass($currenturl, array('badgecertificate' => $cert, 'action' => 'details', 'courseid' => $cert->courseid));
 
 if ($form->is_cancelled()) {
     redirect(new moodle_url('/local/badgecerts/overview.php', array('id' => $certid)));
@@ -78,7 +79,7 @@ if ($form->is_cancelled()) {
     $getfilename = $form->get_new_filename('certbgimage');
     $cert->name = $data->name;
     $cert->description = $data->description;
-    $existingbgimage = $DB->get_field('badge_certificate', 'certbgimage', array('id' => $cert->id));
+    $existingbgimage = $DB->get_field('local_badgecerts', 'certbgimage', array('id' => $cert->id));
     $cert->official = isset($data->official) ? $data->official : 0;
     $cert->usermodified = $USER->id;
     $cert->issuername = $data->issuername;
@@ -120,7 +121,7 @@ if ($form->is_cancelled()) {
             // Save file to standard filesystem.
             $form->save_file('certbgimage', $CFG->dataroot.$filename, true);
             // Update record in the database.
-            $DB->set_field('badge_certificate', 'certbgimage', $filename, array('id' => $cert->id));
+            $DB->set_field('local_badgecerts', 'certbgimage', $filename, array('id' => $cert->id));
         }
 
         $form->set_data($cert);

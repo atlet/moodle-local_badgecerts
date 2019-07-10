@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of the BadgeCerts plugin for Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -70,7 +69,7 @@ if ($download && $hash) {
 
     $badges[$USER->id] = $user;
 
-    bulk_generate_certificates($download, $badges, $context);
+    bulk_generate_certificates($download, $badges);
 }
 
 $PAGE->set_context($context);

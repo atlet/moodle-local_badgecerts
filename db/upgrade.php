@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of the BadgeCerts plugin for Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -28,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 function xmldb_local_badgecerts_upgrade($oldversion) {
     global $DB;
 
-    $dbman = $DB->get_manager(); // loads ddl manager and xmldb classes
+    $dbman = $DB->get_manager(); // Loads ddl manager and xmldb classes.
 
     if ($oldversion < 2014090900) {
         // Add tables for certificates based on openbadges.
@@ -124,7 +123,7 @@ function xmldb_local_badgecerts_upgrade($oldversion) {
         $rec->datatype = 'text';
         $rec->descriptionformat = 1;
         $rec->categoryid = $category->id;
-        $rec->visible = 0; // Visible only to admins
+        $rec->visible = 0; // Visible only to admins.
         $rec->defaultdata = 0;
         $rec->param1 = 10;
         $rec->param2 = 10;
@@ -134,7 +133,7 @@ function xmldb_local_badgecerts_upgrade($oldversion) {
         $targettablename = 'badge_certificate_elms';
         if ($dbman->table_exists($targettablename)) {
             $table = new xmldb_table($targettablename);
-            $dbman->drop_table($table); // And drop it
+            $dbman->drop_table($table); // And drop it.
         }
 
         // Main savepoint reached.
@@ -346,11 +345,11 @@ function xmldb_local_badgecerts_upgrade($oldversion) {
         $rec = $DB->get_records_sql('SELECT id, certid FROM {badge} WHERE certid IS NOT NULL');
 
         foreach ($rec as $value) {
-            $updO = new stdClass();
-            $updO->id = $value->certid;
-            $updO->certid = $value->id;
+            $updo = new stdClass();
+            $updo->id = $value->certid;
+            $updo->certid = $value->id;
 
-            $DB->update_record('badge_certificate', $updO, true);
+            $DB->update_record('badge_certificate', $updo, true);
         }
 
         upgrade_plugin_savepoint(true, 2018092404, 'local', 'badgecerts');
@@ -360,10 +359,20 @@ function xmldb_local_badgecerts_upgrade($oldversion) {
         $table = new xmldb_table('badge');
         $field = new xmldb_field('certid');
 
-        // Drop field (the function checks if it exists)
+        // Drop field (the function checks if it exists).
         $dbman->drop_field($table, $field);
 
         upgrade_plugin_savepoint(true, 2018092405, 'local', 'badgecerts');
+    }
+
+    if ($oldversion < 2019071100) {
+        $table = new xmldb_table('badge_certificate');
+        $dbman->rename_table($table, 'local_badgecerts');
+
+        $table = new xmldb_table('badge_certificate_trasnfers');
+        $dbman->rename_table($table, 'local_badgecerts_trasnfers');
+
+        upgrade_plugin_savepoint(true, 2019071100, 'local', 'badgecerts');
     }
 
     return true;

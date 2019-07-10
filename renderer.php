@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of the BadgeCerts plugin for Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -23,7 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author     Gregor Anželj <gregor.anzelj@gmail.com>
  */
-require_once($CFG->libdir . '/tablelib.php');
+defined('MOODLE_INTERNAL') || die();
+
+ require_once($CFG->libdir . '/tablelib.php');
 require_once($CFG->dirroot . '/local/badgecerts/lib.php');
 
 /**
@@ -31,9 +32,9 @@ require_once($CFG->dirroot . '/local/badgecerts/lib.php');
  */
 class local_badgecerts_renderer extends plugin_renderer_base {
 
-// Outputs badge certificates list.
+    // Outputs badge certificates list.
     public function print_badgecerts_list($badges, $userid, $profile = false) {
-        global $USER, $CFG;
+        global $USER;
         foreach ($badges as $badge) {
             $context = ($badge->type == CERT_TYPE_SITE) ? context_system::instance() : context_course::instance($badge->courseid);
 
@@ -53,12 +54,8 @@ class local_badgecerts_renderer extends plugin_renderer_base {
             if (!$profile) {
                 $burl = new moodle_url('/badges/badge.php', array('hash' => $badge->uniquehash));
             } else {
-                if (!$external) {
-                    $burl = new moodle_url('/badges/badge.php', array('hash' => $badge->uniquehash));
-                } else {
-                    $hash = hash('md5', $badge->hostedUrl);
-                    $burl = new moodle_url('/badges/external.php', array('hash' => $hash, 'user' => $userid));
-                }
+                $hash = hash('md5', $badge->hostedUrl);
+                $burl = new moodle_url('/badges/external.php', array('hash' => $hash, 'user' => $userid));
             }
 
             $badgeview = $status = $push = '';
@@ -76,17 +73,17 @@ class local_badgecerts_renderer extends plugin_renderer_base {
         return html_writer::alist($items, array('class' => 'badges'));
     }
 
-    public function print_badgecert_view($cert, $context) {
+    public function print_badgecert_view() {
         $display = "";
 
         return $display;
     }
 
-// Prints a badge certificate overview infomation.
-    public function print_badgecert_overview($cert, $context) {
+    // Prints a badge certificate overview infomation.
+    public function print_badgecert_overview($cert) {
         $display = "";
 
-// Badge certificate details.
+        // Badge certificate details.
         $display .= html_writer::start_tag('fieldset', array('class' => 'generalbox'));
         $display .= html_writer::tag('legend', get_string('badgecertificatedetails', 'local_badgecerts'),
                         array('class' => 'bold'));
@@ -99,7 +96,7 @@ class local_badgecerts_renderer extends plugin_renderer_base {
         $display .= html_writer::table($detailstable);
         $display .= html_writer::end_tag('fieldset');
 
-// Issuer details.
+        // Issuer details.
         $display .= html_writer::start_tag('fieldset', array('class' => 'generalbox'));
         $display .= html_writer::tag('legend', get_string('issuerdetails', 'local_badgecerts'), array('class' => 'bold'));
 
@@ -114,14 +111,14 @@ class local_badgecerts_renderer extends plugin_renderer_base {
         return $display;
     }
 
-// Prints action icons for the badge certificate.
+    // Prints action icons for the badge certificate.
     public function print_cert_table_actions($cert, $context) {
         $actions = "";
 
         if (has_capability('local/badgecerts:configurecertificate', $context)) {
-// Activate/deactivate badge certificate.
+            // Activate/deactivate badge certificate.
             if ($cert->status == CERT_STATUS_INACTIVE || $cert->status == CERT_STATUS_INACTIVE_LOCKED) {
-// "Activate" will go to another page and ask for confirmation.
+                // Activate will go to another page and ask for confirmation.
                 $url = new moodle_url('/local/badgecerts/action.php');
                 $url->param('id', $cert->id);
                 $url->param('activate', true);
@@ -139,20 +136,20 @@ class local_badgecerts_renderer extends plugin_renderer_base {
             }
         }
 
-// Preview badge certificate.
+        // Preview badge certificate.
         if (has_capability('local/badgecerts:configurecertificate', $context)) {
             $url = new moodle_url('/local/badgecerts/action.php',
                     array('preview' => '1', 'id' => $cert->id, 'sesskey' => sesskey()));
             $actions .= $this->output->action_icon($url, new pix_icon('t/preview', get_string('preview'))) . " ";
         }
 
-// Edit badge certificate.
+        // Edit badge certificate.
         if (has_capability('local/badgecerts:configurecertificate', $context)) {
             $url = new moodle_url('/local/badgecerts/edit.php', array('id' => $cert->id));
             $actions .= $this->output->action_icon($url, new pix_icon('t/edit', get_string('edit'))) . " ";
         }
 
-// Delete badge certificate.
+        // Delete badge certificate.
         if (has_capability('local/badgecerts:deletecertificate', $context)) {
             $url = new moodle_url(qualified_me());
             $url->param('delete', $cert->id);
@@ -162,11 +159,11 @@ class local_badgecerts_renderer extends plugin_renderer_base {
         return $actions;
     }
 
-// Outputs table of badge certificates with actions available.
+    // Outputs table of badge certificates with actions available.
     protected function render_cert_management(cert_management $certs) {
         $paging = new paging_bar($certs->totalcount, $certs->page, $certs->perpage, $this->page->url, 'page');
 
-// New badge certificate button.
+        // New badge certificate button.
         $htmlnew = '';
         if (has_capability('local/badgecerts:createcertificate', $this->page->context)) {
             $n['type'] = $this->page->url->get_param('type');
@@ -214,25 +211,23 @@ class local_badgecerts_renderer extends plugin_renderer_base {
         return $htmlnew . $htmlpagingbar . $htmltable . $htmlpagingbar;
     }
 
-// Prints tabs for badge certificate editing.
+    // Prints tabs for badge certificate editing.
     public function print_badgecert_tabs($certid, $context, $current = 'overview') {
-        global $DB;
-
-// Output button => back to index page
+        // Output button => back to index page.
         $cert = new badge_certificate($certid);
         $n = array('type' => $cert->type, 'id' => $cert->courseid);
         $caption = get_string('managebadgecertificates', 'local_badgecerts');
         echo $this->single_button(new moodle_url('/local/badgecerts/index.php', $n), $caption, 'get');
 
-// Output tabs
+        // Output tabs.
         $row = array();
 
         $row[] = new tabobject('overview', new moodle_url('/local/badgecerts/overview.php', array('id' => $certid)),
                 get_string('boverview', 'local_badgecerts')
         );
 
-        if ((has_capability('local/badgecerts:configurecertificate', $context) && $cert->official == '0') || (has_any_capability(array(
-                    'moodle/role:manage'), $context))) {
+        if ((has_capability('local/badgecerts:configurecertificate', $context) && $cert->official == '0') ||
+            (has_any_capability(array('moodle/role:manage'), $context))) {
             $row[] = new tabobject('details', new moodle_url('/local/badgecerts/edit.php', array('id' => $certid)),
                     get_string('bdetails', 'local_badgecerts')
             );
@@ -247,17 +242,16 @@ class local_badgecerts_renderer extends plugin_renderer_base {
         echo $this->tabtree($row, $current);
     }
 
-    public function print_badgecert_filter_box(badge_certificate $cert, $url, $day = 0, $month = 0, $year = 0, $dayend = 0, $monthend = 0, $yearend = 0) {
+    public function print_badgecert_filter_box(badge_certificate $cert, $url, $day = 0, $month = 0,
+        $year = 0, $dayend = 0, $monthend = 0, $yearend = 0) {
 
-        $cTime = 0;
-        $cTimeEnd = 0;
+        $ctime = 0;
+        $ctimeend = 0;
 
         if ($year > 0) {
-            $cTime = mktime(0, 0, 0, $month, $day, $year);
-            $cTimeEnd = mktime(0, 0, 0, $monthend, $dayend, $yearend);
+            $ctime = mktime(0, 0, 0, $month, $day, $year);
+            $ctimeend = mktime(0, 0, 0, $monthend, $dayend, $yearend);
         }
-
-
 
         echo html_writer::start_tag('form',
                 array('class' => 'reportbadgesselecform', 'action' => $url, 'method' => 'get'));
@@ -265,19 +259,20 @@ class local_badgecerts_renderer extends plugin_renderer_base {
         echo html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'id', 'value' => $cert->id));
 
         echo "<div class=\"form-inline\">";
-        echo html_writer::select_time('days', 'day', $cTime);
-        echo html_writer::select_time('months', 'month', $cTime);
-        echo html_writer::select_time('years', 'year', $cTime);
+        echo html_writer::select_time('days', 'day', $ctime);
+        echo html_writer::select_time('months', 'month', $ctime);
+        echo html_writer::select_time('years', 'year', $ctime);
         echo "&nbsp;-&nbsp;";
-        echo html_writer::select_time('days', 'dayend', $cTimeEnd);
-        echo html_writer::select_time('months', 'monthend', $cTimeEnd);
-        echo html_writer::select_time('years', 'yearend', $cTimeEnd);
+        echo html_writer::select_time('days', 'dayend', $ctimeend);
+        echo html_writer::select_time('months', 'monthend', $ctimeend);
+        echo html_writer::select_time('years', 'yearend', $ctimeend);
         echo "&nbsp;";
         echo html_writer::empty_tag('input',
                 array('class' => 'btn btn-primary', 'type' => 'submit', 'value' => get_string('filterreport', 'local_badgecerts')));
         echo "&nbsp;";
         echo html_writer::empty_tag('input',
-                array('class' => 'btn btn-secondary', 'id' => "buttonclear", 'type' => 'button', 'value' => get_string('reset', 'local_badgecerts')));
+                array('class' => 'btn btn-secondary', 'id' => "buttonclear", 'type' => 'button',
+                'value' => get_string('reset', 'local_badgecerts')));
         echo "</div>";
         echo html_writer::end_tag('form');
     }
@@ -317,17 +312,17 @@ class local_badgecerts_renderer extends plugin_renderer_base {
         return null;
     }
 
-// Outputs table of user badge certificates.
+    // Outputs table of user badge certificates.
     protected function render_cert_user_collection(cert_user_collection $certs) {
-        global $CFG, $USER, $SITE;
+        global $USER, $SITE;
 
         $paging = new paging_bar($certs->totalcount, $certs->page, $certs->perpage, $this->page->url, 'page');
         $htmlpagingbar = $this->render($paging);
 
-// Search box.
+        // Search box.
         $searchform = $this->output->box($this->helper_search_form($certs->search), 'boxwidthwide boxaligncenter');
 
-// Local badge certificates.
+        // Local badge certificates.
         $localhtml = html_writer::start_tag('fieldset', array('id' => 'issued-badge-table', 'class' => 'generalbox'));
         $heading = get_string('localbadgecerts', 'local_badgecerts',
                 format_string($SITE->fullname, true, array('context' => context_system::instance())));
@@ -350,12 +345,10 @@ class local_badgecerts_renderer extends plugin_renderer_base {
         return $localhtml;
     }
 
-////////////////////////////////////////////////////////////////////////////
-// Helper methods
-// Reused from stamps collection plugin
-////////////////////////////////////////////////////////////////////////////
-
     /**
+     * Helper methods.
+     * Reused from stamps collection plugin.
+     *
      * Renders a text with icons to sort by the given column
      *
      * This is intended for table headings.
@@ -491,7 +484,6 @@ class cert_user_collection extends cert_collection implements renderable {
      * @param int $userid Badge certificates owner
      */
     public function __construct($certs, $userid) {
-        global $CFG;
         parent::__construct($certs);
     }
 

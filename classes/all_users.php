@@ -1,4 +1,18 @@
 <?php
+// This file is part of the BadgeCerts plugin for Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * BadgeCerts table for displaying list of users with certificate.
@@ -16,7 +30,7 @@ class all_users extends table_sql {
      * @param int $uniqueid all tables have to have a unique id, this is used
      *      as a key when storing table properties like sort order in the session.
      */
-    function __construct($uniqueid) {
+    public function __construct($uniqueid) {
         parent::__construct($uniqueid);
         // Define the list of columns to show.
         $columns = array(
@@ -53,12 +67,12 @@ class all_users extends table_sql {
      * @return $string Return username with link to profile or username only
      *     when downloading.
      */
-    function col_dateissued($values) {
+    public function col_dateissued($values) {
 
         return userdate($values->dateissued);
     }
 
-    function col_ndatelasttransfer($values) {
+    public function col_ndatelasttransfer($values) {
 
         if (empty($values->ndatelasttransfer)) {
             return '';
@@ -67,22 +81,12 @@ class all_users extends table_sql {
         }
     }
 
-    function col_selected($values) {
+    public function col_selected($values) {
         if (!$this->is_downloading()) {
-            return '<input type="checkbox" class="usercheckbox" name="user[][' . $values->id . ']" value="' . $values->uniquehash . '" />';
+            return '<input type="checkbox" class="usercheckbox" name="user[][' . $values->id .
+                ']" value="' . $values->uniquehash . '" />';
         } else {
             return '';
         }
     }
-
-    /**
-     * This function is called for each data row to allow processing of
-     * columns which do not have a *_cols function.
-     * @return string return processed value. Return NULL if no change has
-     *     been made.
-     */
-    function other_cols($colname, $value) {
-
-    }
-
 }

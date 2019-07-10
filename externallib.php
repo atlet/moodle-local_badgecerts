@@ -1,5 +1,6 @@
 <?php
-
+// This file is part of the BadgeCerts plugin for Moodle - http://moodle.org/
+//
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -20,6 +21,7 @@
  * @copyright  2014 Andraž Prinčič s.p. (http://www.princic.net)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die();
 require_once("../../config.php");
 require_once("$CFG->dirroot/local/badgecerts/lib.php");
 require_once($CFG->libdir . "/externallib.php");
@@ -38,22 +40,15 @@ class local_badgecerts_external extends external_api {
         );
     }
 
-    // http://www.moodle.dev/webservice/rest/server.php?wstoken=4f3838e6404925d758cc1d629f5dfd58&wsfunction=local_badgecerts_get_certificates&moodlewsrestformat=json&courseid=8756
-
     /**
      * Return certificates for selected courseid
      * @return ...
      */
     public static function get_certificates($courseid = 0) {
-        global $DB;
-
-        //Parameter validation
-        //REQUIRED
-        $params = self::validate_parameters(self::get_certificates_parameters(), array('courseid' => $courseid));
         $context = context_course::instance($courseid);
         self::validate_context($context);
 
-        return get_all_certificates($courseid);        
+        return get_all_certificates($courseid);
     }
 
     /**
@@ -85,5 +80,4 @@ class local_badgecerts_external extends external_api {
                 )
         );
     }
-
 }

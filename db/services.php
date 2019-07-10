@@ -1,5 +1,6 @@
 <?php
-
+// This file is part of the BadgeCerts plugin for Moodle - http://moodle.org/
+//
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -20,6 +21,7 @@
  * @copyright  2014 Andraž Prinčič s.p. (http://www.princic.net)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die();
 
 // We defined the web service functions to install.
 $functions = array(
@@ -37,6 +39,6 @@ $services = array(
         'Get certificates' => array(
                 'functions' => array ('local_badgecerts_get_certificates'),
                 'restrictedusers' => 0,
-                'enabled'=>1,
+                'enabled' => 1,
         )
 );

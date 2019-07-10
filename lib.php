@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of the BadgeCerts plugin for Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -116,7 +115,7 @@ class badge_certificate {
         global $DB, $CFG;
         $this->id = $certid;
 
-        $data = $DB->get_record('badge_certificate', array('id' => $certid));
+        $data = $DB->get_record('local_badgecerts', array('id' => $certid));
 
         if (empty($data)) {
             print_error('error:nosuchbadgecertificate', 'badges', $certid);
@@ -148,7 +147,7 @@ class badge_certificate {
     }
 
     /**
-     * Save/update badge certificate information in 'badge_certificate'
+     * Save/update badge certificate information in 'local_badgecerts'
      * table only. Cannot be used for updating badge certificate elements.
      *
      * @return bool Returns true on success.
@@ -163,7 +162,7 @@ class badge_certificate {
         unset($fordb->elements);
 
         $fordb->timemodified = time();
-        if ($DB->update_record_raw('badge_certificate', $fordb)) {
+        if ($DB->update_record_raw('local_badgecerts', $fordb)) {
             return true;
         } else {
             throw new moodle_exception('error:save', 'badges');
@@ -227,80 +226,78 @@ class badge_certificate {
 
         $fs = get_file_storage();
 
-// Delete badge certificate images.
+        // Delete badge certificate images.
         $certcontext = $this->get_context();
         $fs->delete_area_files($certcontext->id, 'certificates', 'certbgimage', $this->id);
 
-// Finally, remove badge certificate itself.
-        $DB->delete_records('badge_certificate', array('id' => $this->id));
+        // Finally, remove badge certificate itself.
+        $DB->delete_records('local_badgecerts', array('id' => $this->id));
     }
 
     /**
      * Generates badge certificate preview in PDF format.
      */
     public function preview_badge_certificate() {
-        global $CFG, $DB;
+        global $CFG;
         require_once($CFG->libdir . '/tcpdf/tcpdf.php');
 
         $pdf = new TCPDF($this->orientation, $this->unit, $this->format, true, 'UTF-8', false);
         $pdf->SetCreator(PDF_CREATOR);
-// remove default header/footer
+        // Remove default header/footer.
         $pdf->setPrintHeader(false);
         $pdf->setPrintFooter(false);
-// set default monospaced font
+        // Set default monospaced font.
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-// set margins
-//$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-// override default margins
+        // Override default margins.
         $pdf->SetMargins(0, 0, 0, true);
-// set auto page breaks
-        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-// set image scale factor
+        // Set auto page breaks.
+        $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
+        // Set image scale factor.
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-// set default font subsetting mode
-        $pdf->setFontSubsetting(FALSE);
+        // Set default font subsetting mode.
+        $pdf->setFontSubsetting(false);
 
-// Add badge certificate background image
+        // Add badge certificate background image.
         if ($this->certbgimage) {
-// Add a page
-// This method has several options, check the source code documentation for more information.
+            // Add a page
+            // This method has several options, check the source code documentation for more information.
             $pdf->AddPage();
 
-// get the current page break margin
-            $break_margin = $pdf->getBreakMargin();
-// get current auto-page-break mode
-            $auto_page_break = $pdf->getAutoPageBreak();
-// disable auto-page-break
+            // Get the current page break margin.
+            $breakmargin = $pdf->getBreakMargin();
+            // Get current auto-page-break mode.
+            $autopagebreak = $pdf->getAutoPageBreak();
+            // Disable auto-page-break.
             $pdf->SetAutoPageBreak(false, 0);
 
             $template = file_get_contents($this->certbgimage);
-// Replace all placeholder tags
+            // Replace all placeholder tags.
             $now = time();
             $placeholders = array(
-                '[[recipient-fname]]', // Adds the recipient's first name
-                '[[recipient-lname]]', // Adds the recipient's last name
-                '[[recipient-flname]]', // Adds the recipient's full name (first, last)
-                '[[recipient-lfname]]', // Adds the recipient's full name (last, first)
-                '[[recipient-email]]', // Adds the recipient's email address
-                '[[issuer-name]]', // Adds the issuer's name or title
-                '[[issuer-contact]]', // Adds the issuer's contact information
-                '[[badge-name]]', // Adds the badge's name or title
-                '[[badge-desc]]', // Adds the badge's description
-                '[[badge-number]]', // Adds the badge's ID number
-                '[[badge-course]]', // Adds the name of the course where badge was awarded
-                '[[badge-hash]]', // Adds the badge hash value
-                '[[datetime-Y]]', // Adds the year
-                '[[datetime-d.m.Y]]', // Adds the date in dd.mm.yyyy format
-                '[[datetime-d/m/Y]]', // Adds the date in dd/mm/yyyy format
-                '[[datetime-F]]', // Adds the date (used in DB datestamps)
-                '[[datetime-s]]', // Adds Unix Epoch Time timestamp';
-                '[[booking-title]]', // Adds the seminar title
-                '[[booking-startdate]]', // Adds the seminar start date
-                '[[booking-enddate]]', // Adds the seminar end date
-                '[[booking-duration]]', // Adds the seminar duration
-                '[[recipient-birthdate]]', // Adds the recipient's date of birth
-                '[[recipient-institution]]', // Adds the institution where the recipient is employed
-                '[[badge-date-issued]]', // Adds the date when badge was issued
+                '[[recipient-fname]]', // Adds the recipient's first name.
+                '[[recipient-lname]]', // Adds the recipient's last name.
+                '[[recipient-flname]]', // Adds the recipient's full name (first, last).
+                '[[recipient-lfname]]', // Adds the recipient's full name (last, first).
+                '[[recipient-email]]', // Adds the recipient's email address.
+                '[[issuer-name]]', // Adds the issuer's name or title.
+                '[[issuer-contact]]', // Adds the issuer's contact information.
+                '[[badge-name]]', // Adds the badge's name or title.
+                '[[badge-desc]]', // Adds the badge's description.
+                '[[badge-number]]', // Adds the badge's ID number.
+                '[[badge-course]]', // Adds the name of the course where badge was awarded.
+                '[[badge-hash]]', // Adds the badge hash value.
+                '[[datetime-Y]]', // Adds the year.
+                '[[datetime-d.m.Y]]', // Adds the date in dd.mm.yyyy format.
+                '[[datetime-d/m/Y]]', // Adds the date in dd/mm/yyyy format.
+                '[[datetime-F]]', // Adds the date (used in DB datestamps).
+                '[[datetime-s]]', // Adds Unix Epoch Time timestamp.
+                '[[booking-title]]', // Adds the seminar title.
+                '[[booking-startdate]]', // Adds the seminar start date.
+                '[[booking-enddate]]', // Adds the seminar end date.
+                '[[booking-duration]]', // Adds the seminar duration.
+                '[[recipient-birthdate]]', // Adds the recipient's date of birth.
+                '[[recipient-institution]]', // Adds the institution where the recipient is employed.
+                '[[badge-date-issued]]', // Adds the date when badge was issued.
             );
             $values = array(
                 get_string('preview:recipientfname', 'local_badgecerts'),
@@ -330,16 +327,16 @@ class badge_certificate {
             );
             $template = str_replace($placeholders, $values, $template);
 
-            $pdf->ImageSVG($file = '@' . $template, 0, 0, 0, 0, '', '', '', 0, true);
+            $pdf->ImageSVG('@' . $template, 0, 0, 0, 0, '', '', '', 0, true);
 
-// restore auto-page-break status
-            $pdf->SetAutoPageBreak($auto_page_break, $break_margin);
-// set the starting point for the page content
+            // Restore auto-page-break status.
+            $pdf->SetAutoPageBreak($autopagebreak, $breakmargin);
+            // Set the starting point for the page content.
             $pdf->setPageMark();
         }
 
-// Close and output PDF document
-// This method has several options, check the source code documentation for more information.
+        // Close and output PDF document
+        // This method has several options, check the source code documentation for more information.
         $pdf->Output('preview_' . $this->name . '.pdf', 'I');
     }
 
@@ -352,20 +349,20 @@ class badge_certificate {
  * @param int User id
  * @param int Timestamp
  */
-function local_badgecerts_insert_to_log($certid = NULL, $userid = NULL) {
+function local_badgecerts_insert_to_log($certid = null, $userid = null) {
     global $DB, $USER;
 
     if (!$certid && !$userid) {
-        return FALSE;
+        return false;
     }
 
-    $timeLog = new stdClass();
-    $timeLog->badgecertificateid = $certid;
-    $timeLog->transfereruserid = $USER->id;
-    $timeLog->userid = $userid;
-    $timeLog->created = time();
+    $timelog = new stdClass();
+    $timelog->badgecertificateid = $certid;
+    $timelog->transfereruserid = $USER->id;
+    $timelog->userid = $userid;
+    $timelog->created = time();
 
-    $DB->insert_record('badge_certificate_trasnfers', $timeLog);
+    $DB->insert_record('local_badgecerts_trasnfers', $timelog);
 }
 
 /**
@@ -385,8 +382,6 @@ function badges_get_certificates($type, $courseid = 0, $sort = '', $dir = '', $p
     $records = array();
     $params = array();
 
-    $usercontext = context_user::instance($user);
-
     $params['type'] = $type;
     $where = "bc.type = :type";
 
@@ -401,7 +396,7 @@ function badges_get_certificates($type, $courseid = 0, $sort = '', $dir = '', $p
 
     $sorting = (($sort != '' && $dir != '') ? 'ORDER BY ' . $sort . ' ' . $dir : '');
 
-    $sql = "SELECT $fields FROM {badge_certificate} bc $usersql WHERE $where $sorting";
+    $sql = "SELECT $fields FROM {local_badgecerts} bc $usersql WHERE $where $sorting";
     $records = $DB->get_records_sql($sql, $params, $page * $perpage, $perpage);
 
     $certs = array();
@@ -430,7 +425,7 @@ function badges_get_certificates_for_courseid($courseid = 0) {
     $usersql = "";
     $fields = implode(', ', $userfields);
 
-    $sql = "SELECT $fields FROM {badge_certificate} bc $usersql WHERE $where";
+    $sql = "SELECT $fields FROM {local_badgecerts} bc $usersql WHERE $where";
     $records = $DB->get_records_sql($sql, $params);
 
     $certs = array();
@@ -479,17 +474,17 @@ function get_assigned_badge_options($courseid, $certid) {
  * Return true if is connected to booking.
  *
  * @param int $badgeid ID of badge
- * @return bool return True, if is connected to booking
+ * @return bool return true, if is connected to booking
  */
 function has_booking($certid) {
     global $DB;
 
-    $bcert = $DB->get_record('badge_certificate', array('id' => $certid));
+    $bcert = $DB->get_record('local_badgecerts', array('id' => $certid));
 
     if ($bcert->bookingid > 0) {
-        return TRUE;
+        return true;
     } else {
-        return FALSE;
+        return false;
     }
 }
 
@@ -515,7 +510,7 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
                 b.id badgeid,
                 bi.uniquehash,
                 b.type
-            FROM {badge_certificate} bc
+            FROM {local_badgecerts} bc
             LEFT JOIN {badge_issued} bi
                 ON bi.badgeid = bc.certid
             LEFT JOIN {user} u
@@ -523,7 +518,7 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
             LEFT JOIN {badge} b
                 ON b.id = bi.badgeid
             WHERE bi.userid = ?
-                AND bc.certid IS NOT NULL
+                AND bc.certid IS NOT null
                 AND bc.status >= 1 AND (
             (SELECT IF(bc.certtype = 0, 1, 0)) = 1
             OR (SELECT IF(bc.quizgradingid > 0 AND bc.certtype = 3,
@@ -549,7 +544,8 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
                                     {course_modules} AS cm
                                 WHERE
                                     cm.id = bc.bookingid)
-                                AND ans.userid = u.id AND ans.completed = 1 AND CASE WHEN bc.startdate != 0 THEN bo.coursestarttime >= bc.startdate AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END),
+                                AND ans.userid = u.id AND ans.completed = 1 AND CASE WHEN bc.startdate != 0
+                                THEN bo.coursestarttime >= bc.startdate AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END),
                     0) = 1
             OR (SELECT
             IF(bc.bookingid > 0 AND bc.certtype = 4,
@@ -566,7 +562,8 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
                                     {course_modules} AS cm
                                 WHERE
                                     cm.id = bc.bookingid)
-                                AND ans.userid = u.id AND ans.completed = 1 AND CASE WHEN bc.startdate != 0 THEN bo.coursestarttime >= bc.startdate AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END),
+                                AND ans.userid = u.id AND ans.completed = 1 AND CASE WHEN bc.startdate != 0
+                                 THEN bo.coursestarttime >= bc.startdate AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END),
                     0)) = 1
             OR (SELECT
             IF(bc.bookingid > 0 AND bc.certtype = 2,
@@ -583,7 +580,9 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
                                     {course_modules} AS cm
                                 WHERE
                                     cm.id = bc.bookingid)
-                                AND tch.userid = u.id AND tch.completed = 1 AND CASE WHEN bc.startdate != 0 THEN bo.coursestarttime >= bc.startdate AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END),
+                                AND tch.userid = u.id AND tch.completed = 1 AND
+                                CASE WHEN bc.startdate != 0 THEN bo.coursestarttime >= bc.startdate
+                                AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END),
                     0)
          = 1)))';
     $params[] = $userid;
@@ -609,7 +608,7 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
 }
 
 /**
- *  Check if user has the privileges to bulk generate badge certificates
+ *  Check if user has the privileges to bulk generate badge certificates.
  */
 function user_can_bulk_generate_certificates_in_course($currentcourseid) {
     global $USER, $DB;
@@ -617,7 +616,7 @@ function user_can_bulk_generate_certificates_in_course($currentcourseid) {
     $fieldid = $DB->get_field('user_info_field', 'id', array('shortname' => 'bulkGenCerts'));
     $courseid = $DB->get_field('user_info_data', 'data', array('userid' => $USER->id, 'fieldid' => $fieldid));
     if ($courseid == $currentcourseid) {
-// User has the right to bulk generate badge certificates
+        // User has the right to bulk generate badge certificates.
         return true;
     } else {
         return false;
@@ -625,18 +624,18 @@ function user_can_bulk_generate_certificates_in_course($currentcourseid) {
 }
 
 /**
- * Get bookingoptionid - from booking module
+ * Get bookingoptionid - from booking module.
  */
-function booking_getbookingoptionid($bookingid = NULL, $userid = NULL) {
+function booking_getbookingoptionid($bookingid = null, $userid = null) {
     global $DB;
 
     if (is_null($userid) || is_null($bookingid)) {
-        return FALSE;
+        return false;
     }
 
     $ba = $DB->get_record('booking_answers', array('completed' => '1', 'userid' => $userid, 'bookingid' => $bookingid));
 
-    if ($ba === FALSE) {
+    if ($ba === false) {
         return (int) 0;
     } else {
         return (int) $ba->optionid;
@@ -646,11 +645,11 @@ function booking_getbookingoptionid($bookingid = NULL, $userid = NULL) {
 /**
  * Get bookingoptionid - from booking module
  */
-function booking_getbookingoptionsid($bookingid = NULL, $userid = NULL, $cert = NULL) {
+function booking_getbookingoptionsid($bookingid = null, $userid = null, $cert = null) {
     global $DB;
 
     if (is_null($userid) || is_null($bookingid)) {
-        return FALSE;
+        return false;
     }
 
     $sql = "SELECT ba.optionid FROM ";
@@ -699,39 +698,69 @@ function booking_getbookingoptionsid($bookingid = NULL, $userid = NULL, $cert = 
 /**
  * Get bookingoptions - from booking module
  */
-function booking_getbookingoptions($cmid = NULL, $optionid = NULL) {
-    global $CFG;
-
+function booking_getbookingoptions($cmid = null, $optionid = null) {
     if (is_null($optionid)) {
-        return FALSE;
+        return false;
     }
 
     $booking = new \mod_booking\booking_option($cmid, $optionid);
     $booking->apply_tags();
 
     if (empty($booking)) {
-        return FALSE;
+        return false;
     } else {
-        return array('text' => $booking->option->text, 'coursestarttime' => $booking->option->coursestarttime, 'courseendtime' => $booking->option->courseendtime,
+        return array('text' => $booking->option->text,
+            'coursestarttime' => $booking->option->coursestarttime,
+            'courseendtime' => $booking->option->courseendtime,
             'duration' => $booking->booking->duration);
     }
 }
 
 /**
+ * Get user data for badge.
+ */
+function getuserdata($userid = null) {
+    // Get a recipient from database.
+    $namefields = get_all_user_name_fields(true, 'u');
+    $user = $DB->get_record_sql("SELECT u.id, $namefields, u.deleted,
+                                            u.email AS accountemail, b.email AS backpackemail
+                    FROM {user} u LEFT JOIN {badge_backpack} b ON u.id = b.userid
+                    WHERE u.id = :userid", array('userid' => $userid));
+    // Add custom profile field 'Datumrojstva' value.
+    $fieldid = $DB->get_field('user_info_field', 'id', array('shortname' => 'Datumrojstva'));
+    if ($fieldid && $birthdate = $DB->get_field('user_info_data', 'data',
+        array('userid' => $userid, 'fieldid' => $fieldid))) {
+        $user->birthdate = $birthdate;
+    } else {
+        $user->birthdate = null;
+    }
+    // Add custom profile field 'VIZ' value.
+    $fieldid = $DB->get_field('user_info_field', 'id', array('shortname' => 'VIZ'));
+    if ($fieldid && $institution = $DB->get_field('user_info_data', 'data',
+        array('userid' => $userid, 'fieldid' => $fieldid))) {
+        $user->institution = $institution;
+    } else {
+        $user->institution = null;
+    }
+
+    return $user;
+}
+
+/**
  * Get all certificates for courseid - for API!
  */
-function get_all_certificates($courseid = NULL) {
+function get_all_certificates($courseid = null) {
     global $DB;
     if (is_null($courseid)) {
-        return FALSE;
+        return false;
     }
 
     // TO-DO: Popravi, ker sem spremenil...
-    $allCertificates = badges_get_certificates_for_courseid($courseid);
+    $allcertificates = badges_get_certificates_for_courseid($courseid);
 
-    $bulkCerts = array();
+    $bulkcerts = array();
 
-    foreach ($allCertificates as $certificate) {
+    foreach ($allcertificates as $certificate) {
         $badgeid = $DB->get_field('badge', '*', array('certid' => $certificate->id));
         $sql = "SELECT bi.userid, bi.uniquehash AS hash
                 FROM {badge_issued} bi
@@ -744,27 +773,8 @@ function get_all_certificates($courseid = NULL) {
             $assertion = new core_badges_assertion($badge->hash);
             $cert->issued = $assertion->get_badge_assertion();
             $cert->badgeclass = $assertion->get_badge_class();
-// Get a recipient from database.
-            $namefields = get_all_user_name_fields(true, 'u');
-            $user = $DB->get_record_sql("SELECT u.id, $namefields, u.deleted,
-                                                    u.email AS accountemail, b.email AS backpackemail
-                            FROM {user} u LEFT JOIN {badge_backpack} b ON u.id = b.userid
-                            WHERE u.id = :userid", array('userid' => $badge->userid));
-// Add custom profile field 'Datumrojstva' value
-            $fieldid = $DB->get_field('user_info_field', 'id', array('shortname' => 'Datumrojstva'));
-            if ($fieldid && $birthdate = $DB->get_field('user_info_data', 'data', array('userid' => $badge->userid, 'fieldid' => $fieldid))) {
-                $user->birthdate = $birthdate;
-            } else {
-                $user->birthdate = null;
-            }
-// Add custom profile field 'VIZ' value
-            $fieldid = $DB->get_field('user_info_field', 'id', array('shortname' => 'VIZ'));
-            if ($fieldid && $institution = $DB->get_field('user_info_data', 'data', array('userid' => $badge->userid, 'fieldid' => $fieldid))) {
-                $user->institution = $institution;
-            } else {
-                $user->institution = null;
-            }
-            $cert->recipient = $user;
+
+            $cert->recipient = getuserdata($badge->userid);
 
             $booking = new StdClass();
             $booking->title = get_string('titlenotset', 'local_badgecerts');
@@ -772,78 +782,78 @@ function get_all_certificates($courseid = NULL) {
             $booking->enddate = get_string('datenotdefined', 'local_badgecerts');
             $booking->duration = 0;
 
-            if ($cert->bookingid > 0) {
+            if ($cert->bookingid > 0 && in_array($cert->certtype, array(1, 2))) {
                 $optionid = booking_getbookingoptionid($cert->bookingid, $badge->userid);
                 if (isset($optionid) && $optionid > 0) {
                     $coursemodule = get_coursemodule_from_id('booking', $cert->bookingid);
                     $options = booking_getbookingoptions($coursemodule->id, $optionid);
-// Set seminar title
+                    // Set seminar title.
                     if (isset($options['text']) && !empty($options['text'])) {
                         $booking->title = $options['text'];
                     }
-// Set seminar start date
+                    // Set seminar start date.
                     if (isset($options['coursestarttime']) && !empty($options['coursestarttime'])) {
                         $booking->startdate = userdate((int) $options['coursestarttime'], get_string('strftimedatefullshort'));
                     }
-// Set seminar end date
+                    // Set seminar end date.
                     if (isset($options['courseendtime']) && !empty($options['courseendtime'])) {
                         $booking->enddate = userdate((int) $options['courseendtime'], get_string('strftimedatefullshort'));
                     }
-// Set seminar duration
+                    // Set seminar duration.
                     if (isset($options['duration']) && !empty($options['duration'])) {
                         $booking->title = $options['duration'];
                     }
                 }
             }
-// Replace all placeholder tags
+            // Replace all placeholder tags.
             $now = time();
-// Set account email if backpack email is not set up and/or connected
+            // Set account email if backpack email is not set up and/or connected.
             if (isset($cert->recipient->backpackemail) && !empty($cert->recipient->backpackemail)) {
                 $recipientemail = $cert->recipient->backpackemail;
             } else {
                 $recipientemail = $cert->recipient->accountemail;
             }
 
-            $ownCert = array();
+            $owncert = array();
 
-            $ownCert['recipientFirstName'] = $cert->recipient->firstname;
-            $ownCert['recipientLastName'] = $cert->recipient->lastname;
-            $ownCert['recipientEmail'] = $recipientemail;
-            $ownCert['issuerName'] = $cert->issuername;
-            $ownCert['issuerContact'] = $cert->issuercontact;
-            $ownCert['badgeName'] = $cert->badgeclass['name'];
-            $ownCert['badgeDesc'] = $cert->badgeclass['description'];
-            $ownCert['badgeNumber'] = $cert->id;
-            $ownCert['badgeCourse'] = $DB->get_field('course', 'fullname', array('id' => $cert->courseid));
-            $ownCert['badgeHash'] = sha1(rand() . $cert->usercreated . $cert->id . $now);
-            $ownCert['bookingTitle'] = $booking->title;
-            $ownCert['bookingStartdate'] = $booking->startdate;
-            $ownCert['bookingEnddate'] = $booking->enddate;
-            $ownCert['bookingDuration'] = $booking->duration;
-            $ownCert['recipientBirthdate'] = userdate((int) $cert->recipient->birthdate, get_string('strftimedatefullshort'));
-            $ownCert['recipientInstitution'] = $cert->recipient->institution;
-            $ownCert['badgeDateIssued'] = userdate((int) $cert->issued, get_string('strftimedatefullshort'));
+            $owncert['recipientFirstName'] = $cert->recipient->firstname;
+            $owncert['recipientLastName'] = $cert->recipient->lastname;
+            $owncert['recipientEmail'] = $recipientemail;
+            $owncert['issuerName'] = $cert->issuername;
+            $owncert['issuerContact'] = $cert->issuercontact;
+            $owncert['badgeName'] = $cert->badgeclass['name'];
+            $owncert['badgeDesc'] = $cert->badgeclass['description'];
+            $owncert['badgeNumber'] = $cert->id;
+            $owncert['badgeCourse'] = $DB->get_field('course', 'fullname', array('id' => $cert->courseid));
+            $owncert['badgeHash'] = sha1(rand() . $cert->usercreated . $cert->id . $now);
+            $owncert['bookingTitle'] = $booking->title;
+            $owncert['bookingStartdate'] = $booking->startdate;
+            $owncert['bookingEnddate'] = $booking->enddate;
+            $owncert['bookingDuration'] = $booking->duration;
+            $owncert['recipientBirthdate'] = userdate((int) $cert->recipient->birthdate, get_string('strftimedatefullshort'));
+            $owncert['recipientInstitution'] = $cert->recipient->institution;
+            $owncert['badgeDateIssued'] = userdate((int) $cert->issued, get_string('strftimedatefullshort'));
 
-            $bulkCerts[] = $ownCert;
+            $bulkcerts[] = $owncert;
         }
     }
 
-    return $bulkCerts;
+    return $bulkcerts;
 }
 
-function fixEncoding($in_str) {
-    $cur_encoding = mb_detect_encoding($in_str);
-    if ($cur_encoding == "UTF-8" && mb_check_encoding($in_str, "UTF-8")) {
-        return $in_str;
+function fixencoding($instr) {
+    $curencoding = mb_detect_encoding($instr);
+    if ($curencoding == "UTF-8" && mb_check_encoding($instr, "UTF-8")) {
+        return $instr;
     } else {
-        return utf8_encode($in_str);
+        return utf8_encode($instr);
     }
 }
 
 /**
  * Generate placeholders
  */
-function get_placeholders($cert, $booking, $quizreporting = NULL) {
+function get_placeholders($cert, $booking, $quizreporting = null) {
     global $DB;
 
     if (is_null($quizreporting)) {
@@ -868,40 +878,40 @@ function get_placeholders($cert, $booking, $quizreporting = NULL) {
         $quizreporting->lokacija = "";
     }
 
-// Replace all placeholder tags
+    // Replace all placeholder tags.
     $now = time();
-// Set account email if backpack email is not set up and/or connected
+    // Set account email if backpack email is not set up and/or connected.
     if (isset($cert->recipient->backpackemail) && !empty($cert->recipient->backpackemail)) {
         $recipientemail = $cert->recipient->backpackemail;
     } else {
         $recipientemail = $cert->recipient->accountemail;
     }
     $placeholders = array(
-        '[[recipient-fname]]', // Adds the recipient's first name
-        '[[recipient-lname]]', // Adds the recipient's last name
-        '[[recipient-flname]]', // Adds the recipient's full name (first, last)
-        '[[recipient-lfname]]', // Adds the recipient's full name (last, first)
-        '[[recipient-email]]', // Adds the recipient's email address
-        '[[issuer-name]]', // Adds the issuer's name or title
-        '[[issuer-contact]]', // Adds the issuer's contact information
-        '[[badge-name]]', // Adds the badge's name or title
-        '[[badge-desc]]', // Adds the badge's description
-        '[[badge-number]]', // Adds the badge's ID number
-        '[[badge-course]]', // Adds the name of the course where badge was awarded
-        '[[badge-hash]]', // Adds the badge hash value
-        '[[datetime-Y]]', // Adds the year
-        '[[datetime-d.m.Y]]', // Adds the date in dd.mm.yyyy format
-        '[[datetime-d/m/Y]]', // Adds the date in dd/mm/yyyy format
-        '[[datetime-F]]', // Adds the date (used in DB datestamps)
-        '[[datetime-s]]', // Adds Unix Epoch Time timestamp';
-        '[[booking-title]]', // Adds the seminar title
-        '[[booking-startdate]]', // Adds the seminar start date
-        '[[booking-enddate]]', // Adds the seminar end date
-        '[[booking-duration]]', // Adds the seminar duration
-        '[[recipient-birthdate]]', // Adds the recipient's date of birth
-        '[[recipient-institution]]', // Adds the institution where the recipient is employed
-        '[[badge-date-issued]]', // Adds the date when badge was issued
-        // Quiz Grading
+        '[[recipient-fname]]', // Adds the recipient's first name.
+        '[[recipient-lname]]', // Adds the recipient's last name.
+        '[[recipient-flname]]', // Adds the recipient's full name (first, last).
+        '[[recipient-lfname]]', // Adds the recipient's full name (last, first).
+        '[[recipient-email]]', // Adds the recipient's email address.
+        '[[issuer-name]]', // Adds the issuer's name or title.
+        '[[issuer-contact]]', // Adds the issuer's contact information.
+        '[[badge-name]]', // Adds the badge's name or title.
+        '[[badge-desc]]', // Adds the badge's description.
+        '[[badge-number]]', // Adds the badge's ID number.
+        '[[badge-course]]', // Adds the name of the course where badge was awarded.
+        '[[badge-hash]]', // Adds the badge hash value.
+        '[[datetime-Y]]', // Adds the year.
+        '[[datetime-d.m.Y]]', // Adds the date in dd.mm.yyyy format.
+        '[[datetime-d/m/Y]]', // Adds the date in dd/mm/yyyy format.
+        '[[datetime-F]]', // Adds the date (used in DB datestamps).
+        '[[datetime-s]]', // Adds Unix Epoch Time timestamp.
+        '[[booking-title]]', // Adds the seminar title.
+        '[[booking-startdate]]', // Adds the seminar start date.
+        '[[booking-enddate]]', // Adds the seminar end date.
+        '[[booking-duration]]', // Adds the seminar duration.
+        '[[recipient-birthdate]]', // Adds the recipient's date of birth.
+        '[[recipient-institution]]', // Adds the institution where the recipient is employed.
+        '[[badge-date-issued]]', // Adds the date when badge was issued.
+        // Quiz Grading.
         '[[qg-quizname]]',
         '[[qg-sumgrades]]',
         '[[qg-firstname]]',
@@ -952,7 +962,7 @@ function get_placeholders($cert, $booking, $quizreporting = NULL) {
         userdate((int) $cert->recipient->birthdate, get_string('datetimeformat', 'local_badgecerts')),
         $cert->recipient->institution,
         userdate((int) $cert->issued['issuedOn'], get_string('datetimeformat', 'local_badgecerts')),
-        // Quiz Grading
+        // Quiz Grading.
         $quizreporting->quizname,
         $quizreporting->sumgrades,
         $quizreporting->firstname,
@@ -967,10 +977,14 @@ function get_placeholders($cert, $booking, $quizreporting = NULL) {
         $quizreporting->moznih_tock,
         $quizreporting->procent,
         $quizreporting->vprasanja,
-        ($quizreporting->status_kviza == 1 ? get_string('jeopravil', 'local_badgecerts') : get_string('niopravil', 'local_badgecerts')),
-        isset($quizreporting->datum_resitve) ? userdate($quizreporting->datum_resitve, get_string('datetimeformat', 'local_badgecerts')) : '',
-        isset($quizreporting->datum_vpisa) ? userdate($quizreporting->datum_vpisa, get_string('datetimeformat', 'local_badgecerts')) : '',
-        isset($quizreporting->datum_rojstva) ? userdate($quizreporting->datum_rojstva, get_string('datetimeformat', 'local_badgecerts')) : '',
+        ($quizreporting->status_kviza == 1 ? get_string('jeopravil', 'local_badgecerts') : get_string('niopravil',
+            'local_badgecerts')),
+        isset($quizreporting->datum_resitve) ? userdate($quizreporting->datum_resitve,
+            get_string('datetimeformat', 'local_badgecerts')) : '',
+        isset($quizreporting->datum_vpisa) ? userdate($quizreporting->datum_vpisa,
+            get_string('datetimeformat', 'local_badgecerts')) : '',
+        isset($quizreporting->datum_rojstva) ? userdate($quizreporting->datum_rojstva,
+            get_string('datetimeformat', 'local_badgecerts')) : '',
         $quizreporting->uvrstitev_posamezniki,
         $quizreporting->uvrstitev_skupina,
         $quizreporting->organizator,
@@ -986,7 +1000,7 @@ function get_placeholders($cert, $booking, $quizreporting = NULL) {
     $pl = array();
     $val = array();
 
-    foreach ($r as $key => $value) {
+    foreach ($r as $value) {
         $pl[] = "[[booking-title-{$i}]]";
         $val[] = $value;
 
@@ -1009,65 +1023,45 @@ function get_placeholders($cert, $booking, $quizreporting = NULL) {
 /**
  * Bulk generate badge certificates - only for submited users.
  */
-function bulk_generate_certificates($certid, $badges, $context) {
+function bulk_generate_certificates($certid, $badges) {
     global $CFG, $DB;
 
-// Generate badge certificate for each of the issued badges
+    // Generate badge certificate for each of the issued badges.
     require_once($CFG->libdir . '/tcpdf/tcpdf.php');
 
     $cert = new badge_certificate($certid);
     $pdf = new TCPDF($cert->orientation, $cert->unit, $cert->format, true, 'UTF-8', false);
     $pdf->SetCreator(PDF_CREATOR);
-// remove default header/footer
+    // Remove default header/footer.
     $pdf->setPrintHeader(false);
     $pdf->setPrintFooter(false);
-// set default monospaced font
+    // Set default monospaced font.
     $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-// set margins
-//$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-// override default margins
+
+    // Override default margins.
     $pdf->SetMargins(0, 0, 0, true);
-// set auto page breaks
-    $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-// set image scale factor
+    // Set auto page breaks.
+    $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
+    // Set image scale factor.
     $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-// set default font subsetting mode
-    $pdf->setFontSubsetting(FALSE);
+    // Set default font subsetting mode.
+    $pdf->setFontSubsetting(false);
 
     if ($cert->bookingid > 0) {
         $coursemodule = get_coursemodule_from_id('booking', $cert->bookingid);
         $bookingid = $coursemodule->instance;
     }
 
-// Add badge certificate background image
+    // Add badge certificate background image.
     if ($cert->certbgimage && !empty($badges)) {
         foreach ($badges as $badge) {
             $assertion = new core_badges_assertion($badge->hash);
             $cert->issued = $assertion->get_badge_assertion();
             $cert->badgeclass = $assertion->get_badge_class();
-// Get a recipient from database.
-            $namefields = get_all_user_name_fields(true, 'u');
-            $user = $DB->get_record_sql("SELECT u.id, $namefields, u.deleted, u.username,
-                                                    u.email AS accountemail, b.email AS backpackemail
-                            FROM {user} u LEFT JOIN {badge_backpack} b ON u.id = b.userid
-                            WHERE u.id = :userid", array('userid' => $badge->userid));
-// Add custom profile field 'Datumrojstva' value
-            $fieldid = $DB->get_field('user_info_field', 'id', array('shortname' => 'Datumrojstva'));
-            if ($fieldid && $birthdate = $DB->get_field('user_info_data', 'data', array('userid' => $badge->userid, 'fieldid' => $fieldid))) {
-                $user->birthdate = $birthdate;
-            } else {
-                $user->birthdate = null;
-            }
-// Add custom profile field 'VIZ' value
-            $fieldid = $DB->get_field('user_info_field', 'id', array('shortname' => 'VIZ'));
-            if ($fieldid && $institution = $DB->get_field('user_info_data', 'data', array('userid' => $badge->userid, 'fieldid' => $fieldid))) {
-                $user->institution = $institution;
-            } else {
-                $user->institution = null;
-            }
-            $cert->recipient = $user;
 
-            // Get booking related data
+            $cert->recipient = getuserdata($badge->userid);
+
+            // Get booking related data.
             $booking = new StdClass();
             $booking->title = get_string('titlenotset', 'local_badgecerts');
             $booking->startdate = get_string('datenotdefined', 'local_badgecerts');
@@ -1080,35 +1074,35 @@ function bulk_generate_certificates($certid, $badges, $context) {
                     if (isset($optionid) && $optionid > 0) {
                         $options = booking_getbookingoptions($coursemodule->id, $optionid);
 
-                        // Set seminar title
+                        // Set seminar title.
                         if (isset($options['text']) && !empty($options['text'])) {
                             $booking->title = $options['text'];
                         } else {
                             $booking->title = get_string('titlenotset', 'local_badgecerts');
                         }
 
-                        // Set seminar start date
+                        // Set seminar start date.
                         if (isset($options['coursestarttime']) && !empty($options['coursestarttime'])) {
                             $booking->startdate = userdate((int) $options['coursestarttime'], get_string('strftimedate'));
                         } else {
                             $booking->startdate = get_string('datenotdefined', 'local_badgecerts');
                         }
 
-                        // Set seminar end date
+                        // Set seminar end date.
                         if (isset($options['courseendtime']) && !empty($options['courseendtime'])) {
                             $booking->enddate = userdate((int) $options['courseendtime'], get_string('strftimedate'));
                         } else {
                             $booking->enddate = get_string('datenotdefined', 'local_badgecerts');
                         }
 
-                        // Set seminar duration
+                        // Set seminar duration.
                         if (isset($options['duration']) && !empty($options['duration'])) {
                             $booking->duration = $options['duration'];
                         } else {
                             $booking->duration = 0;
                         }
 
-                        add_pdf_page($cert, $badge, $pdf, $booking, NULL, $user);
+                        add_pdf_page($cert, $badge, $pdf, $booking, null, $user);
                     }
                 }
             } else if ($cert->bookingid > 0 && $cert->certtype == 4) {
@@ -1116,36 +1110,40 @@ function bulk_generate_certificates($certid, $badges, $context) {
                 $conditions[] = $badge->userid;
                 $conditions[] = $bookingid;
 
-                $timeLimit = '';
+                $timelimit = '';
 
                 if ($cert->startdate != 0) {
-                    $timeLimit = "AND bo.coursestarttime >= ? AND bo.courseendtime <= ?";
+                    $timelimit = "AND bo.coursestarttime >= ? AND bo.courseendtime <= ?";
                     $conditions[] = $cert->startdate;
                     $conditions[] = $cert->enddate;
                 }
 
-                $result = $DB->get_record_sql("SELECT SUM(ROUND(bo.duration / 60 / 60, 0)) duration, GROUP_CONCAT(bo.text SEPARATOR '||') text FROM {booking_answers} ba LEFT JOIN {booking_options} bo ON ba.optionid = bo.id WHERE ba.userid = ? AND ba.completed = 1 AND bo.bookingid = ? {$timeLimit}", $conditions);
+                $result = $DB->get_record_sql("SELECT SUM(ROUND(bo.duration / 60 / 60, 0))
+                    duration, GROUP_CONCAT(bo.text SEPARATOR '||') text FROM {booking_answers} ba LEFT JOIN {booking_options} bo ON
+                    ba.optionid = bo.id WHERE ba.userid = ? AND ba.completed = 1 AND bo.bookingid = ? {$timelimit}", $conditions);
 
                 $booking->duration = $result->duration;
                 $booking->title = $result->text;
 
-                add_pdf_page($cert, $badge, $pdf, $booking, NULL, $user);
+                add_pdf_page($cert, $badge, $pdf, $booking, null, $user);
             } else if ($cert->quizgradingid > 0 && $cert->certtype == 3) {
 
                 $quizreporting = $DB->get_records_sql("SELECT *
                             FROM {quizgrading_results}
-                            WHERE quizgradingid = :quizgradnigid AND userid = :userid", array('quizgradnigid' => $cert->quizgradingid, 'userid' => $cert->recipient->id));
+                            WHERE quizgradingid = :quizgradnigid AND userid = :userid",
+                            array('quizgradnigid' => $cert->quizgradingid,
+                                'userid' => $cert->recipient->id));
 
                 foreach ($quizreporting as $quizreport) {
                     add_pdf_page($cert, $badge, $pdf, $booking, $quizreport, $user);
                 }
             } else {
-                add_pdf_page($cert, $badge, $pdf, $booking, NULL, $user);
+                add_pdf_page($cert, $badge, $pdf, $booking, null, $user);
             }
         }
 
-// Close and output PDF document
-// This method has several options, check the source code documentation for more information.
+        // Close and output PDF document.
+        // This method has several options, check the source code documentation for more information.
         $pdf->Output($cert->badgeclass['name'] . '.pdf', 'D');
     }
 }
@@ -1153,16 +1151,16 @@ function bulk_generate_certificates($certid, $badges, $context) {
 /**
  *  Generate certificate in pdf.
  */
-function add_pdf_page($cert, $badge, &$pdf, $booking, $quizreporting = NULL, $user) {
-// Add a page
-// This method has several options, check the source code documentation for more information.
+function add_pdf_page($cert, $badge, &$pdf, $booking, $quizreporting = null, $user) {
+    // Add a page
+    // This method has several options, check the source code documentation for more information.
     $pdf->AddPage();
 
-// get the current page break margin
-    $break_margin = $pdf->getBreakMargin();
-// get current auto-page-break mode
-    $auto_page_break = $pdf->getAutoPageBreak();
-// disable auto-page-break
+    // Get the current page break margin.
+    $breakmargin = $pdf->getBreakMargin();
+    // Get current auto-page-break mode.
+    $autopagebreak = $pdf->getAutoPageBreak();
+    // Disable auto-page-break.
     $pdf->SetAutoPageBreak(false, 0);
 
     $template = file_get_contents($cert->certbgimage);
@@ -1170,36 +1168,37 @@ function add_pdf_page($cert, $badge, &$pdf, $booking, $quizreporting = NULL, $us
     $placeholders = get_placeholders($cert, $booking, $quizreporting);
 
     $template = str_replace($placeholders['placeholders'], $placeholders['values'], $template);
-    $pdf->ImageSVG($file = '@' . $template, 0, 0, 0, 0, '', '', '', 0, true);
-// restore auto-page-break status
-    $pdf->SetAutoPageBreak($auto_page_break, $break_margin);
-// set the starting point for the page content
+    $pdf->ImageSVG('@' . $template, 0, 0, 0, 0, '', '', '', 0, true);
+    // Restore auto-page-break status.
+    $pdf->SetAutoPageBreak($autopagebreak, $breakmargin);
+    // Set the starting point for the page content.
     $pdf->setPageMark();
 
     if ($cert->qrshow) {
 
-        $tmpQrData = '';
+        $tmpqrdata = '';
 
         switch ($cert->qrdata) {
             case 0:
-                $tmpQrData = $user->id;
+                $tmpqrdata = $user->id;
                 break;
 
             case 1:
-                $tmpQrData = $user->username;
+                $tmpqrdata = $user->username;
                 break;
 
             default:
                 break;
         }
 
-        $pdf->write2DBarcode($tmpQrData, 'QRCODE,H', $cert->qrx, $cert->qry, $cert->qrw, $cert->qrh);
+        $pdf->write2DBarcode($tmpqrdata, 'QRCODE,H', $cert->qrx, $cert->qry, $cert->qrw, $cert->qrh);
     }
 
     local_badgecerts_insert_to_log($cert->id, $badge->userid);
 }
 
-function local_badgecerts_extend_navigation_user(navigation_node $parentnode, stdClass $user, context_user $context, stdClass $course) {
+function local_badgecerts_extend_navigation_user(navigation_node $parentnode, stdClass $user,
+    context_user $context, stdClass $course) {
     global $PAGE;
 
     if (isloggedin()) {
@@ -1213,12 +1212,12 @@ function local_badgecerts_extend_navigation_user(navigation_node $parentnode, st
 
             $url = new moodle_url('/local/badgecerts/index.php', array('type' => CERT_TYPE_COURSE, 'id' => $course->id));
             $coursenode = $PAGE->navigation->find($course->id, navigation_node::TYPE_COURSE);
-            $thingnode = $coursenode->add(get_string('managebadgecertificates', 'local_badgecerts'), $url);
+            $coursenode->add(get_string('managebadgecertificates', 'local_badgecerts'), $url);
         }
     }
 }
 
-// See link to download own badges only on your own profile
+// See link to download own badges only on your own profile.
 function local_badgecerts_myprofile_navigation(core_user\output\myprofile\tree $tree, $user, $iscurrentuser, $course) {
     if ($iscurrentuser) {
         $url = new moodle_url('/local/badgecerts/mycerts.php');
@@ -1247,7 +1246,8 @@ function local_badgecerts_extend_settings_navigation(settings_navigation $nav, c
 
             if ($coursenode) {
                 $url = new moodle_url('/local/badgecerts/index.php', array('type' => CERT_TYPE_COURSE, 'id' => $COURSE->id));
-                $coursenode->add(get_string('managebadgecertificates', 'local_badgecerts'), $url, navigation_node::TYPE_SETTING, null, 'managecerts', new pix_icon('i/report', ''));
+                $coursenode->add(get_string('managebadgecertificates', 'local_badgecerts'), $url,
+                    navigation_node::TYPE_SETTING, null, 'managecerts', new pix_icon('i/report', ''));
             }
         }
     }

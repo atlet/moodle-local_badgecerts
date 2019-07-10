@@ -59,7 +59,7 @@ if ($return !== 0) {
 } else {
     $returnurl = new moodle_url('/local/badgecerts/overview.php', array('id' => $cert->id));
 }
-$returnurl->remove_params('awards'); // ???
+$returnurl->remove_params('awards');
 
 if ($copy) {
     require_sesskey();
@@ -74,13 +74,11 @@ if ($copy) {
 }
 
 if ($preview) {
-    //require_sesskey();
     require_capability('local/badgecerts:createcertificate', $context);
     $cert->preview_badge_certificate();
 }
 
 if ($download) {
-    //require_sesskey();
     require_capability('local/badgecerts:printcertificates', $context);
     bulk_generate_badge_certificates($cert->courseid, $cert->id);
 }

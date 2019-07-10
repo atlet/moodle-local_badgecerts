@@ -97,7 +97,6 @@ if ($errormsg !== '') {
     echo $OUTPUT->notification($statusmsg, 'notifysuccess');
 }
 
-//echo $output->print_badgecert_status_box($cert);
 $output->print_badgecert_tabs($element->certid, $context, 'elements');
 
 $form->display();

@@ -65,6 +65,6 @@ echo $OUTPUT->heading($cert->name);
 $output = $PAGE->get_renderer('local_badgecerts');
 echo $output->print_badgecert_status_box($cert);
 $output->print_badgecert_tabs($certid, $context, 'overview');
-echo $output->print_badgecert_overview($cert, $context);
+echo $output->print_badgecert_overview($cert);
 
 echo $OUTPUT->footer();

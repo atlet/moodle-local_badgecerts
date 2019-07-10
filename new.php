@@ -90,21 +90,21 @@ if ($form->is_cancelled()) {
     $fordb->courseid = ($type == CERT_TYPE_COURSE) ? $courseid : null;
     $fordb->status = CERT_STATUS_INACTIVE;
     $fordb->certtype = $data->certtype;
-    $fordb->quizgradingid = $data->quizgradingid;    
+    $fordb->quizgradingid = $data->quizgradingid;
 
-    $newid = $DB->insert_record('badge_certificate', $fordb, true);
+    $newid = $DB->insert_record('local_badgecerts', $fordb, true);
 
     if ($getfilename) {
         // Create folder if it doesn't exist.
         $dirname = '/filedir/cert';
         if (!file_exists($CFG->dataroot.$dirname) and !is_dir($CFG->dataroot.$dirname)) {
-            mkdir($CFG->dataroot.$dirname);         
+            mkdir($CFG->dataroot.$dirname);
         }
         $filename = $dirname . '/' . $newid . '_' . $getfilename;
         // Save file to standard filesystem.
         $form->save_file('certbgimage', $CFG->dataroot.$filename, true);
         // Update record in the database.
-        $DB->set_field('badge_certificate', 'certbgimage', $filename, array('id' => $newid));
+        $DB->set_field('local_badgecerts', 'certbgimage', $filename, array('id' => $newid));
     }
 
     $newcert = new badge_certificate($newid);

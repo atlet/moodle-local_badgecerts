@@ -39,8 +39,6 @@ class edit_cert_element_form extends moodleform {
      * Defines the form
      */
     public function definition() {
-        global $CFG, $PAGE;
-
         $mform = $this->_form;
         $element = (isset($this->_customdata['certificateelement'])) ? $this->_customdata['certificateelement'] : false;
         $action = $this->_customdata['action'];
@@ -84,7 +82,7 @@ class edit_cert_element_form extends moodleform {
             'R'      => get_string('elementalign:R', 'local_badgecerts'),
             'I'      => get_string('elementalign:I', 'local_badgecerts'), // Invert
             'T'      => get_string('elementalign:T', 'local_badgecerts'), // Top down
-            'B'      => get_string('elementalign:B', 'local_badgecerts'), // Bottom up
+            'B'      => get_string('elementalign:B', 'local_badgecerts'), // Bottom up.
             ''      => get_string('elementalign:0', 'local_badgecerts'),
         );
         $mform->addElement('select', 'align', get_string('elementalign', 'local_badgecerts'), $alignoptions);
@@ -113,20 +111,19 @@ class edit_cert_element_form extends moodleform {
     /**
      * Load in existing data as form defaults
      *
-     * @param stdClass|array $default_values object or array of default values
+     * @param stdClass|array $defaultvalues object or array of default values
      */
     public function set_data($element) {
-        $default_values = array();
+        $defaultvalues = array();
         parent::set_data($element);
 
-        parent::set_data($default_values);
+        parent::set_data($defaultvalues);
     }
 
     /**
      * Validates form data
      */
     public function validation($data, $files) {
-        global $DB;
         $errors = parent::validation($data, $files);
 
         return $errors;

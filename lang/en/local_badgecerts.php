@@ -192,24 +192,20 @@ $string['titlenotset'] = 'Course title not set';
 
 $string['datetimeformat'] = '%-d. %-m. %Y';
 
-// renderer.php
 $string['viewcertificates'] = 'Recipients';
 $string['filterreport'] = 'Filter report';
 $string['reset'] = 'Reset';
 
-// all_users.php
 $string['fullname'] = 'Recipient';
 $string['dateissued'] = 'Date issued';
 $string['nctransfers'] = 'Transfered by user';
 $string['ndatelasttransfer'] = 'Last time of trasnfer';
 $string['nctransfersteacher'] = 'Transfered by you';
 
-// view.php
 $string['printselected'] = 'Print certificate for selected users';
 $string['printall'] = 'Print certificate for all users';
 $string['nousers'] = 'Can\'t print certificates, because no users found!';
 
-// edit_form.php
 $string['certificatefor'] = 'Certificate for';
 $string['certificateforbadge'] = 'Badge';
 $string['certificateformodbookingusers'] = 'Booking users';
@@ -226,7 +222,6 @@ $string['qrdata'] = 'Which field to use as QR code data';
 $string['userid'] = 'User ID';
 $string['username'] = 'User username';
 
-// Roles
 $string['badgecerts:assigncustomcertificate'] = 'Assign custom certificate';
 $string['badgecerts:assignofficialcertificate'] = 'Assign official certificate';
 $string['badgecerts:certificatemanager'] = 'Certificate manager';
@@ -239,11 +234,9 @@ $string['badgecerts:printcertificates'] = 'Print certificates';
 $string['badgecerts:viewcertificates'] = 'View certificates';
 $string['badgecerts:configuredetails'] = 'Configure details';
 
-// Koelsarski izpit
-$string['jeopravil'] =  "DA";
-$string['niopravil'] =  "NI";
+$string['jeopravil'] = "DA";
+$string['niopravil'] = "NI";
 
-// edit.php
 $string['datelimit'] = 'Limit conditions';
 $string['whenisthisfiltervalid'] = 'Only valid for Booking module!';
 $string['usestartandenddate'] = 'Use start and end time';
