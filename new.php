@@ -64,7 +64,7 @@ require_capability('local/badgecerts:createcertificate', $PAGE->context);
 $fordb = new stdClass();
 $fordb->id = null;
 
-$form = new edit_cert_details_form($PAGE->url, array('action' => 'new'));
+$form = new edit_cert_details_form($PAGE->url, array('action' => 'new', 'courseid' => $courseid));
 
 if ($form->is_cancelled()) {
     redirect(new moodle_url('/local/badgecerts/index.php', array('type' => $type, 'id' => $courseid)));
@@ -85,12 +85,16 @@ if ($form->is_cancelled()) {
     $fordb->format = $data->format;
     $fordb->orientation = $data->orientation;
     $fordb->unit = $data->unit;
-    $fordb->bookingid = $data->bookingid;
+    if (isset($data->bookingid)) {
+        $fordb->bookingid = $data->bookingid;
+    }
     $fordb->type = $type;
     $fordb->courseid = ($type == CERT_TYPE_COURSE) ? $courseid : null;
     $fordb->status = CERT_STATUS_INACTIVE;
     $fordb->certtype = $data->certtype;
-    $fordb->quizgradingid = $data->quizgradingid;
+    if (isset($data->quizgradingid)) {
+        $fordb->quizgradingid = $data->quizgradingid;
+    }
 
     $newid = $DB->insert_record('local_badgecerts', $fordb, true);
 

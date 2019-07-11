@@ -40,6 +40,8 @@ class edit_cert_details_form extends moodleform {
     public function definition() {
         global $CFG, $PAGE, $DB;
 
+        $utils = new \local\badgecerts\classes\utils();
+
         $mform = $this->_form;
         $cert = (isset($this->_customdata['badgecertificate'])) ? $this->_customdata['badgecertificate'] : false;
         $action = $this->_customdata['action'];
@@ -68,7 +70,7 @@ class edit_cert_details_form extends moodleform {
         $badges = array();
 
         if (!empty($this->_customdata['courseid'])) {
-            $sql = 'SELECT b.id, b.name FROM {badge} b WHERE b.courseid = :courseid AND ' .
+            $sql = 'SELECT b.id, b.name FROM {badge} b WHERE (b.courseid = :courseid OR b.courseid is null) AND ' .
                 '(b.status = 1 OR b.status = 3) ORDER BY b.name ASC';
             $params = array();
             $params['courseid'] = $this->_customdata['courseid'];
@@ -116,10 +118,14 @@ class edit_cert_details_form extends moodleform {
 
         $certtypes = array();
         $certtypes[0] = get_string('certificateforbadge', 'local_badgecerts');
-        $certtypes[1] = get_string('certificateformodbookingusers', 'local_badgecerts');
-        $certtypes[4] = get_string('certificateformodbookinguserssum', 'local_badgecerts');
-        $certtypes[2] = get_string('certificateformodbookingteachers', 'local_badgecerts');
-        $certtypes[3] = get_string('certificateforquizgrading', 'local_badgecerts');
+        if ($utils->check_mod_booking()) {
+            $certtypes[1] = get_string('certificateformodbookingusers', 'local_badgecerts');
+            $certtypes[4] = get_string('certificateformodbookinguserssum', 'local_badgecerts');
+            $certtypes[2] = get_string('certificateformodbookingteachers', 'local_badgecerts');
+        }
+        if ($utils->check_mod_quizgrading()) {
+            $certtypes[3] = get_string('certificateforquizgrading', 'local_badgecerts');
+        }
 
         $mform->addElement('select', 'certtype', get_string('certificatefor', 'local_badgecerts'), $certtypes);
         $mform->setDefault('certtype', 0);
@@ -135,13 +141,17 @@ class edit_cert_details_form extends moodleform {
             $mform->addRule('certbgimage', null, 'required');
         }
 
-        $mform->addElement('text', 'bookingid', get_string('bookingid', 'local_badgecerts'), array('size' => '10'));
-        $mform->setType('bookingid', PARAM_INT);
-        $mform->addHelpButton('bookingid', 'bookingid', 'local_badgecerts');
+        if ($utils->check_mod_booking()) {
+            $mform->addElement('text', 'bookingid', get_string('bookingid', 'local_badgecerts'), array('size' => '10'));
+            $mform->setType('bookingid', PARAM_INT);
+            $mform->addHelpButton('bookingid', 'bookingid', 'local_badgecerts');
+        }
 
-        $mform->addElement('text', 'quizgradingid', get_string('quizgradingid', 'local_badgecerts'), array('size' => '10'));
-        $mform->setType('quizgradingid', PARAM_INT);
-        $mform->addHelpButton('quizgradingid', 'quizgradingid', 'local_badgecerts');
+        if ($utils->check_mod_quizgrading()) {
+            $mform->addElement('text', 'quizgradingid', get_string('quizgradingid', 'local_badgecerts'), array('size' => '10'));
+            $mform->setType('quizgradingid', PARAM_INT);
+            $mform->addHelpButton('quizgradingid', 'quizgradingid', 'local_badgecerts');
+        }
 
         $mform->addElement('header', 'issuerdetails', get_string('issuerdetails', 'local_badgecerts'));
 
@@ -160,21 +170,22 @@ class edit_cert_details_form extends moodleform {
         $mform->setType('issuercontact', PARAM_RAW);
         $mform->addHelpButton('issuercontact', 'contact', 'local_badgecerts');
 
-        $mform->addElement('header', 'datelimit', get_string('datelimit', 'local_badgecerts'));
+        if ($utils->check_mod_booking()) {
+            $mform->addElement('header', 'datelimit', get_string('datelimit', 'local_badgecerts'));
 
-        $mform->addElement('static', 'whenisthisfiltervalid', '', get_string('whenisthisfiltervalid', 'local_badgecerts'));
+            $mform->addElement('static', 'whenisthisfiltervalid', '', get_string('whenisthisfiltervalid', 'local_badgecerts'));
 
-        $mform->addElement('checkbox', 'restricttocertaindate', get_string('usestartandenddate', 'local_badgecerts'));
-        $mform->disabledIf('restricttocertaindate', 'certtype', 'in', array(0, 3));
+            $mform->addElement('checkbox', 'restricttocertaindate', get_string('usestartandenddate', 'local_badgecerts'));
+            $mform->disabledIf('restricttocertaindate', 'certtype', 'in', array(0, 3));
 
-        $mform->addElement('date_time_selector', 'startdate', get_string("starttime", "local_badgecerts"));
-        $mform->setType('startdate', PARAM_INT);
-        $mform->disabledIf('startdate', 'restricttocertaindate', 'notchecked');
+            $mform->addElement('date_time_selector', 'startdate', get_string("starttime", "local_badgecerts"));
+            $mform->setType('startdate', PARAM_INT);
+            $mform->disabledIf('startdate', 'restricttocertaindate', 'notchecked');
 
-        $mform->addElement('date_time_selector', 'enddate', get_string("endtime", "local_badgecerts"));
-        $mform->setType('enddate', PARAM_INT);
-        $mform->disabledIf('enddate', 'restricttocertaindate', 'notchecked');
-
+            $mform->addElement('date_time_selector', 'enddate', get_string("endtime", "local_badgecerts"));
+            $mform->setType('enddate', PARAM_INT);
+            $mform->disabledIf('enddate', 'restricttocertaindate', 'notchecked');
+        }
         $mform->addElement('header', 'qrcode', get_string('qrcode', 'local_badgecerts'));
 
         $mform->addElement('checkbox', 'qrshow', get_string('qrshow', 'local_badgecerts'));

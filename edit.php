@@ -87,8 +87,12 @@ if ($form->is_cancelled()) {
     $cert->format = $data->format;
     $cert->orientation = $data->orientation;
     $cert->unit = $data->unit;
-    $cert->bookingid = $data->bookingid;
-    $cert->quizgradingid = $data->quizgradingid;
+    if (isset($data->bookingid)) {
+        $cert->bookingid = $data->bookingid;
+    }
+    if (isset($data->quizgradingid)) {
+        $cert->quizgradingid = $data->quizgradingid;
+    }
     $cert->certtype = $data->certtype;
     $cert->qrdata = $data->qrdata;
     $cert->qrh = $data->qrh;

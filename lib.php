@@ -24,6 +24,8 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
+require_once($CFG->dirroot . '/local/badgecerts/classes/utils.php');
+
 /*
  * Number of records per page.
  */
@@ -154,7 +156,7 @@ class badge_certificate {
      */
     public function save() {
         global $DB;
-
+        $DB->set_debug(true);
         $fordb = new stdClass();
         foreach (get_object_vars($this) as $k => $v) {
             $fordb->{$k} = $v;
@@ -503,7 +505,82 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
     global $DB;
     $certs = array();
 
-    $sql = 'SELECT
+    $utils = new \local\badgecerts\classes\utils();
+
+    $quizgrading = '';
+    $booking = '';
+
+    if ($utils->check_mod_quizgrading()) {
+        $quizgrading = 'OR (SELECT IF(bc.quizgradingid > 0 AND bc.certtype = 3,
+            (SELECT
+                IF(COUNT(*) > 0, 1, 0)
+            FROM
+                {quizgrading_results} AS qr
+            WHERE
+                qr.userid = u.id)
+            , 0)) = 1';
+    }
+
+    if ($utils->check_mod_booking()) {
+        $booking = 'OR (SELECT
+        IF(bc.bookingid > 0 AND bc.certtype = 1,
+                (SELECT
+                        IF(COUNT(*) > 0, 1, 0)
+                    FROM
+                        {booking_answers} ans
+                    LEFT JOIN
+                        {booking_options} bo ON ans.optionid = bo.id
+                    WHERE
+                        ans.bookingid = (SELECT
+                                instance
+                            FROM
+                                {course_modules} AS cm
+                            WHERE
+                                cm.id = bc.bookingid)
+                            AND ans.userid = u.id AND ans.completed = 1 AND CASE WHEN bc.startdate != 0
+                            THEN bo.coursestarttime >= bc.startdate AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END),
+                0) = 1
+        OR (SELECT
+        IF(bc.bookingid > 0 AND bc.certtype = 4,
+                (SELECT
+                        IF(COUNT(*) > 0, 1, 0)
+                    FROM
+                        {booking_answers} AS ans
+                    LEFT JOIN
+                        {booking_options} bo ON ans.optionid = bo.id
+                    WHERE
+                        ans.bookingid = (SELECT
+                                instance
+                            FROM
+                                {course_modules} AS cm
+                            WHERE
+                                cm.id = bc.bookingid)
+                            AND ans.userid = u.id AND ans.completed = 1 AND CASE WHEN bc.startdate != 0
+                             THEN bo.coursestarttime >= bc.startdate AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END),
+                0)) = 1
+        OR (SELECT
+        IF(bc.bookingid > 0 AND bc.certtype = 2,
+                (SELECT
+                        IF(COUNT(*) > 0, 1, 0)
+                    FROM
+                        {booking_teachers} tch
+                    LEFT JOIN
+                        {booking_options} bo ON tch.optionid = bo.id
+                    WHERE
+                        tch.bookingid = (SELECT
+                                instance
+                            FROM
+                                {course_modules} AS cm
+                            WHERE
+                                cm.id = bc.bookingid)
+                            AND tch.userid = u.id AND tch.completed = 1 AND
+                            CASE WHEN bc.startdate != 0 THEN bo.coursestarttime >= bc.startdate
+                            AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END),
+                0)
+     = 1))';
+    }
+
+    $sql = "SELECT
                 bc.id,
                 bc.name,
                 b.courseid,
@@ -521,70 +598,9 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
                 AND bc.certid IS NOT null
                 AND bc.status >= 1 AND (
             (SELECT IF(bc.certtype = 0, 1, 0)) = 1
-            OR (SELECT IF(bc.quizgradingid > 0 AND bc.certtype = 3,
-                        (SELECT
-                            IF(COUNT(*) > 0, 1, 0)
-                        FROM
-                            {quizgrading_results} AS qr
-                        WHERE
-                            qr.userid = u.id)
-                , 0)) = 1
-            OR (SELECT
-            IF(bc.bookingid > 0 AND bc.certtype = 1,
-                    (SELECT
-                            IF(COUNT(*) > 0, 1, 0)
-                        FROM
-                            {booking_answers} ans
-                        LEFT JOIN
-                            {booking_options} bo ON ans.optionid = bo.id
-                        WHERE
-                            ans.bookingid = (SELECT
-                                    instance
-                                FROM
-                                    {course_modules} AS cm
-                                WHERE
-                                    cm.id = bc.bookingid)
-                                AND ans.userid = u.id AND ans.completed = 1 AND CASE WHEN bc.startdate != 0
-                                THEN bo.coursestarttime >= bc.startdate AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END),
-                    0) = 1
-            OR (SELECT
-            IF(bc.bookingid > 0 AND bc.certtype = 4,
-                    (SELECT
-                            IF(COUNT(*) > 0, 1, 0)
-                        FROM
-                            {booking_answers} AS ans
-                        LEFT JOIN
-                            {booking_options} bo ON ans.optionid = bo.id
-                        WHERE
-                            ans.bookingid = (SELECT
-                                    instance
-                                FROM
-                                    {course_modules} AS cm
-                                WHERE
-                                    cm.id = bc.bookingid)
-                                AND ans.userid = u.id AND ans.completed = 1 AND CASE WHEN bc.startdate != 0
-                                 THEN bo.coursestarttime >= bc.startdate AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END),
-                    0)) = 1
-            OR (SELECT
-            IF(bc.bookingid > 0 AND bc.certtype = 2,
-                    (SELECT
-                            IF(COUNT(*) > 0, 1, 0)
-                        FROM
-                            {booking_teachers} tch
-                        LEFT JOIN
-                            {booking_options} bo ON tch.optionid = bo.id
-                        WHERE
-                            tch.bookingid = (SELECT
-                                    instance
-                                FROM
-                                    {course_modules} AS cm
-                                WHERE
-                                    cm.id = bc.bookingid)
-                                AND tch.userid = u.id AND tch.completed = 1 AND
-                                CASE WHEN bc.startdate != 0 THEN bo.coursestarttime >= bc.startdate
-                                AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END),
-                    0)
-         = 1)))';
+            {$quizgrading}
+            {$booking}
+            )";
     $params[] = $userid;
 
     if (!empty($search)) {
@@ -720,6 +736,7 @@ function booking_getbookingoptions($cmid = null, $optionid = null) {
  * Get user data for badge.
  */
 function getuserdata($userid = null) {
+    global $DB;
     // Get a recipient from database.
     $namefields = get_all_user_name_fields(true, 'u');
     $user = $DB->get_record_sql("SELECT u.id, $namefields, u.deleted,
@@ -747,6 +764,26 @@ function getuserdata($userid = null) {
 }
 
 /**
+ * Get certain data gor badge.
+ */
+function get_badge_data($cert, $badge) {
+    $assertion = new core_badges_assertion($badge->hash);
+    $cert->issued = $assertion->get_badge_assertion();
+    $cert->badgeclass = $assertion->get_badge_class();
+
+    $cert->recipient = getuserdata($badge->userid);
+    $user = $cert->recipient;
+
+    $booking = new StdClass();
+    $booking->title = get_string('titlenotset', 'local_badgecerts');
+    $booking->startdate = get_string('datenotdefined', 'local_badgecerts');
+    $booking->enddate = get_string('datenotdefined', 'local_badgecerts');
+    $booking->duration = 0;
+
+    return array($cert, $badge, $booking, $user);
+}
+
+/**
  * Get all certificates for courseid - for API!
  */
 function get_all_certificates($courseid = null) {
@@ -770,17 +807,7 @@ function get_all_certificates($courseid = null) {
         $cert = new badge_certificate($certificate->id);
 
         foreach ($badges as $badge) {
-            $assertion = new core_badges_assertion($badge->hash);
-            $cert->issued = $assertion->get_badge_assertion();
-            $cert->badgeclass = $assertion->get_badge_class();
-
-            $cert->recipient = getuserdata($badge->userid);
-
-            $booking = new StdClass();
-            $booking->title = get_string('titlenotset', 'local_badgecerts');
-            $booking->startdate = get_string('datenotdefined', 'local_badgecerts');
-            $booking->enddate = get_string('datenotdefined', 'local_badgecerts');
-            $booking->duration = 0;
+            list($cert, $badge, $booking, $user) = get_badge_data($cert, $badge);
 
             if ($cert->bookingid > 0 && in_array($cert->certtype, array(1, 2))) {
                 $optionid = booking_getbookingoptionid($cert->bookingid, $badge->userid);
@@ -1055,18 +1082,7 @@ function bulk_generate_certificates($certid, $badges) {
     // Add badge certificate background image.
     if ($cert->certbgimage && !empty($badges)) {
         foreach ($badges as $badge) {
-            $assertion = new core_badges_assertion($badge->hash);
-            $cert->issued = $assertion->get_badge_assertion();
-            $cert->badgeclass = $assertion->get_badge_class();
-
-            $cert->recipient = getuserdata($badge->userid);
-
-            // Get booking related data.
-            $booking = new StdClass();
-            $booking->title = get_string('titlenotset', 'local_badgecerts');
-            $booking->startdate = get_string('datenotdefined', 'local_badgecerts');
-            $booking->enddate = get_string('datenotdefined', 'local_badgecerts');
-            $booking->duration = 0;
+            list($cert, $badge, $booking, $user) = get_badge_data($cert, $badge);
 
             if ($cert->bookingid > 0 && in_array($cert->certtype, array(1, 2))) {
                 $optionids = booking_getbookingoptionsid($bookingid, $badge->userid, $cert);

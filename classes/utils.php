@@ -16,15 +16,37 @@
 
 /**
  * @package    local_badgecerts
- * @copyright  2014 onwards Gregor Anželj
+ * @copyright  2014 onwards Andraž Prinčič
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @author     Gregor Anželj <gregor.anzelj@gmail.com>
+ * @author     Andraž Prinčič <atletek@gmail.com>
  */
+
+namespace local\badgecerts\classes;
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2019071100;
-$plugin->requires = 2016052300; // Moodle 3.1 or newer.
-$plugin->component = 'local_badgecerts';
-$plugin->maturity = MATURITY_BETA;
-$plugin->release = '1.0';
+class utils {
+
+    /**
+     * Check if module booking is installed.
+     *
+     * @return boolean
+     */
+    public function check_mod_booking() {
+        global $CFG;
+
+        return file_exists("{$CFG->dirroot}/mod/booking/lib.php");
+    }
+
+    /**
+     * Check if module quizgrading is installed.
+     *
+     * @return boolean
+     */
+    public function check_mod_quizgrading() {
+        global $CFG;
+
+        return file_exists("{$CFG->dirroot}/mod/quizgrading/lib.php");
+    }
+
+}
