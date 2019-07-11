@@ -77,7 +77,7 @@ $PAGE->set_context($context);
 $title = get_string('mybadgecertificates', 'local_badgecerts');
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
-$PAGE->set_pagelayout('mydashboard');
+$PAGE->set_pagelayout('incourse');
 
 $output = $PAGE->get_renderer('local_badgecerts');
 
