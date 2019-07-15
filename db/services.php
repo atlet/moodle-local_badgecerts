@@ -24,15 +24,15 @@
 defined('MOODLE_INTERNAL') || die();
 
 // We defined the web service functions to install.
-$functions = array(
-        'local_badgecerts_get_certificates' => array(
+$functions = [
+        'local_badgecerts_get_certificates' => [
                 'classname'   => 'local_badgecerts_external',
                 'methodname'  => 'get_certificates',
                 'classpath'   => 'local/badgecerts/externallib.php',
                 'description' => 'Return all certificates for bookingid.',
                 'type'        => 'read',
-        )
-);
+        ]
+        ];
 
 // We define the services to install as pre-build services. A pre-build service is not editable by administrator.
 $services = array(
