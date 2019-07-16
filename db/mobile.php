@@ -31,7 +31,7 @@ $addons = [
             'badgecertificateslist' => [ // Handler unique name (alphanumeric).
                 'displaydata' => [
                     'title' => 'mybadgecertificates',
-                    'icon' => '/pix/t/award.png',
+                    'icon' => 'document',
                     'class' => '',
                 ],
 
@@ -43,6 +43,7 @@ $addons = [
         ],
         'lang' => [ // Language strings that are used in all the handlers.
             ['mybadgecertificates', 'local_badgecerts'],
+            ['downloadcertificate', 'local_badgecerts']
         ],
     ],
 ];
