@@ -53,7 +53,6 @@ class mobile {
             $durl = new moodle_url('/local/badgecerts/mycerts.php',
                         array('download' => $badge->id, 'hash' => $badge->uniquehash, 'sesskey' => sesskey()));
             $certs[$key]->downloadurl = html_entity_decode($durl->out());
-            $certs[$key]->arr = print_r($certs, true);
         }
 
         $data = array('badges' => array_values($certs));
