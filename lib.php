@@ -1228,7 +1228,8 @@ function local_badgecerts_extend_navigation_user(navigation_node $parentnode, st
 
             $url = new moodle_url('/local/badgecerts/index.php', array('type' => CERT_TYPE_COURSE, 'id' => $course->id));
             $coursenode = $PAGE->navigation->find($course->id, navigation_node::TYPE_COURSE);
-            $coursenode->add(get_string('managebadgecertificates', 'local_badgecerts'), $url, navigation_node::TYPE_SETTING, null, 'managecerts', new pix_icon('i/folder', 'badgecerts'));
+            $coursenode->add(get_string('managebadgecertificates', 'local_badgecerts'), $url,
+                navigation_node::TYPE_SETTING, null, 'managecerts', new pix_icon('i/folder', 'badgecerts'));
         }
     }
 }
