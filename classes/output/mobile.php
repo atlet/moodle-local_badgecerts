@@ -64,15 +64,24 @@ class mobile {
                     'html' => $OUTPUT->render_from_template('local_badgecerts/mobile_badgecerts_list', $data)
                 )
             ),
-            'javascript' => 'this.downloadPDF = function(result) {
-                const linkSource = result.data;
-                const downloadLink = document.createElement("a");
-                const fileName = "vct_illustration.pdf";
+            'javascript' => "this.downloadPDF = function(result) {
+                this.file.createFile(this.file.externalRootDirectory,'certificate.pdf',true).then((response) => {
+                    const byteCharacters = atob(result.data);
+                    const byteNumbers = new Array(byteCharacters.length);
+                    for (let i = 0; i < byteCharacters.length; i++) {
+                        byteNumbers[i] = byteCharacters.charCodeAt(i);
+                    }
 
-                downloadLink.href = linkSource;
-                downloadLink.download = fileName;
-                downloadLink.click();
-            };',
+                    const byteArray = new Uint8Array(byteNumbers);
+                    const blob = new Blob([byteArray], {type: 'application/pdf'});
+
+                    this.file.writeExistingFile(this.file.externalRootDirectory,'certificate.pdf',blob).then((response) => {
+                      this.fileOpener.open(this.file.externalRootDirectory + 'certificate.pdf','application/pdf').then((response) => {
+
+                      });
+                    });
+                 });
+            };",
             'otherdata' => ''
 
         );
