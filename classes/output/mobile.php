@@ -53,6 +53,7 @@ class mobile {
             $durl = new moodle_url('/local/badgecerts/mycerts.php',
                         array('download' => $badge->id, 'hash' => $badge->uniquehash, 'sesskey' => sesskey()));
             $certs[$key]->downloadurl = html_entity_decode($durl->out());
+            $certs[$key]->arr = print_r($certs, true);
         }
 
         $data = array('badges' => array_values($certs));
@@ -64,7 +65,15 @@ class mobile {
                     'html' => $OUTPUT->render_from_template('local_badgecerts/mobile_badgecerts_list', $data)
                 )
             ),
-            'javascript' => '',
+            'javascript' => 'this.downloadPDF = function(result) {
+                const linkSource = result.data;
+                const downloadLink = document.createElement("a");
+                const fileName = "Certificate.pdf";
+
+                downloadLink.href = linkSource;
+                downloadLink.download = fileName;
+                downloadLink.click();
+            };',
             'otherdata' => ''
 
         );

@@ -1050,7 +1050,7 @@ function get_placeholders($cert, $booking, $quizreporting = null) {
 /**
  * Bulk generate badge certificates - only for submited users.
  */
-function bulk_generate_certificates($certid, $badges) {
+function bulk_generate_certificates($certid, $badges, $dest = 'D') {
     global $CFG, $DB;
 
     // Generate badge certificate for each of the issued badges.
@@ -1160,7 +1160,15 @@ function bulk_generate_certificates($certid, $badges) {
 
         // Close and output PDF document.
         // This method has several options, check the source code documentation for more information.
-        $pdf->Output($cert->badgeclass['name'] . '.pdf', 'D');
+        switch ($dest) {
+            case 'S':
+                return $pdf->Output($cert->badgeclass['name'] . '.pdf', $dest);
+                break;
+
+            default:
+                $pdf->Output($cert->badgeclass['name'] . '.pdf', $dest);
+                break;
+        }
     }
 }
 

@@ -31,6 +31,14 @@ $functions = [
                 'classpath'   => 'local/badgecerts/externallib.php',
                 'description' => 'Return all certificates for bookingid.',
                 'type'        => 'read',
+        ],
+        'local_badgecerts_download_user_certificate' => [
+                'classname'   => 'local_badgecerts_external',
+                'methodname'  => 'download_user_certificate',
+                'classpath'   => 'local/badgecerts/externallib.php',
+                'description' => 'Download user certificate as PDF.',
+                'type'        => 'read',
+                'services'      => [MOODLE_OFFICIAL_MOBILE_SERVICE, 'local_mobile'],
         ]
         ];
 

@@ -32,6 +32,37 @@ class local_badgecerts_external extends external_api {
 
     /**
      * Returns description of method parameters
+     * @return local_badgecerts_download_user_certificate
+     */
+    public static function download_user_certificate_parameters() {
+        return new external_function_parameters(
+            array(
+                'hash' => new external_value(PARAM_ALPHANUM, 'Badge hash', VALUE_DEFAULT, ''),
+                'certid' => new external_value(PARAM_INT, 'Certificate id', VALUE_DEFAULT, 0)
+            )
+        );
+    }
+
+    /**
+     * Return PDF of user certificate.
+     */
+    public static function download_user_certificate($hash = '', $certid = 0) {
+        global $USER;
+
+        $badges = array();
+
+        $user = new stdClass();
+
+        $user->userid = $USER->id;
+        $user->hash = $hash;
+
+        $badges[$USER->id] = $user;
+
+        return array('data' => "data:application/pdf;base64," . base64_encode(bulk_generate_certificates($certid, $badges, 'S')));
+    }
+
+    /**
+     * Returns description of method parameters
      * @return local_badgecerts_get_certificates
      */
     public static function get_certificates_parameters() {
@@ -49,6 +80,18 @@ class local_badgecerts_external extends external_api {
         self::validate_context($context);
 
         return get_all_certificates($courseid);
+    }
+
+    /**
+     * Returns description of method result value
+     * @return local_badgecerts_download_user_certificate
+     */
+    public static function download_user_certificate_returns() {
+        return new external_single_structure(
+            array(
+                'data' => new external_value(PARAM_BASE64, 'PDF file.'),
+            )
+        );
     }
 
     /**
