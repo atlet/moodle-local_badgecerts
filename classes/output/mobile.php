@@ -67,7 +67,7 @@ class mobile {
             'javascript' => 'this.downloadPDF = function(result) {
                 const linkSource = result.data;
                 const downloadLink = document.createElement("a");
-                const fileName = "Certificate.pdf";
+                const fileName = "vct_illustration.pdf";
 
                 downloadLink.href = linkSource;
                 downloadLink.download = fileName;

@@ -58,7 +58,9 @@ class local_badgecerts_external extends external_api {
 
         $badges[$USER->id] = $user;
 
-        return array('data' => "data:application/pdf;base64," . base64_encode(bulk_generate_certificates($certid, $badges, 'S')));
+        $data = 'data:application/pdf;base64,' . base64_encode(bulk_generate_certificates($certid, $badges, 'S'));
+
+        return array('data' => $data);
     }
 
     /**
@@ -89,7 +91,7 @@ class local_badgecerts_external extends external_api {
     public static function download_user_certificate_returns() {
         return new external_single_structure(
             array(
-                'data' => new external_value(PARAM_BASE64, 'PDF file.'),
+                'data' => new external_value(PARAM_TEXT, 'PDF file.'),
             )
         );
     }
