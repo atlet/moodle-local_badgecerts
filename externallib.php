@@ -58,7 +58,7 @@ class local_badgecerts_external extends external_api {
 
         $badges[$USER->id] = $user;
 
-        $data = 'data:application/pdf;base64,' . base64_encode(bulk_generate_certificates($certid, $badges, 'S'));
+        $data = base64_encode(bulk_generate_certificates($certid, $badges, 'S'));
 
         return array('data' => $data);
     }
