@@ -64,24 +64,42 @@ class mobile {
                     'html' => $OUTPUT->render_from_template('local_badgecerts/mobile_badgecerts_list', $data)
                 )
             ),
-            'javascript' => "this.downloadPDF = function(result) {
-                this.file.createFile(this.file.externalRootDirectory,'certificate.pdf',true).then((response) => {
-                    const byteCharacters = atob(result.data);
-                    const byteNumbers = new Array(byteCharacters.length);
-                    for (let i = 0; i < byteCharacters.length; i++) {
-                        byteNumbers[i] = byteCharacters.charCodeAt(i);
-                    }
+            'javascript' => "",
+            'otherdata' => ''
 
-                    const byteArray = new Uint8Array(byteNumbers);
-                    const blob = new Blob([byteArray], {type: 'application/pdf'});
+        );
+    }
 
-                    this.file.writeExistingFile(this.file.externalRootDirectory,'certificate.pdf',blob).then((response) => {
-                      this.fileOpener.open(this.file.externalRootDirectory + 'certificate.pdf','application/pdf').then((response) => {
+    /**
+     * Returno certificate file for downloading.
+     */
+    public static function mobile_badgecerts_download($args) {
+        global $OUTPUT, $USER;
 
-                      });
-                    });
-                 });
-            };",
+        $args = (object) $args;
+
+        require_login();
+
+        $badges = array();
+
+        $user = (object) array();
+
+        $user->userid = $USER->id;
+        $user->hash = $args->hash;
+
+        $badges[$USER->id] = $user;
+
+        $pdfdata = base64_encode(bulk_generate_certificates($args->certid, $badges, 'S'));
+        $data = array('data' => "data:application/pdf;base64,{$pdfdata}");
+
+        return array(
+            'templates' => array(
+                array(
+                    'id' => 'main',
+                    'html' => $OUTPUT->render_from_template('local_badgecerts/mobile_badgecerts_download', $data)
+                )
+            ),
+            'javascript' => "",
             'otherdata' => ''
 
         );

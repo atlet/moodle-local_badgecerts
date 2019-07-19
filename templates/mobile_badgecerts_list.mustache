@@ -5,7 +5,7 @@
         <ion-card-header>
             <ion-card-title><% name %></ion-card-title>
         </ion-card-header>
-        <img core-site-plugins-call-ws name="local_badgecerts_download_user_certificate" [params]="{hash: '<% uniquehash %>', certid: <% id %>}" [preSets]="{getFromCache: 0, saveToCache: 0}" (onSuccess)="downloadPDF($event)" src="<% imageurl %>" />
+        <img core-site-plugins-new-content component="local_badgecerts" method="mobile_badgecerts_download" [args]="{hash: '<% uniquehash %>', certid: <% id %>}" [preSets]="{getFromCache: 0, saveToCache: 0}" samePage="true" src="<% imageurl %>" />
     </ion-card>
 <%/badges%>
 </div>
