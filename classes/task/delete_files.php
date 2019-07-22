@@ -14,17 +14,33 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace local_badgecerts\task;
+
 /**
- * @package    local_badgecerts
- * @copyright  2014 onwards Gregor Anželj
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @author     Gregor Anželj <gregor.anzelj@gmail.com>
+ * An example of a scheduled task.
  */
+class delete_files extends \core\task\scheduled_task {
 
-defined('MOODLE_INTERNAL') || die();
+    /**
+     * Return the task's name as shown in admin screens.
+     *
+     * @return string
+     */
+    public function get_name() {
+        return get_string('mybadgecertificates', 'local_badgecerts');
+    }
 
-$plugin->version = 2019072200;
-$plugin->requires = 2018051700; // Moodle 3.5 or newer.
-$plugin->component = 'local_badgecerts';
-$plugin->maturity = MATURITY_STABLE;
-$plugin->release = '1.0';
+    /**
+     * Execute the task.
+     */
+    public function execute() {
+        global $CFG;
+        $dir = "{$CFG->dirroot}/local/badgecerts/tmp/";
+
+        foreach (glob($dir . "*.pdf") as $file) {
+            if(time() - filectime($file) > 300) {
+                unlink($file);
+            }
+        }
+    }
+}

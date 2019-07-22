@@ -14,17 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * @package    local_badgecerts
- * @copyright  2014 onwards Gregor Anželj
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @author     Gregor Anželj <gregor.anzelj@gmail.com>
- */
-
-defined('MOODLE_INTERNAL') || die();
-
-$plugin->version = 2019072200;
-$plugin->requires = 2018051700; // Moodle 3.5 or newer.
-$plugin->component = 'local_badgecerts';
-$plugin->maturity = MATURITY_STABLE;
-$plugin->release = '1.0';
+$tasks = [
+    [
+        'classname' => 'local_badgecerts\task\delete_files',
+        'blocking' => 0,
+        'minute' => '*/5',
+        'hour' => '*',
+        'day' => '*',
+        'month' => '*',
+        'dayofweek' => '*',
+    ],
+];

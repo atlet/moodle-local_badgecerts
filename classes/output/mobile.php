@@ -91,21 +91,21 @@ class mobile {
 
         $pdfdata = bulk_generate_certificates($args->certid, $badges, 'S');
 
-        $tmpFile = uniqid() . '.pdf';
+        $tmpfile = uniqid() . '.pdf';
         $dir = "{$CFG->dirroot}/local/badgecerts/tmp/";
 
         if (!file_exists($dir)) {
             mkdir($dir, 0777, true);
         }
 
-        file_put_contents("{$dir}{$tmpFile}", $pdfdata);
+        file_put_contents("{$dir}{$tmpfile}", $pdfdata);
 
-        $url = new moodle_url("/local/badgecerts/tmp/{$tmpFile}");
+        $url = new moodle_url("/local/badgecerts/tmp/{$tmpfile}");
         $dir = new moodle_url("/local/badgecerts/tmp/");
 
         $data = array(
             'data' => $url->out(),
-            'filename' => $tmpFile,
+            'filename' => $tmpfile,
             'fileurl' => $dir->out(),
             'url' => "/local/badgecerts/tmp/"
         );
