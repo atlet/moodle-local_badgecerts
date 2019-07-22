@@ -74,7 +74,7 @@ class mobile {
      * Returno certificate file for downloading.
      */
     public static function mobile_badgecerts_download($args) {
-        global $OUTPUT, $USER;
+        global $OUTPUT, $USER, $CFG;
 
         $args = (object) $args;
 
@@ -89,8 +89,20 @@ class mobile {
 
         $badges[$USER->id] = $user;
 
-        $pdfdata = base64_encode(bulk_generate_certificates($args->certid, $badges, 'S'));
-        $data = array('data' => "data:application/pdf;base64,{$pdfdata}");
+        $pdfdata = bulk_generate_certificates($args->certid, $badges, 'S');
+
+        $tmpFile = uniqid() . '.pdf';
+        $dir = "{$CFG->dirroot}/local/badgecerts/tmp/";
+
+        if (!file_exists($dir)) {
+            mkdir($dir, 0777, true);
+        }
+
+        file_put_contents("{$dir}{$tmpFile}", $pdfdata);
+
+        $url = new moodle_url("/local/badgecerts/tmp/{$tmpFile}");
+
+        $data = array('data' => $url->out());
 
         return array(
             'templates' => array(
