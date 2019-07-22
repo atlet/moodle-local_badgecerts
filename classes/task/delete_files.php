@@ -38,7 +38,7 @@ class delete_files extends \core\task\scheduled_task {
         $dir = "{$CFG->dirroot}/local/badgecerts/tmp/";
 
         foreach (glob($dir . "*.pdf") as $file) {
-            if(time() - filectime($file) > 300) {
+            if (time() - filectime($file) > 300) {
                 unlink($file);
             }
         }
