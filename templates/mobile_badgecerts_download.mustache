@@ -3,9 +3,12 @@
     <ion-card>
         <ion-card-header>
             <ion-card-title></ion-card-title>
-            <core-file [file]="{fileurl: '<% data %>', filename: 'certificate.pdf'}" ></core-file>
+            <core-file [file]="{fileurl: '<% data %>', filename: '<% filename %>'}" ></core-file>
             <a href="<% data %>" download="file.pdf" core-external-content>download</a>
-            <p><% data %></p>
+            <p><% data %><br>
+            <% filename %><br>
+            <% fileurl %><br>
+            </p>
         </ion-card-header>
     </ion-card>
 </div>

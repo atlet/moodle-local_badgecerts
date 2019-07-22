@@ -101,8 +101,14 @@ class mobile {
         file_put_contents("{$dir}{$tmpFile}", $pdfdata);
 
         $url = new moodle_url("/local/badgecerts/tmp/{$tmpFile}");
+        $dir = new moodle_url("/local/badgecerts/tmp/");
 
-        $data = array('data' => $url->out());
+        $data = array(
+            'data' => $url->out(),
+            'filename' => $tmpFile,
+            'fileurl' => $dir->out(),
+            'url' => "/local/badgecerts/tmp/"
+        );
 
         return array(
             'templates' => array(
