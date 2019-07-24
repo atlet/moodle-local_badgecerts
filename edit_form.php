@@ -136,9 +136,23 @@ class edit_cert_details_form extends moodleform {
         if (isset($cert->certbgimage) && !empty($cert->certbgimage)) {
             // Display which SVG template was uploaded.
             $mform->addElement('static', 'currentbgimage', get_string('currentimage', 'local_badgecerts'), $cert->certbgimage);
-        } else {
-            // New badge certificate form - require SVG template!
-            $mform->addRule('certbgimage', null, 'required');
+        }
+
+        // Reuse template.
+        if ($action == 'new') {
+            $allbadgecerts = $DB->get_records_sql('SELECT id, description FROM {local_badgecerts}');
+
+            $alloptions = array();
+
+            foreach ($allbadgecerts as $key => $value) {
+                $alloptions[$value->id] = $value->description;
+            }
+
+            $mform->addElement('checkbox', 'reuse', get_string('reusetemplate', 'local_badgecerts'));
+            $mform->addElement('select', 'reusetemplate', get_string('reusecertificatetemplate', 'local_badgecerts'), $alloptions);
+
+            $mform->disabledIf('certbgimage', 'reuse', 'checked');
+            $mform->disabledIf('reusetemplate', 'reuse', 'notchecked');
         }
 
         if ($utils->check_mod_booking()) {
@@ -248,8 +262,21 @@ class edit_cert_details_form extends moodleform {
      * Validates form data
      */
     public function validation($data, $files) {
-        global $DB;
+        global $DB, $USER;
         $errors = parent::validation($data, $files);
+
+        if (isset($data['reuse'])) {
+            if (empty($data['reusetemplate'])) {
+                $errors['reusetemplate'] = get_string('error:selecttemplate', 'local_badgecerts');
+            }
+        } else if ($this->_customdata['action'] == 'new') {
+            $usercontext = context_user::instance($USER->id);
+            $fs = get_file_storage();
+            $tmpfiles = $fs->get_area_files($usercontext->id, 'user', 'draft', $data['certbgimage'], 'sortorder, id', false);
+            if (empty($tmpfiles)) {
+                $errors['certbgimage'] = get_string('error:selecttemplate', 'local_badgecerts');
+            }
+        }
 
         if (!empty($data['issuercontact']) && !validate_email($data['issuercontact'])) {
             $errors['issuercontact'] = get_string('invalidemail');

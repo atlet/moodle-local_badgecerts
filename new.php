@@ -72,7 +72,6 @@ if ($form->is_cancelled()) {
     // Creating new badge certificate here.
     $now = time();
 
-    $getfilename = $form->get_new_filename('certbgimage');
     $fordb->name = $data->name;
     $fordb->description = $data->description;
     $fordb->official = isset($data->official) ? 1 : 0;
@@ -98,12 +97,20 @@ if ($form->is_cancelled()) {
 
     $newid = $DB->insert_record('local_badgecerts', $fordb, true);
 
-    if ($getfilename) {
-        // Create folder if it doesn't exist.
-        $dirname = '/filedir/cert';
-        if (!file_exists($CFG->dataroot.$dirname) and !is_dir($CFG->dataroot.$dirname)) {
-            mkdir($CFG->dataroot.$dirname);
-        }
+    // Create folder if it doesn't exist.
+    $dirname = '/filedir/cert';
+    if (!file_exists($CFG->dataroot.$dirname) and !is_dir($CFG->dataroot.$dirname)) {
+        mkdir($CFG->dataroot.$dirname);
+    }
+
+    if (isset($data->reuse)) {
+        $template = $DB->get_record_sql('SELECT id, description, certbgimage FROM {local_badgecerts} WHERE id = ?;', [$data->reusetemplate]);
+        $getfilename = str_replace($dirname . '/', "", $template->certbgimage);
+        $filename = $dirname . '/' . $newid . '_' . $getfilename;
+        copy($CFG->dataroot.$template->certbgimage, $CFG->dataroot.$filename);
+        $DB->set_field('local_badgecerts', 'certbgimage', $filename, array('id' => $newid));
+    } else {
+        $getfilename = $form->get_new_filename('certbgimage');
         $filename = $dirname . '/' . $newid . '_' . $getfilename;
         // Save file to standard filesystem.
         $form->save_file('certbgimage', $CFG->dataroot.$filename, true);

@@ -243,3 +243,6 @@ $string['usestartandenddate'] = 'Use start and end time';
 $string['starttime'] = 'Start time';
 $string['endtime'] = 'End time';
 $string['certid'] = 'Badge';
+$string['reusecertificatetemplate'] = 'Reuse certificate template';
+$string['reusetemplate'] = 'Reuse template';
+$string['error:selecttemplate'] = 'You must select a file!';
