@@ -64,6 +64,11 @@ class local_badgecerts_renderer extends plugin_renderer_base {
                         array('download' => $badge->id, 'hash' => $badge->uniquehash, 'sesskey' => sesskey()));
                 $badgeview = $this->output->action_icon($burl, new pix_icon('i/info', get_string('info')));
                 $badgeview .= $this->output->action_icon($url, new pix_icon('a/download_all', get_string('download')));
+
+                if (in_array($badge->certtype, array(1, 2, 4)) && $badge->bookingid > 0) {
+                    $bookingurl = new moodle_url('/mod/booking/view.php', array('id' => $badge->bookingid));
+                    $badgeview .= $this->output->action_icon($bookingurl, new pix_icon('i/grades', get_string('booking', 'local_badgecerts')));
+                }
             }
 
             $actions = html_writer::tag('div', $push . $badgeview . $status, array('class' => 'badge-actions'));

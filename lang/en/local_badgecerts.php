@@ -246,3 +246,4 @@ $string['certid'] = 'Badge';
 $string['reusecertificatetemplate'] = 'Reuse certificate template';
 $string['reusetemplate'] = 'Reuse template';
 $string['error:selecttemplate'] = 'You must select a file!';
+$string['booking'] = 'Booking module';

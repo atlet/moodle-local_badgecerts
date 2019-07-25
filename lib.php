@@ -586,7 +586,9 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
                 b.courseid,
                 b.id badgeid,
                 bi.uniquehash,
-                b.type
+                b.type,
+                bc.bookingid,
+                bc.certtype
             FROM {local_badgecerts} bc
             LEFT JOIN {badge_issued} bi
                 ON bi.badgeid = bc.certid
