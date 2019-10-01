@@ -730,7 +730,7 @@ function booking_getbookingoptions($cmid = null, $optionid = null) {
         return array('text' => $booking->option->text,
             'coursestarttime' => $booking->option->coursestarttime,
             'courseendtime' => $booking->option->courseendtime,
-            'duration' => $booking->booking->duration);
+            'duration' => $booking->booking->settings->duration);
     }
 }
 
