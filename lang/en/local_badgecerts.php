@@ -44,6 +44,7 @@ The SVG file can contain the following (case sensitive) placeholders (in form of
 * **[[badge-course]]** - Adds the name of the course where badge was awarded
 * **[[badge-hash]]** - Adds the badge hash value
 * **[[badge-date-issued]]** - Adds the date when badge was issued
+* **[[booking-name]]** - Adds the seminar instance name
 * **[[booking-title]]** - Adds the seminar title
 * **[[booking-title-n]]** - Add title of option - n is number... it starts wit 1 end finish with 10
 * **[[booking-startdate]]** - Adds the seminar start date
@@ -161,6 +162,7 @@ $string['nobadgecertificates'] = 'There are no badge certificates available.';
 $string['nobadgecertificateelms'] = 'This badge certificate contains no elements.';
 $string['officialtype'] = 'Type';
 $string['officialtypedesc'] = 'Choose if this is "official" badge certificate which can be assigned only by admins and managers.';
+$string['preview:bookinginstancename'] = 'Booking instance name';
 $string['preview:seminartitle'] = 'Seminar title';
 $string['preview:seminarduration'] = '8 hours';
 $string['preview:recipientfname'] = 'John';

@@ -293,6 +293,7 @@ class badge_certificate {
                 '[[datetime-d/m/Y]]', // Adds the date in dd/mm/yyyy format.
                 '[[datetime-F]]', // Adds the date (used in DB datestamps).
                 '[[datetime-s]]', // Adds Unix Epoch Time timestamp.
+                '[[booking-name]]', // Adds the seminar instance name.
                 '[[booking-title]]', // Adds the seminar title.
                 '[[booking-startdate]]', // Adds the seminar start date.
                 '[[booking-enddate]]', // Adds the seminar end date.
@@ -319,6 +320,7 @@ class badge_certificate {
                 userdate($now, get_string('datetimeformat', 'local_badgecerts')),
                 strftime('%F', $now),
                 strftime('%s', $now),
+                get_string('preview:bookinginstancename', 'local_badgecerts'),
                 get_string('preview:seminartitle', 'local_badgecerts'),
                 userdate(strtotime('- 2 month', $now), get_string('datetimeformat', 'local_badgecerts')),
                 userdate(strtotime('- 1 month', $now), get_string('datetimeformat', 'local_badgecerts')),
@@ -399,7 +401,7 @@ function badges_get_certificates($type, $courseid = 0, $sort = '', $dir = '', $p
     $sorting = (($sort != '' && $dir != '') ? 'ORDER BY ' . $sort . ' ' . $dir : '');
 
     $sql = "SELECT $fields FROM {local_badgecerts} bc $usersql WHERE $where $sorting";
-    $records = $DB->get_records_sql($sql, $params, $page * $perpage, $perpage);
+    $records = $DB->get_records_sql($sql, $params, intval($page) * intval($perpage), $perpage);
 
     $certs = array();
     foreach ($records as $r) {
@@ -727,7 +729,9 @@ function booking_getbookingoptions($cmid = null, $optionid = null) {
     if (empty($booking)) {
         return false;
     } else {
-        return array('text' => $booking->option->text,
+        return array(
+            'name' => $booking->booking->settings->name,
+            'text' => $booking->option->text,
             'coursestarttime' => $booking->option->coursestarttime,
             'courseendtime' => $booking->option->courseendtime,
             'duration' => $booking->booking->settings->duration);
@@ -777,6 +781,7 @@ function get_badge_data($cert, $badge) {
     $user = $cert->recipient;
 
     $booking = new StdClass();
+    $booking->name = get_string('titlenotset', 'local_badgecerts');
     $booking->title = get_string('titlenotset', 'local_badgecerts');
     $booking->startdate = get_string('datenotdefined', 'local_badgecerts');
     $booking->enddate = get_string('datenotdefined', 'local_badgecerts');
@@ -832,6 +837,10 @@ function get_all_certificates($courseid = null) {
                     if (isset($options['duration']) && !empty($options['duration'])) {
                         $booking->title = $options['duration'];
                     }
+                    // Set seminar duration.
+                    if (isset($options['name']) && !empty($options['name'])) {
+                        $booking->name = $options['name'];
+                    }
                 }
             }
             // Replace all placeholder tags.
@@ -859,6 +868,7 @@ function get_all_certificates($courseid = null) {
             $owncert['bookingStartdate'] = $booking->startdate;
             $owncert['bookingEnddate'] = $booking->enddate;
             $owncert['bookingDuration'] = $booking->duration;
+            $owncert['bookingName'] = $booking->name;
             $owncert['recipientBirthdate'] = userdate((int) $cert->recipient->birthdate, get_string('strftimedatefullshort'));
             $owncert['recipientInstitution'] = $cert->recipient->institution;
             $owncert['badgeDateIssued'] = userdate((int) $cert->issued, get_string('strftimedatefullshort'));
@@ -933,6 +943,7 @@ function get_placeholders($cert, $booking, $quizreporting = null) {
         '[[datetime-d/m/Y]]', // Adds the date in dd/mm/yyyy format.
         '[[datetime-F]]', // Adds the date (used in DB datestamps).
         '[[datetime-s]]', // Adds Unix Epoch Time timestamp.
+        '[[booking-name]]', // Adds the seminar instance name.
         '[[booking-title]]', // Adds the seminar title.
         '[[booking-startdate]]', // Adds the seminar start date.
         '[[booking-enddate]]', // Adds the seminar end date.
@@ -984,6 +995,7 @@ function get_placeholders($cert, $booking, $quizreporting = null) {
         userdate($now, get_string('datetimeformat', 'local_badgecerts')),
         strftime('%F', $now),
         strftime('%s', $now),
+        $booking->name,
         $booking->title,
         $booking->startdate,
         $booking->enddate,
@@ -1091,6 +1103,13 @@ function bulk_generate_certificates($certid, $badges, $dest = 'D') {
                 foreach ($optionids as $optionid) {
                     if (isset($optionid) && $optionid > 0) {
                         $options = booking_getbookingoptions($coursemodule->id, $optionid);
+
+                        // Set seminar title.
+                        if (isset($options['name']) && !empty($options['name'])) {
+                            $booking->name = $options['name'];
+                        } else {
+                            $booking->name = get_string('titlenotset', 'local_badgecerts');
+                        }
 
                         // Set seminar title.
                         if (isset($options['text']) && !empty($options['text'])) {
