@@ -68,9 +68,8 @@ if ($day > 0) {
     if (in_array($cert->certtype, array(0, 1, 2, 4))) {
         $sqlwhere .= " AND d.dateissued BETWEEN :startdate AND :enddate";
     } else {
-        $sqlwhere .= " AND (SELECT COUNT(*) FROM {quizgrading_results} qr WHERE ' .
-            'qr.userid = u.id AND qr.quizgradingid = c.quizgradingid AND qr.datum_resitve ' .
-            'BETWEEN :startdate AND :enddate) > 0 ";
+        $sqlwhere .= " AND (SELECT COUNT(*) FROM {quizgrading_results} qr WHERE qr.userid = u.id AND qr.quizgradingid = c.quizgradingid AND
+        qr.datum_resitve BETWEEN :startdate AND :enddate) > 0 ";
     }
 
     $sqlvalues['startdate'] = mktime(0, 0, 0, $month, $day, $year);
