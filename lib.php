@@ -24,7 +24,7 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/local/badgecerts/classes/utils.php');
+use local_badgecerts\utils;
 
 /*
  * Number of records per page.
@@ -104,6 +104,9 @@ class badge_certificate {
     public $startdate;
     public $enddate;
     public $certid;
+    public $enablebookingoptions;
+    public $optionsincexc;
+    public $bookingoptions;
 
     /** @var array Badge certificate elements */
     public $elements = array();
@@ -507,12 +510,10 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
     global $DB;
     $certs = array();
 
-    $utils = new \local\badgecerts\classes\utils();
-
     $quizgrading = '';
     $booking = '';
 
-    if ($utils->check_mod_quizgrading()) {
+    if (utils::check_mod_quizgrading()) {
         $quizgrading = 'OR (SELECT IF(bc.quizgradingid > 0 AND bc.certtype = 3,
             (SELECT
                 IF(COUNT(*) > 0, 1, 0)
@@ -523,7 +524,7 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
             , 0)) = 1';
     }
 
-    if ($utils->check_mod_booking()) {
+    if (utils::check_mod_booking()) {
         $booking = 'OR (SELECT
         IF(bc.bookingid > 0 AND bc.certtype = 1,
                 (SELECT
@@ -672,6 +673,13 @@ function booking_getbookingoptionsid($bookingid = null, $userid = null, $cert = 
         return false;
     }
 
+    if ($cert->enablebookingoptions) {
+        $yesno = ($cert->optionsincexc == 1 ? '' : 'NOT');
+        $exsql = " AND ba.optionid {$yesno} IN ({$cert->bookingoptions})";
+    } else {
+        $exsql = '';
+    }
+
     $sql = "SELECT ba.optionid FROM ";
 
     switch ($cert->certtype) {
@@ -694,7 +702,7 @@ function booking_getbookingoptionsid($bookingid = null, $userid = null, $cert = 
         $sql .= "LEFT JOIN {booking_options} bo ON bo.id = ba.optionid ";
     }
 
-    $sql .= "WHERE ba.completed = 1 AND ba.userid = ? AND ba.bookingid = ? ";
+    $sql .= "WHERE ba.completed = 1 AND ba.userid = ? AND ba.bookingid = ? {$exsql} ";
 
     $conditions = array();
     $conditions[] = $userid;

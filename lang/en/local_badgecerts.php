@@ -249,3 +249,11 @@ $string['reusecertificatetemplate'] = 'Reuse certificate template';
 $string['reusetemplate'] = 'Reuse template';
 $string['error:selecttemplate'] = 'You must select a file!';
 $string['booking'] = 'Booking module';
+
+$string['bookingoptionlimitdatelimit'] = 'Limit for booking options';
+$string['enablebookingoptions'] = 'Use booking option limit feature';
+$string['bookingoptionsexclude'] = 'Exlude';
+$string['bookingoptionsuseonly'] = 'Use only';
+$string['bookingoptions'] = 'Booking options';
+$string['bookingoptionsinc'] = 'Booking options IDs to include/exclude';
+$string['bookingoptions_help'] = 'Use comma (,) to add multiple Booking options.';

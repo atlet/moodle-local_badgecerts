@@ -375,5 +375,38 @@ function xmldb_local_badgecerts_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2019071100, 'local', 'badgecerts');
     }
 
+    if ($oldversion < 2020063000) {
+
+        // Define field enablebookingoptions to be added to local_badgecerts.
+        $table = new xmldb_table('local_badgecerts');
+        $field = new xmldb_field('enablebookingoptions', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'certid');
+
+        // Conditionally launch add field enablebookingoptions.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field bookingoptions to be added to local_badgecerts.
+        $table = new xmldb_table('local_badgecerts');
+        $field = new xmldb_field('bookingoptions', XMLDB_TYPE_TEXT, null, null, null, null, null, 'enablebookingoptions');
+
+        // Conditionally launch add field bookingoptions.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field optionsincexc to be added to local_badgecerts.
+        $table = new xmldb_table('local_badgecerts');
+        $field = new xmldb_field('optionsincexc', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'bookingoptions');
+
+        // Conditionally launch add field optionsincexc.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Badgecerts savepoint reached.
+        upgrade_plugin_savepoint(true, 2020063000, 'local', 'badgecerts');
+    }
+
     return true;
 }

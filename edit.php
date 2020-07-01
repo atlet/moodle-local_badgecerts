@@ -89,6 +89,14 @@ if ($form->is_cancelled()) {
     $cert->unit = $data->unit;
     if (isset($data->bookingid)) {
         $cert->bookingid = $data->bookingid;
+        $cert->enablebookingoptions = (empty($data->enablebookingoptions) ? 0 : $data->enablebookingoptions);
+        $cert->bookingoptions = $data->bookingoptions;
+        $cert->optionsincexc = (empty($data->optionsincexc) ? 0 : $data->optionsincexc);
+    } else {
+        $cert->enablebookingoptions = 0;
+        $cert->bookingoptions = '';
+        $cert->optionsincexc = 0;
+        $cert->bookingid = 0;
     }
     if (isset($data->quizgradingid)) {
         $cert->quizgradingid = $data->quizgradingid;
