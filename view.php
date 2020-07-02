@@ -15,13 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Recipients overview page
+ * Recipients overview page.
  *
  * @package    local_badgecerts
- * @copyright  2015 onwards Andraž Prinčič
+ * @copyright  2014 onwards Gregor Anželj, Andraž Prinčič
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @author     Andraž Prinčič <atletek@gmail.com>
+ * @author     Andraž Prinčič <atletek@gmail.com>, Gregor Anželj <gregor.anzelj@gmail.com>
  */
+
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once("$CFG->libdir/tablelib.php");
 require_once($CFG->dirroot . '/local/badgecerts/classes/all_users.php');

@@ -15,13 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Form classes for editing badge certificates
+ * Form classes for editing badge certificates.
  *
- * @package    local_badgecerts
- * @copyright  2014 onwards Gregor Anželj
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @author     Gregor Anželj <gregor.anzelj@gmail.com>
+ * @package   local_badgecerts
+ * @copyright 2014 onwards Gregor Anželj, Andraž Prinčič
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author    Andraž Prinčič <atletek@gmail.com>, Gregor Anželj <gregor.anzelj@gmail.com>
  */
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/formslib.php');
@@ -225,7 +226,7 @@ class edit_cert_details_form extends moodleform
             $mform->setType('enddate', PARAM_INT);
             $mform->disabledIf('enddate', 'restricttocertaindate', 'notchecked');
 
-            // Limit for booking options
+            // Limit for booking options.
             $mform->addElement('header', 'bookingoptionlimit', get_string('bookingoptionlimitdatelimit', 'local_badgecerts'));
             $mform->addElement('static', 'whenisthisfiltervalid', '', get_string('whenisthisfiltervalid', 'local_badgecerts'));
 

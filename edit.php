@@ -15,12 +15,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Editing badge certificate details
+ * Editing badge certificate details.
  *
- * @package    local_badgecerts
- * @copyright  2014 onwards Gregor Anželj
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @author     Gregor Anželj <gregor.anzelj@gmail.com>
+ * @package   local_badgecerts
+ * @copyright 2014 onwards Gregor Anželj, Andraž Prinčič
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author    Andraž Prinčič <atletek@gmail.com>, Gregor Anželj <gregor.anzelj@gmail.com>
  */
 
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
@@ -126,12 +126,12 @@ if ($form->is_cancelled()) {
     if ($cert->save()) {
         if ($getfilename) {
             // Create folder if it doesn't exist.
-            if (!file_exists($CFG->dataroot.$dirname) and !is_dir($CFG->dataroot.$dirname)) {
-                mkdir($CFG->dataroot.$dirname);
+            if (!file_exists($CFG->dataroot . $dirname) and !is_dir($CFG->dataroot . $dirname)) {
+                mkdir($CFG->dataroot . $dirname);
             }
             $filename = $dirname . '/' . $cert->id . '_' . $getfilename;
             // Save file to standard filesystem.
-            $form->save_file('certbgimage', $CFG->dataroot.$filename, true);
+            $form->save_file('certbgimage', $CFG->dataroot . $filename, true);
             // Update record in the database.
             $DB->set_field('local_badgecerts', 'certbgimage', $filename, array('id' => $cert->id));
         }
@@ -149,7 +149,6 @@ echo $OUTPUT->heading($cert->name);
 
 if ($errormsg !== '') {
     echo $OUTPUT->notification($errormsg);
-
 } else if ($statusmsg !== '') {
     echo $OUTPUT->notification($statusmsg, 'notifysuccess');
 }

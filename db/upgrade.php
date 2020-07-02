@@ -18,10 +18,11 @@
  * Language file for 'local_badgecerts' plugin.
  *
  * @package    local_badgecerts
- * @copyright  2014 onwards Gregor Anželj
+ * @copyright  2014 onwards Gregor Anželj, Andraž Prinčič
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @author     Gregor Anželj <gregor.anzelj@gmail.com>
+ * @author     Andraž Prinčič <atletek@gmail.com>, Gregor Anželj <gregor.anzelj@gmail.com>
  */
+
 defined('MOODLE_INTERNAL') || die();
 
 function xmldb_local_badgecerts_upgrade($oldversion) {

@@ -15,16 +15,17 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ *
  * @package    local_badgecerts
- * @copyright  2014 onwards Gregor Anželj
+ * @copyright  2014 onwards Gregor Anželj, Andraž Prinčič
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @author     Gregor Anželj <gregor.anzelj@gmail.com>
+ * @author     Andraž Prinčič <atletek@gmail.com>, Gregor Anželj <gregor.anzelj@gmail.com>
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2020063000;
+$plugin->version = 2020070200;
 $plugin->requires = 2018051700; // Moodle 3.5 or newer.
 $plugin->component = 'local_badgecerts';
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = '1.0.1';
+$plugin->release = '1.0.2';
