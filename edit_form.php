@@ -291,7 +291,7 @@ class edit_cert_details_form extends moodleform
     /**
      * Load in existing data as form defaults
      *
-     * @param stdClass|array $defaultvalues object or array of default values
+     * @param stdClass $cert Object default values.
      */
     public function set_data($cert) {
         $defaultvalues = array();
@@ -307,6 +307,10 @@ class edit_cert_details_form extends moodleform
 
     /**
      * Validates form data
+     *
+     * @param  array $data Data to validate.
+     * @param  array $files List of files.
+     * @return array List of errors.
      */
     public function validation($data, $files) {
         global $DB, $USER;

@@ -72,41 +72,204 @@ define('CERT_TYPE_COURSE', 2);
  */
 class badge_certificate {
 
-    /** @var int Certificate id */
+    /**
+     * Instance id.
+     *
+     * @var integer
+     */
     public $id;
 
-    /** Values from the table 'badge_certificate' */
+    /**
+     * Instance name.
+     *
+     * @var string
+     */
     public $name;
+    /**
+     * Description.
+     *
+     * @var string
+     */
     public $description;
+    /**
+     * SVG template.
+     *
+     * @var string
+     */
     public $certbgimage;
+    /**
+     * Booking ID instance.
+     *
+     * @var integer
+     */
     public $bookingid;
+    /**
+     * It's official?
+     *
+     * @var bool
+     */
     public $official;
+    /**
+     * Created.
+     *
+     * @var timestamp
+     */
     public $timecreated;
+    /**
+     * Last time that was modified.
+     *
+     * @var timestamp
+     */
     public $timemodified;
+    /**
+     * User, that created this instance.
+     *
+     * @var int
+     */
     public $usercreated;
+    /**
+     * User, that last modified this instance.
+     *
+     * @var int
+     */
     public $usermodified;
+    /**
+     * Who issued this certificate.
+     *
+     * @var string
+     */
     public $issuername;
+    /**
+     * Contact of issuer.
+     *
+     * @var string
+     */
     public $issuercontact;
+    /**
+     * Format.
+     *
+     * @var string
+     */
     public $format;
+    /**
+     * Orientatioin.
+     *
+     * @var string
+     */
     public $orientation;
+    /**
+     * PDF unit.
+     *
+     * @var string
+     */
     public $unit;
+    /**
+     * Type.
+     *
+     * @var string
+     */
     public $type;
+    /**
+     * Course id.
+     *
+     * @var integer
+     */
     public $courseid;
+    /**
+     * Status.
+     *
+     * @var integer
+     */
     public $status = 0;
+    /**
+     * Next time cron need to run.
+     *
+     * @var timestamp
+     */
     public $nextcron;
+    /**
+     * Type.
+     *
+     * @var integer
+     */
     public $certtype;
+    /**
+     * Quizgrading instance.
+     *
+     * @var integer
+     */
     public $quizgradingid;
+    /**
+     * Show qr code.
+     *
+     * @var bool
+     */
     public $qrshow;
+    /**
+     * QR code position x.
+     *
+     * @var integer
+     */
     public $qrx;
+    /**
+     * QR code position y.
+     *
+     * @var integer
+     */
     public $qry;
+    /**
+     * QR code width.
+     *
+     * @var int
+     */
     public $qrw;
+    /**
+     * QR code height.
+     *
+     * @var int
+     */
     public $qrh;
+    /**
+     * QR code value.
+     *
+     * @var string
+     */
     public $qrdata;
+    /**
+     * Start date.
+     *
+     * @var timestamp
+     */
     public $startdate;
+    /**
+     * End date.
+     *
+     * @var timestamp.
+     */
     public $enddate;
+    /**
+     * Certificate instance.
+     *
+     * @var int
+     */
     public $certid;
+    /**
+     * Booking option filters.
+     *
+     * @var bool
+     */
     public $enablebookingoptions;
+    /**
+     * Include or exclude.
+     *
+     * @var bool
+     */
     public $optionsincexc;
+    /**
+     * Booking options to exlude.
+     *
+     * @var string
+     */
     public $bookingoptions;
 
     /** @var array Badge certificate elements */
@@ -353,9 +516,8 @@ class badge_certificate {
 /**
  * Insert to log table when user transfer certificate.
  *
- * @param int Certificate id
- * @param int User id
- * @param int Timestamp
+ * @param int $certid Certificate id
+ * @param int $userid User id
  */
 function local_badgecerts_insert_to_log($certid = null, $userid = null) {
     global $DB, $USER;
@@ -376,13 +538,14 @@ function local_badgecerts_insert_to_log($certid = null, $userid = null) {
 /**
  * Get all badge certificates.
  *
- * @param int Type of badges to return
- * @param int Course ID for course badges
- * @param string $sort An SQL field to sort by
- * @param string $dir The sort direction ASC|DESC
- * @param int $page The page or records to return
- * @param int $perpage The number of records to return per page
- * @param int $user User specific search
+ * @param int    $type     Type of badges to return
+ * @param int    $courseid Course ID for course badges
+ * @param string $sort     An SQL field to sort by
+ * @param string $dir      The sort direction ASC|DESC
+ * @param int    $page     The page or records to return
+ * @param int    $perpage  The number of records to return per page
+ * @param int    $user     User specific search
+ *
  * @return array $badge Array of records matching criteria
  */
 function badges_get_certificates($type, $courseid = 0, $sort = '', $dir = '', $page = 0, $perpage = CERT_PERPAGE, $user = 0) {
@@ -419,7 +582,9 @@ function badges_get_certificates($type, $courseid = 0, $sort = '', $dir = '', $p
 /**
  * Get all badge certificates for courseid.
  * TO-DO: Odstrani, ker se ne potrebuje več!
- * @param int Course ID for course badges
+ *
+ * @param int $courseid Course ID for course badges
+ *
  * @return array $badge Array of records matching criteria
  */
 function badges_get_certificates_for_courseid($courseid = 0) {
@@ -449,7 +614,9 @@ function badges_get_certificates_for_courseid($courseid = 0) {
  * Returns array of assigned badges that badge certificates
  * are already assigned to.
  *
- * @param int $courseid course ID
+ * @param int $courseid course ID.
+ * @param int $certid   Certificate instance.
+ *
  * @return array Array containing all the assigned badges
  */
 function get_assigned_badge_options($courseid, $certid) {
@@ -481,7 +648,8 @@ function get_assigned_badge_options($courseid, $certid) {
 /**
  * Return true if is connected to booking.
  *
- * @param int $badgeid ID of badge
+ * @param int $certid ID of badge
+ *
  * @return bool return true, if is connected to booking
  */
 function has_booking($certid) {
@@ -630,7 +798,11 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
 }
 
 /**
- *  Check if user has the privileges to bulk generate badge certificates.
+ * Check if user has the privileges to bulk generate badge certificates.
+ *
+ * @param int $currentcourseid CMID.
+ *
+ * @return void
  */
 function user_can_bulk_generate_certificates_in_course($currentcourseid) {
     global $USER, $DB;
@@ -647,6 +819,11 @@ function user_can_bulk_generate_certificates_in_course($currentcourseid) {
 
 /**
  * Get bookingoptionid - from booking module.
+ *
+ * @param int $bookingid Booking instance.
+ * @param int $userid    User ID.
+ *
+ * @return void
  */
 function booking_getbookingoptionid($bookingid = null, $userid = null) {
     global $DB;
@@ -665,7 +842,13 @@ function booking_getbookingoptionid($bookingid = null, $userid = null) {
 }
 
 /**
- * Get bookingoptionid - from booking module
+ * Get bookingoptionid - from booking module.
+ *
+ * @param int      $bookingid Booking instance.
+ * @param int      $userid    User ID.
+ * @param stdClass $cert      Cert obejct.
+ *
+ * @return void
  */
 function booking_getbookingoptionsid($bookingid = null, $userid = null, $cert = null) {
     global $DB;
@@ -726,6 +909,11 @@ function booking_getbookingoptionsid($bookingid = null, $userid = null, $cert = 
 
 /**
  * Get bookingoptions - from booking module
+ *
+ * @param int $cmid     CMID.
+ * @param int $optionid Option ID.
+ *
+ * @return void
  */
 function booking_getbookingoptions($cmid = null, $optionid = null) {
     if (is_null($optionid)) {
@@ -749,6 +937,10 @@ function booking_getbookingoptions($cmid = null, $optionid = null) {
 
 /**
  * Get user data for badge.
+ *
+ * @param int $userid User ID.
+ *
+ * @return void
  */
 function getuserdata($userid = null) {
     global $DB;
@@ -780,6 +972,11 @@ function getuserdata($userid = null) {
 
 /**
  * Get certain data gor badge.
+ *
+ * @param stdClass $cert  Certificate object.
+ * @param stdClass $badge Badge obejct.
+ *
+ * @return void
  */
 function get_badge_data($cert, $badge) {
     $assertion = new core_badges_assertion($badge->hash);
@@ -801,6 +998,10 @@ function get_badge_data($cert, $badge) {
 
 /**
  * Get all certificates for courseid - for API!
+ *
+ * @param int $courseid CMID.
+ *
+ * @return void
  */
 function get_all_certificates($courseid = null) {
     global $DB;
@@ -889,6 +1090,13 @@ function get_all_certificates($courseid = null) {
     return $bulkcerts;
 }
 
+/**
+ * Fix encoding.
+ *
+ * @param string $instr Input string.
+ *
+ * @return string Fixed string.
+ */
 function fixencoding($instr) {
     $curencoding = mb_detect_encoding($instr);
     if ($curencoding == "UTF-8" && mb_check_encoding($instr, "UTF-8")) {
@@ -899,7 +1107,13 @@ function fixencoding($instr) {
 }
 
 /**
- * Generate placeholders
+ * Generate placeholders.
+ *
+ * @param object $cert          Certificate object.
+ * @param object $booking       Booking object.
+ * @param object $quizreporting Quizreporting object.
+ *
+ * @return array Returns array of values to change in template.
  */
 function get_placeholders($cert, $booking, $quizreporting = null) {
     global $DB;
@@ -1072,6 +1286,12 @@ function get_placeholders($cert, $booking, $quizreporting = null) {
 
 /**
  * Bulk generate badge certificates - only for submited users.
+ *
+ * @param int      $certid Certificate ID.
+ * @param stdClass $badges Badge.
+ * @param string   $dest   Download or show.
+ *
+ * @return void
  */
 function bulk_generate_certificates($certid, $badges, $dest = 'D') {
     global $CFG, $DB;
@@ -1203,7 +1423,14 @@ function bulk_generate_certificates($certid, $badges, $dest = 'D') {
 }
 
 /**
- *  Generate certificate in pdf.
+ * Generate certificate in pdf.
+ *
+ * @param integer $cert          Certificate ID.
+ * @param integer $badge         Badge ID.
+ * @param object  $pdf           PDF object.
+ * @param object  $booking       Booking object.
+ * @param object  $quizreporting Quiz reporting object.
+ * @param object  $user          User object.
  */
 function add_pdf_page($cert, $badge, &$pdf, $booking, $quizreporting = null, $user) {
     // Add a page
@@ -1251,6 +1478,16 @@ function add_pdf_page($cert, $badge, &$pdf, $booking, $quizreporting = null, $us
     local_badgecerts_insert_to_log($cert->id, $badge->userid);
 }
 
+/**
+ * Navigation.
+ *
+ * @param navigation_node $parentnode Navigation node.
+ * @param stdClass        $user       User class.
+ * @param context_user    $context    Context.
+ * @param stdClass        $course     Course object.
+ *
+ * @return void
+ */
 function local_badgecerts_extend_navigation_user(navigation_node $parentnode, stdClass $user,
     context_user $context, stdClass $course) {
     global $PAGE;
@@ -1271,8 +1508,16 @@ function local_badgecerts_extend_navigation_user(navigation_node $parentnode, st
         }
     }
 }
-
-// See link to download own badges only on your own profile.
+/**
+ * See link to download own badges only on your own profile.
+ *
+ * @param core_user\output\myprofile\tree $tree          Navigation tree.
+ * @param stdClass                        $user          User class.
+ * @param boolean                         $iscurrentuser Is current user.
+ * @param stdClass                        $course        Course object.
+ *
+ * @return void
+ */
 function local_badgecerts_myprofile_navigation(core_user\output\myprofile\tree $tree, $user, $iscurrentuser, $course) {
     if ($iscurrentuser) {
         $url = new moodle_url('/local/badgecerts/mycerts.php');
@@ -1284,7 +1529,10 @@ function local_badgecerts_myprofile_navigation(core_user\output\myprofile\tree $
 }
 
 /**
- *  Hook function to add items to the administration block.
+ * Hook function to add items to the administration block.
+ *
+ * @param settings_navigation $nav     Which menu.
+ * @param context             $context Which context.
  */
 function local_badgecerts_extend_settings_navigation(settings_navigation $nav, context $context) {
     global $COURSE;

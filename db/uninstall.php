@@ -25,6 +25,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Run this when unninstalling the script.
+ */
 function xmldb_local_badgecerts_uninstall() {
 
 }

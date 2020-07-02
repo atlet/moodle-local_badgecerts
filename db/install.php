@@ -25,6 +25,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Code for installing the plugin.
+ */
 function xmldb_local_badgecerts_install() {
 
 }

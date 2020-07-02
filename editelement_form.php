@@ -111,17 +111,18 @@ class edit_cert_element_form extends moodleform {
     /**
      * Load in existing data as form defaults
      *
-     * @param stdClass|array $defaultvalues object or array of default values
+     * @param stdClass $element Object of default values.
      */
     public function set_data($element) {
-        $defaultvalues = array();
         parent::set_data($element);
-
-        parent::set_data($defaultvalues);
     }
 
     /**
      * Validates form data
+     *
+     * @param  array $data Data to validate.
+     * @param  array $files Files to validate.
+     * @return array List of errors.
      */
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);

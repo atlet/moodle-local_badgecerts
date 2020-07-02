@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- *
+ * Usefull funcitons.
  *
  * @package    local_badgecerts
  * @copyright  2014 onwards Gregor Anželj, Andraž Prinčič
@@ -27,8 +27,10 @@ namespace local_badgecerts;
 
 defined('MOODLE_INTERNAL') || die();
 
-class utils
-{
+/**
+ * Class with variety of usefull funcitons.
+ */
+class utils {
 
     /**
      * Check if module booking is installed.
@@ -54,6 +56,9 @@ class utils
 
     /**
      * Returns all booking options.
+     *
+     * @param  integer $cmid Course module id of Booking.
+     * @return array
      */
     public static function get_all_booking_options($cmid) {
         global $DB;
@@ -87,6 +92,8 @@ where
 
     /**
      * Return all Bookings.
+     *
+     * @return array
      */
     public function get_all_bookings() {
         global $DB;

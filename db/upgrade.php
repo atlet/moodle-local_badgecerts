@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Language file for 'local_badgecerts' plugin.
+ * Run this when upgrading the plugin.
  *
  * @package    local_badgecerts
  * @copyright  2014 onwards Gregor Anželj, Andraž Prinčič
@@ -25,6 +25,11 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * This is run when upgrading the plugin.
+ *
+ * @param integer $oldversion Version number.
+ */
 function xmldb_local_badgecerts_upgrade($oldversion) {
     global $DB;
 
