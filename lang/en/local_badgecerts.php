@@ -18,9 +18,9 @@
  * Code for upgrading to new versions of the plugin.
  *
  * @package    local_badgecerts
- * @copyright  2014 onwards Gregor Anželj
+ * @copyright  2014 onwards Gregor Anželj, Andraž Prinčič
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @author     Gregor Anželj <gregor.anzelj@gmail.com>
+ * @author     Andraž Prinčič <atletek@gmail.com>, Gregor Anželj <gregor.anzelj@gmail.com>
  */
 
 $string['pluginname'] = 'Badge certificates';
@@ -249,3 +249,11 @@ $string['reusecertificatetemplate'] = 'Reuse certificate template';
 $string['reusetemplate'] = 'Reuse template';
 $string['error:selecttemplate'] = 'You must select a file!';
 $string['booking'] = 'Booking module';
+
+$string['bookingoptionlimitdatelimit'] = 'Limit for booking options';
+$string['enablebookingoptions'] = 'Use booking option limit feature';
+$string['bookingoptionsexclude'] = 'Exlude';
+$string['bookingoptionsuseonly'] = 'Use only';
+$string['bookingoptions'] = 'Booking options';
+$string['bookingoptionsinc'] = 'Booking options IDs to include/exclude';
+$string['bookingoptions_help'] = 'Use comma (,) to add multiple Booking options.';

@@ -15,13 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Recipients overview page
+ * Recipients overview page.
  *
  * @package    local_badgecerts
- * @copyright  2015 onwards Andraž Prinčič
+ * @copyright  2014 onwards Gregor Anželj, Andraž Prinčič
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @author     Andraž Prinčič <atletek@gmail.com>
+ * @author     Andraž Prinčič <atletek@gmail.com>, Gregor Anželj <gregor.anzelj@gmail.com>
  */
+
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once("$CFG->libdir/tablelib.php");
 require_once($CFG->dirroot . '/local/badgecerts/classes/all_users.php');
@@ -106,6 +107,12 @@ switch ($cert->certtype) {
     case 4:
         // Mod_booking users.
         if ($cert->bookingid > 0) {
+            if ($cert->enablebookingoptions) {
+                $yesno = ($cert->optionsincexc == 1 ? '' : 'NOT');
+                $exsql = " AND ans.optionid {$yesno} IN ({$cert->bookingoptions})";
+            } else {
+                $exsql = '';
+            }
             if ($cert->startdate != 0) {
                 $sqlwhere .= " AND (SELECT
                             IF(COUNT(*) > 0, 1, 0)
@@ -121,7 +128,7 @@ switch ($cert->certtype) {
                                 WHERE
                                     cm.id = c.bookingid)
                                 AND ans.userid = u.id AND ans.completed = 1 AND " .
-                                "bo.coursestarttime >= c.startdate AND bo.courseendtime <= c.enddate) = 1 ";
+                                "bo.coursestarttime >= c.startdate AND bo.courseendtime <= c.enddate {$exsql}) = 1";
             } else {
                 $sqlwhere .= " AND (SELECT
                             IF(COUNT(*) > 0, 1, 0)
@@ -134,7 +141,7 @@ switch ($cert->certtype) {
                                     {course_modules} cm
                                 WHERE
                                     cm.id = c.bookingid)
-                                AND ans.userid = u.id AND ans.completed = 1) = 1 ";
+                                AND ans.userid = u.id AND ans.completed = 1 {$exsql}) = 1";
             }
         }
         break;
@@ -142,6 +149,12 @@ switch ($cert->certtype) {
     case 2:
         // Mod_booking teachers.
         if ($cert->bookingid > 0) {
+            if ($cert->enablebookingoptions) {
+                $yesno = ($cert->optionsincexc == 1 ? '' : 'NOT');
+                $exsql = " AND tch.optionid {$yesno} IN ({$cert->bookingoptions})";
+            } else {
+                $exsql = '';
+            }
             if ($cert->startdate != 0) {
                 $sqlwhere .= " AND (SELECT
                             IF(COUNT(*) > 0, 1, 0)
@@ -158,7 +171,7 @@ switch ($cert->certtype) {
                                     cm.id = c.bookingid)
                                 AND tch.userid = u.id AND tch.completed = 1 AND
                                 bo.coursestarttime >= c.startdate AND
-                                bo.courseendtime <= c.enddate) = 1 ";
+                                bo.courseendtime <= c.enddate {$exsql}) = 1 ";
             } else {
                 $sqlwhere .= " AND (SELECT
             IF(c.bookingid > 0,
@@ -173,7 +186,7 @@ switch ($cert->certtype) {
                                     {course_modules} cm
                                 WHERE
                                     cm.id = c.bookingid)
-                                AND tch.userid = u.id AND tch.completed = 1),
+                                AND tch.userid = u.id AND tch.completed = 1 {$exsql}),
                     1)) = 1 ";
             }
         }
