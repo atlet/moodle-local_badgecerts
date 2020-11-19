@@ -1,0 +1,1 @@
+[18-Nov-2020 23:07:57 Europe/Ljubljana] PHP Notice:  Undefined property: stdClass::$certid in /home/atlet/www/moodle.piltek.com/local/badgecerts/edit.php on line 103
