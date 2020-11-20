@@ -62,3 +62,91 @@ Error code: dmlwriteexception
 * line 126 of /local/badgecerts/edit.php: call to badge_certificate->save()
 
 [20-Nov-2020 11:26:47 Europe/Ljubljana] PHP Warning:  Creating default object from empty value in /home/atlet/www/moodle.piltek.com/local/badgecerts/new.php on line 96
+[20-Nov-2020 12:54:52 Europe/Ljubljana] Default exception handler: Error reading from database Debug: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ') ORDER BY bi.dateissued DESC LIMIT 0, 50' at line 78
+SELECT
+                bc.id,
+                bc.name,
+                b.courseid,
+                b.id badgeid,
+                bi.uniquehash,
+                b.type,
+                bc.bookingid,
+                bc.certtype
+            FROM mdl_local_badgecerts bc
+            LEFT JOIN mdl_badge_issued bi
+                ON bi.badgeid = bc.certid
+            LEFT JOIN mdl_user u
+                ON u.id = bi.userid
+            LEFT JOIN mdl_badge b
+                ON b.id = bi.badgeid
+            WHERE bi.userid = ?
+                AND bc.certid IS NOT null
+                AND bc.status >= 1 AND (
+            (SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END) = 1
+            
+            OR (SELECT
+        CASE WHEN bc.bookingid > 0 AND bc.certtype = 1 THEN
+                (SELECT
+                        CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
+                    FROM
+                        mdl_booking_answers ans
+                    LEFT JOIN
+                        mdl_booking_options bo ON ans.optionid = bo.id
+                    WHERE
+                        ans.bookingid = (SELECT
+                                instance
+                            FROM
+                                mdl_course_modules AS cm
+                            WHERE
+                                cm.id = bc.bookingid)
+                            AND ans.userid = u.id AND ans.completed = 1 AND CASE WHEN bc.startdate != 0
+                            THEN bo.coursestarttime >= bc.startdate AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END) ELSE
+                0 END) = 1
+        OR (SELECT
+        IF(bc.bookingid > 0 AND bc.certtype = 4,
+                (SELECT
+                        CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
+                    FROM
+                        mdl_booking_answers AS ans
+                    LEFT JOIN
+                        mdl_booking_options bo ON ans.optionid = bo.id
+                    WHERE
+                        ans.bookingid = (SELECT
+                                instance
+                            FROM
+                                mdl_course_modules AS cm
+                            WHERE
+                                cm.id = bc.bookingid)
+                            AND ans.userid = u.id AND ans.completed = 1 AND CASE WHEN bc.startdate != 0
+                             THEN bo.coursestarttime >= bc.startdate AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END),
+                0)) = 1
+        OR (SELECT
+        IF(bc.bookingid > 0 AND bc.certtype = 2,
+                (SELECT
+                        CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
+                    FROM
+                        mdl_booking_teachers tch
+                    LEFT JOIN
+                        mdl_booking_options bo ON tch.optionid = bo.id
+                    WHERE
+                        tch.bookingid = (SELECT
+                                instance
+                            FROM
+                                mdl_course_modules AS cm
+                            WHERE
+                                cm.id = bc.bookingid)
+                            AND tch.userid = u.id AND tch.completed = 1 AND
+                            CASE WHEN bc.startdate != 0 THEN bo.coursestarttime >= bc.startdate
+                            AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END),
+                0)
+     = 1))
+            ) ORDER BY bi.dateissued DESC LIMIT 0, 50
+[array (
+  0 => '2',
+)]
+Error code: dmlreadexception
+* line 486 of /lib/dml/moodle_database.php: dml_read_exception thrown
+* line 1273 of /lib/dml/mysqli_native_moodle_database.php: call to moodle_database->query_end()
+* line 795 of /local/badgecerts/lib.php: call to mysqli_native_moodle_database->get_records_sql()
+* line 86 of /local/badgecerts/mycerts.php: call to badges_get_user_certificates()
+

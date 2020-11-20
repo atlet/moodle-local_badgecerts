@@ -683,21 +683,21 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
     $booking = '';
 
     if (utils::check_mod_quizgrading()) {
-        $quizgrading = 'OR (SELECT IF(bc.quizgradingid > 0 AND bc.certtype = 3,
+        $quizgrading = 'OR (SELECT CASE WHEN bc.quizgradingid > 0 AND bc.certtype = 3 THEN
             (SELECT
-                IF(COUNT(*) > 0, 1, 0)
+                CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
             FROM
                 {quizgrading_results} AS qr
             WHERE
                 qr.userid = u.id)
-            , 0)) = 1';
+            ELSE 0 END) = 1';
     }
 
     if (utils::check_mod_booking()) {
         $booking = 'OR (SELECT
-        IF(bc.bookingid > 0 AND bc.certtype = 1,
+        CASE WHEN bc.bookingid > 0 AND bc.certtype = 1 THEN
                 (SELECT
-                        IF(COUNT(*) > 0, 1, 0)
+                        CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
                     FROM
                         {booking_answers} ans
                     LEFT JOIN
@@ -710,12 +710,12 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
                             WHERE
                                 cm.id = bc.bookingid)
                             AND ans.userid = u.id AND ans.completed = 1 AND CASE WHEN bc.startdate != 0
-                            THEN bo.coursestarttime >= bc.startdate AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END),
-                0) = 1
+                            THEN bo.coursestarttime >= bc.startdate AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END) ELSE
+                0 END = 1
         OR (SELECT
-        IF(bc.bookingid > 0 AND bc.certtype = 4,
+        CASE WHEN bc.bookingid > 0 AND bc.certtype = 4 THEN
                 (SELECT
-                        IF(COUNT(*) > 0, 1, 0)
+                        CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
                     FROM
                         {booking_answers} AS ans
                     LEFT JOIN
@@ -728,12 +728,12 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
                             WHERE
                                 cm.id = bc.bookingid)
                             AND ans.userid = u.id AND ans.completed = 1 AND CASE WHEN bc.startdate != 0
-                             THEN bo.coursestarttime >= bc.startdate AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END),
-                0)) = 1
+                             THEN bo.coursestarttime >= bc.startdate AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END) ELSE
+                0 END) = 1
         OR (SELECT
-        IF(bc.bookingid > 0 AND bc.certtype = 2,
+        CASE WHEN bc.bookingid > 0 AND bc.certtype = 2 THEN
                 (SELECT
-                        IF(COUNT(*) > 0, 1, 0)
+                        CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
                     FROM
                         {booking_teachers} tch
                     LEFT JOIN
@@ -747,8 +747,8 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
                                 cm.id = bc.bookingid)
                             AND tch.userid = u.id AND tch.completed = 1 AND
                             CASE WHEN bc.startdate != 0 THEN bo.coursestarttime >= bc.startdate
-                            AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END),
-                0)
+                            AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END) ELSE
+                0 END
      = 1))';
     }
 
@@ -771,7 +771,7 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
             WHERE bi.userid = ?
                 AND bc.certid IS NOT null
                 AND bc.status >= 1 AND (
-            (SELECT IF(bc.certtype = 0, 1, 0)) = 1
+            (SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END) = 1
             {$quizgrading}
             {$booking}
             )";
