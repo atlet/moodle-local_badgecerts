@@ -1,12 +1,45 @@
-Add-on for Moodle - local_badgecerts [![Build Status](https://travis-ci.org/atlet/moodle-local_badgecerts.svg?branch=master)](https://travis-ci.org/atlet/moodle-local_badgecerts)
-------------------------------------
+# Moodle Badge certificates (local_badgecerts)
+[![Build Status](https://travis-ci.org/atlet/moodle-local_badgecerts.svg?branch=master)](https://travis-ci.org/atlet/moodle-local_badgecerts)
 
 Print certificates based on earned badges in Moodle.
 
-Main contributers are Gregor Anželj and Andraž Prinčič.
+# Features
+- Custom certificate design (using svg format).
+- Users can download their own certifitates.
+- For one badge you can have multiple certificates.
+- Teachers can mass print certificates.
+- Users can download certifitaces from Moodle Mobile application.
 
-# Usage
-## Placeholders
+# Screenshots
+[Downloaded certificate based on received badge](docs/images/DownloadedBadge.png)
+
+[Vie badge/certificate settings](docs/images/ViewBadgeSettings.png)
+
+[Designing certificate in Inkscape](docs/images/DesigningCertificate.png)
+
+# Documentation
+## Requirements
+This plugin requires Moodle 3.5+.
+
+## Installation
+Install the plugin like any other plugin to folder /local/staticpage.
+
+See [http://docs.moodle.org/en/Installing_plugins](http://docs.moodle.org/en/Installing_plugins) for details on installing Moodle plugins.
+
+## Manage badge certificates
+To access menu for editing, adding and managing certificates is found in left menu in every Course - menu entry "Manage badge certificates".
+
+There you can add a new certificate or manage existing.
+
+## Users accessing their certificate
+Each user can find their certificates in their profile.
+
+## Designin certificate
+(Example certificate)[docs/examples/136_potrdilo_varna_raba_interneta.svg]
+
+To design a new certifiate I reccomend [Inkscape](https://inkscape.org/). Text containing placeholders will be changed with value from user profile, badge, ...
+
+### Placeholders
 ```
 [[recipient-fname]] Adds the recipient's first name.
 [[recipient-lname]] Adds the recipient's last name.
@@ -61,4 +94,7 @@ Main contributers are Gregor Anželj and Andraž Prinčič.
 [[qg-lokacija]]',
 [[qg-up-organizator]]',
 [[qg-up-lokacija]]'
-´´´
+```
+
+# Contributors
+Main contributers are Gregor Anželj and Andraž Prinčič.

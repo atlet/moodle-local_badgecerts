@@ -1,1 +1,6 @@
 [18-Nov-2020 23:07:57 Europe/Ljubljana] PHP Notice:  Undefined property: stdClass::$certid in /home/atlet/www/moodle.piltek.com/local/badgecerts/edit.php on line 103
+[20-Nov-2020 09:59:54 Europe/Ljubljana] PHP Deprecated:  Non-static method local_badgecerts\utils::get_all_bookings() should not be called statically in /home/atlet/www/moodle.piltek.com/local/badgecerts/edit_form.php on line 184
+[20-Nov-2020 09:59:57 Europe/Ljubljana] PHP Deprecated:  Non-static method local_badgecerts\utils::get_all_bookings() should not be called statically in /home/atlet/www/moodle.piltek.com/local/badgecerts/edit_form.php on line 184
+[20-Nov-2020 10:00:01 Europe/Ljubljana] PHP Deprecated:  Non-static method local_badgecerts\utils::get_all_bookings() should not be called statically in /home/atlet/www/moodle.piltek.com/local/badgecerts/edit_form.php on line 184
+[20-Nov-2020 11:01:43 Europe/Ljubljana] PHP Deprecated:  Non-static method local_badgecerts\utils::get_all_bookings() should not be called statically in /home/atlet/www/moodle.piltek.com/local/badgecerts/edit_form.php on line 184
+[20-Nov-2020 11:01:53 Europe/Ljubljana] PHP Deprecated:  Non-static method local_badgecerts\utils::get_all_bookings() should not be called statically in /home/atlet/www/moodle.piltek.com/local/badgecerts/edit_form.php on line 184
