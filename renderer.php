@@ -15,12 +15,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Renderer for use with the badge certificates output
+ * Renderer for use with the badge certificates output.
  *
  * @package    local_badgecerts
- * @copyright  2014 onwards Gregor Anželj
+ * @copyright  2014 onwards Gregor Anželj, Andraž Prinčič
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @author     Gregor Anželj <gregor.anzelj@gmail.com>
+ * @author     Andraž Prinčič <atletek@gmail.com>, Gregor Anželj <gregor.anzelj@gmail.com>
  */
 defined('MOODLE_INTERNAL') || die();
 
@@ -32,7 +32,15 @@ require_once($CFG->dirroot . '/local/badgecerts/lib.php');
  */
 class local_badgecerts_renderer extends plugin_renderer_base {
 
-    // Outputs badge certificates list.
+    /**
+     * Outputs badge certificates list.
+     *
+     * @param integer $badges  Badge id.
+     * @param integer $userid  User ID.
+     * @param boolean $profile Show profile.
+     *
+     * @return string Html view.
+     */
     public function print_badgecerts_list($badges, $userid, $profile = false) {
         global $USER;
         foreach ($badges as $badge) {
@@ -78,13 +86,24 @@ class local_badgecerts_renderer extends plugin_renderer_base {
         return html_writer::alist($items, array('class' => 'badges'));
     }
 
+    /**
+     * Booo, does nothing.
+     *
+     * @return string Booooo.
+     */
     public function print_badgecert_view() {
         $display = "";
 
         return $display;
     }
 
-    // Prints a badge certificate overview infomation.
+    /**
+     * Prints a badge certificate overview infomation.
+     *
+     * @param integer $cert Certificate id.
+     *
+     * @return string Html view.
+     */
     public function print_badgecert_overview($cert) {
         $display = "";
 
@@ -116,7 +135,14 @@ class local_badgecerts_renderer extends plugin_renderer_base {
         return $display;
     }
 
-    // Prints action icons for the badge certificate.
+    /**
+     * Prints action icons for the badge certificate.
+     *
+     * @param integer $cert    Certificate ID.
+     * @param context $context Context.
+     *
+     * @return string Html.
+     */
     public function print_cert_table_actions($cert, $context) {
         $actions = "";
 
@@ -164,7 +190,13 @@ class local_badgecerts_renderer extends plugin_renderer_base {
         return $actions;
     }
 
-    // Outputs table of badge certificates with actions available.
+    /**
+     * Outputs table of badge certificates with actions available.
+     *
+     * @param cert_management $certs Certificate object.
+     *
+     * @return string Html view.
+     */
     protected function render_cert_management(cert_management $certs) {
         $paging = new paging_bar($certs->totalcount, $certs->page, $certs->perpage, $this->page->url, 'page');
 
@@ -216,7 +248,15 @@ class local_badgecerts_renderer extends plugin_renderer_base {
         return $htmlnew . $htmlpagingbar . $htmltable . $htmlpagingbar;
     }
 
-    // Prints tabs for badge certificate editing.
+    /**
+     * Prints tabs for badge certificate editing.
+     *
+     * @param int $certid Certificate id.
+     * @param context $context Context.
+     * @param string $current Which tab to show.
+     *
+     * @return string Html view.
+     */
     public function print_badgecert_tabs($certid, $context, $current = 'overview') {
         // Output button => back to index page.
         $cert = new badge_certificate($certid);
@@ -247,6 +287,20 @@ class local_badgecerts_renderer extends plugin_renderer_base {
         echo $this->tabtree($row, $current);
     }
 
+     /**
+      * Show filter box.
+      *
+      * @param badge_certificate $cert     Certificate object.
+      * @param string            $url      Url.
+      * @param integer           $day      Day.
+      * @param integer           $month    Month.
+      * @param integer           $year     Year.
+      * @param integer           $dayend   Day.
+      * @param integer           $monthend Month.
+      * @param integer           $yearend  Year.
+
+      * @return void
+      */
     public function print_badgecert_filter_box(badge_certificate $cert, $url, $day = 0, $month = 0,
         $year = 0, $dayend = 0, $monthend = 0, $yearend = 0) {
 
@@ -284,6 +338,9 @@ class local_badgecerts_renderer extends plugin_renderer_base {
 
     /**
      * Prints badge certificate status box.
+     *
+     * @param badge_certificate $cert Badge certificate object.
+     *
      * @return Either the status box html as a string or null
      */
     public function print_badgecert_status_box(badge_certificate $cert) {
@@ -317,7 +374,13 @@ class local_badgecerts_renderer extends plugin_renderer_base {
         return null;
     }
 
-    // Outputs table of user badge certificates.
+    /**
+     * Outputs table of user badge certificates.
+     *
+     * @param cert_user_collection $certs Cert object.
+     *
+     * @return string Html string.
+     */
     protected function render_cert_user_collection(cert_user_collection $certs) {
         global $USER, $SITE;
 
