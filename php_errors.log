@@ -4,3 +4,60 @@
 [20-Nov-2020 10:00:01 Europe/Ljubljana] PHP Deprecated:  Non-static method local_badgecerts\utils::get_all_bookings() should not be called statically in /home/atlet/www/moodle.piltek.com/local/badgecerts/edit_form.php on line 184
 [20-Nov-2020 11:01:43 Europe/Ljubljana] PHP Deprecated:  Non-static method local_badgecerts\utils::get_all_bookings() should not be called statically in /home/atlet/www/moodle.piltek.com/local/badgecerts/edit_form.php on line 184
 [20-Nov-2020 11:01:53 Europe/Ljubljana] PHP Deprecated:  Non-static method local_badgecerts\utils::get_all_bookings() should not be called statically in /home/atlet/www/moodle.piltek.com/local/badgecerts/edit_form.php on line 184
+[20-Nov-2020 11:09:14 Europe/Ljubljana] PHP Deprecated:  Non-static method local_badgecerts\utils::get_all_bookings() should not be called statically in /home/atlet/www/moodle.piltek.com/local/badgecerts/edit_form.php on line 184
+[20-Nov-2020 11:09:42 Europe/Ljubljana] PHP Deprecated:  Non-static method local_badgecerts\utils::get_all_bookings() should not be called statically in /home/atlet/www/moodle.piltek.com/local/badgecerts/edit_form.php on line 184
+[20-Nov-2020 11:09:42 Europe/Ljubljana] PHP Notice:  Undefined property: stdClass::$certid in /home/atlet/www/moodle.piltek.com/local/badgecerts/edit.php on line 111
+[20-Nov-2020 11:15:52 Europe/Ljubljana] PHP Deprecated:  Non-static method local_badgecerts\utils::check_mod_booking() should not be called statically in /home/atlet/www/moodle.piltek.com/local/badgecerts/edit_form.php on line 146
+[20-Nov-2020 11:15:52 Europe/Ljubljana] PHP Deprecated:  Non-static method local_badgecerts\utils::check_mod_quizgrading() should not be called statically in /home/atlet/www/moodle.piltek.com/local/badgecerts/edit_form.php on line 151
+[20-Nov-2020 11:15:52 Europe/Ljubljana] PHP Deprecated:  Non-static method local_badgecerts\utils::check_mod_booking() should not be called statically in /home/atlet/www/moodle.piltek.com/local/badgecerts/edit_form.php on line 183
+[20-Nov-2020 11:15:52 Europe/Ljubljana] PHP Deprecated:  Non-static method local_badgecerts\utils::get_all_bookings() should not be called statically in /home/atlet/www/moodle.piltek.com/local/badgecerts/edit_form.php on line 184
+[20-Nov-2020 11:15:52 Europe/Ljubljana] PHP Deprecated:  Non-static method local_badgecerts\utils::check_mod_booking() should not be called statically in /home/atlet/www/moodle.piltek.com/local/badgecerts/classes/utils.php on line 101
+[20-Nov-2020 11:15:52 Europe/Ljubljana] PHP Deprecated:  Non-static method local_badgecerts\utils::check_mod_quizgrading() should not be called statically in /home/atlet/www/moodle.piltek.com/local/badgecerts/edit_form.php on line 190
+[20-Nov-2020 11:15:52 Europe/Ljubljana] PHP Deprecated:  Non-static method local_badgecerts\utils::check_mod_booking() should not be called statically in /home/atlet/www/moodle.piltek.com/local/badgecerts/edit_form.php on line 213
+[20-Nov-2020 11:15:52 Europe/Ljubljana] PHP Notice:  Undefined property: stdClass::$certid in /home/atlet/www/moodle.piltek.com/local/badgecerts/edit.php on line 111
+[20-Nov-2020 11:16:15 Europe/Ljubljana] PHP Notice:  Undefined property: stdClass::$certid in /home/atlet/www/moodle.piltek.com/local/badgecerts/edit.php on line 111
+[20-Nov-2020 11:24:45 Europe/Ljubljana] PHP Notice:  Undefined property: stdClass::$orientation in /home/atlet/www/moodle.piltek.com/local/badgecerts/edit.php on line 88
+[20-Nov-2020 11:24:45 Europe/Ljubljana] PHP Notice:  Undefined property: stdClass::$unit in /home/atlet/www/moodle.piltek.com/local/badgecerts/edit.php on line 89
+[20-Nov-2020 11:24:45 Europe/Ljubljana] Default exception handler: Error writing to database Debug: Column 'orientation' cannot be null
+UPDATE mdl_local_badgecerts SET name = ?,description = ?,certbgimage = ?,bookingid = ?,official = ?,timecreated = ?,timemodified = ?,usercreated = ?,usermodified = ?,issuername = ?,issuercontact = ?,format = ?,orientation = ?,unit = ?,type = ?,courseid = ?,status = ?,nextcron = ?,certtype = ?,quizgradingid = ?,qrshow = ?,qrx = ?,qry = ?,qrw = ?,qrh = ?,qrdata = ?,startdate = ?,enddate = ?,certid = ?,enablebookingoptions = ?,optionsincexc = ?,bookingoptions = ? WHERE id=?
+[array (
+  0 => 'Test',
+  1 => 'Test badge',
+  2 => '/filedir/cert/2_136_potrdilo_varna_raba_interneta.svg',
+  3 => '0',
+  4 => '0',
+  5 => '1605737195',
+  6 => 1605867885,
+  7 => '2',
+  8 => '2',
+  9 => 'Me',
+  10 => '',
+  11 => 'A4',
+  12 => NULL,
+  13 => NULL,
+  14 => '2',
+  15 => '4',
+  16 => '1',
+  17 => NULL,
+  18 => '0',
+  19 => '0',
+  20 => 1,
+  21 => '0',
+  22 => '0',
+  23 => '0',
+  24 => '0',
+  25 => '0',
+  26 => 0,
+  27 => 0,
+  28 => '7',
+  29 => 0,
+  30 => 0,
+  31 => '',
+  32 => '2',
+)]
+Error code: dmlwriteexception
+* line 489 of /lib/dml/moodle_database.php: dml_write_exception thrown
+* line 1587 of /lib/dml/mysqli_native_moodle_database.php: call to moodle_database->query_end()
+* line 334 of /local/badgecerts/lib.php: call to mysqli_native_moodle_database->update_record_raw()
+* line 126 of /local/badgecerts/edit.php: call to badge_certificate->save()
+

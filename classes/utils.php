@@ -95,7 +95,7 @@ where
      *
      * @return array
      */
-    public function get_all_bookings() {
+    public static function get_all_bookings() {
         global $DB;
 
         if (!self::check_mod_booking()) {

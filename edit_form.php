@@ -89,6 +89,7 @@ class edit_cert_details_form extends moodleform
         }
 
         $mform->addElement('select', 'certid', get_string('certid', 'local_badgecerts'), $badges);
+        $mform->addRule('certid', null, 'required');
 
         $formatoptions = array(
             'A3' => get_string('certificateformat:A3', 'local_badgecerts'),
