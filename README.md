@@ -35,7 +35,7 @@ There you can add a new certificate or manage existing.
 Each user can find their certificates in their profile.
 
 ## Designin certificate
-(Example certificate)[docs/examples/136_potrdilo_varna_raba_interneta.svg]
+[Example certificate](docs/examples/136_potrdilo_varna_raba_interneta.svg)
 
 To design a new certifiate I reccomend [Inkscape](https://inkscape.org/). Text containing placeholders will be changed with value from user profile, badge, ...
 
