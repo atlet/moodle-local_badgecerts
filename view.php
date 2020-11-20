@@ -115,7 +115,7 @@ switch ($cert->certtype) {
             }
             if ($cert->startdate != 0) {
                 $sqlwhere .= " AND (SELECT
-                            IF(COUNT(*) > 0, 1, 0)
+                            CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
                         FROM
                             {booking_answers} ans
                         LEFT JOIN
@@ -131,7 +131,7 @@ switch ($cert->certtype) {
                                 "bo.coursestarttime >= c.startdate AND bo.courseendtime <= c.enddate {$exsql}) = 1";
             } else {
                 $sqlwhere .= " AND (SELECT
-                            IF(COUNT(*) > 0, 1, 0)
+                            CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
                         FROM
                             {booking_answers} ans
                         WHERE
@@ -157,7 +157,7 @@ switch ($cert->certtype) {
             }
             if ($cert->startdate != 0) {
                 $sqlwhere .= " AND (SELECT
-                            IF(COUNT(*) > 0, 1, 0)
+                            CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
                         FROM
                             {booking_teachers} tch
                         LEFT JOIN
@@ -174,9 +174,9 @@ switch ($cert->certtype) {
                                 bo.courseendtime <= c.enddate {$exsql}) = 1 ";
             } else {
                 $sqlwhere .= " AND (SELECT
-            IF(c.bookingid > 0,
+            CASE WHEN c.bookingid > 0 THEN
                     (SELECT
-                            IF(COUNT(*) > 0, 1, 0)
+                        CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
                         FROM
                             {booking_teachers} tch
                         WHERE
@@ -186,8 +186,7 @@ switch ($cert->certtype) {
                                     {course_modules} cm
                                 WHERE
                                     cm.id = c.bookingid)
-                                AND tch.userid = u.id AND tch.completed = 1 {$exsql}),
-                    1)) = 1 ";
+                                AND tch.userid = u.id AND tch.completed = 1 {$exsql})ELSE 0 END ) = 1 ";
             }
         }
         break;
