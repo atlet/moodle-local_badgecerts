@@ -32,14 +32,14 @@ $clearsearch = optional_param('clearsearch', '', PARAM_TEXT);
 $download = optional_param('download', 0, PARAM_INT);
 $hash = optional_param('hash', '', PARAM_ALPHANUM);
 
-require_login();
-
 if (empty($CFG->enablebadges)) {
     print_error('badgesdisabled', 'badges');
 }
 
 $url = new moodle_url('/local/badgecerts/mycerts.php');
 $PAGE->set_url($url);
+
+require_login();
 
 if (isguestuser()) {
     $PAGE->set_context(context_system::instance());
@@ -59,6 +59,8 @@ if ($clearsearch) {
 
 $context = context_user::instance($USER->id);
 
+$PAGE->set_context($context);
+
 if ($download && $hash) {
     $badges = array();
 
@@ -71,8 +73,6 @@ if ($download && $hash) {
 
     bulk_generate_certificates($download, $badges);
 }
-
-$PAGE->set_context($context);
 
 $title = get_string('mybadgecertificates', 'local_badgecerts');
 $PAGE->set_title($title);

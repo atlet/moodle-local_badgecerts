@@ -61,3 +61,4 @@ Error code: dmlwriteexception
 * line 334 of /local/badgecerts/lib.php: call to mysqli_native_moodle_database->update_record_raw()
 * line 126 of /local/badgecerts/edit.php: call to badge_certificate->save()
 
+[20-Nov-2020 11:26:47 Europe/Ljubljana] PHP Warning:  Creating default object from empty value in /home/atlet/www/moodle.piltek.com/local/badgecerts/new.php on line 96
