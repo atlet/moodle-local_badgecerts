@@ -15,15 +15,21 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Language file for 'local_badgecerts' plugin.
+ * Run this when upgrading the plugin.
  *
  * @package    local_badgecerts
- * @copyright  2014 onwards Gregor Anželj
+ * @copyright  2014 onwards Gregor Anželj, Andraž Prinčič
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @author     Gregor Anželj <gregor.anzelj@gmail.com>
+ * @author     Andraž Prinčič <atletek@gmail.com>, Gregor Anželj <gregor.anzelj@gmail.com>
  */
+
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * This is run when upgrading the plugin.
+ *
+ * @param integer $oldversion Version number.
+ */
 function xmldb_local_badgecerts_upgrade($oldversion) {
     global $DB;
 
@@ -373,6 +379,39 @@ function xmldb_local_badgecerts_upgrade($oldversion) {
         $dbman->rename_table($table, 'local_badgecerts_trasnfers');
 
         upgrade_plugin_savepoint(true, 2019071100, 'local', 'badgecerts');
+    }
+
+    if ($oldversion < 2020063000) {
+
+        // Define field enablebookingoptions to be added to local_badgecerts.
+        $table = new xmldb_table('local_badgecerts');
+        $field = new xmldb_field('enablebookingoptions', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'certid');
+
+        // Conditionally launch add field enablebookingoptions.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field bookingoptions to be added to local_badgecerts.
+        $table = new xmldb_table('local_badgecerts');
+        $field = new xmldb_field('bookingoptions', XMLDB_TYPE_TEXT, null, null, null, null, null, 'enablebookingoptions');
+
+        // Conditionally launch add field bookingoptions.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field optionsincexc to be added to local_badgecerts.
+        $table = new xmldb_table('local_badgecerts');
+        $field = new xmldb_field('optionsincexc', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'bookingoptions');
+
+        // Conditionally launch add field optionsincexc.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Badgecerts savepoint reached.
+        upgrade_plugin_savepoint(true, 2020063000, 'local', 'badgecerts');
     }
 
     return true;

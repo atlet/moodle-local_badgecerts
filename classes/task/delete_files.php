@@ -14,10 +14,18 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Shedule a task.
+ *
+ * @package   local_badgecerts
+ * @copyright 2014 onwards Gregor Anželj, Andraž Prinčič
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author    Andraž Prinčič <atletek@gmail.com>, Gregor Anželj <gregor.anzelj@gmail.com>
+ */
 namespace local_badgecerts\task;
 
 /**
- * An example of a scheduled task.
+ * Shedule a task.
  */
 class delete_files extends \core\task\scheduled_task {
 
