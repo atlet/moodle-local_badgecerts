@@ -93,7 +93,7 @@ if ($form->is_cancelled()) {
         $fordb->enablebookingoptions = 0;
         $fordb->bookingoptions = '';
         $fordb->optionsincexc = 0;
-        $cert->bookingid = 0;
+        $fordb->bookingid = 0;
     }
     $fordb->type = $type;
     $fordb->courseid = ($type == CERT_TYPE_COURSE) ? $courseid : null;
