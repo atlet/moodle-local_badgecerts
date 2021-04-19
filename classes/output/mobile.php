@@ -85,37 +85,15 @@ class mobile {
         global $OUTPUT, $USER, $CFG;
 
         $args = (object) $args;
+        $uid = uniqid();
 
-        require_login();
-
-        $badges = array();
-
-        $user = (object) array();
-
-        $user->userid = $USER->id;
-        $user->hash = $args->hash;
-
-        $badges[$USER->id] = $user;
-
-        $pdfdata = bulk_generate_certificates($args->certid, $badges, 'S');
-
-        $tmpfile = uniqid() . '.pdf';
-        $dir = "{$CFG->dirroot}/local/badgecerts/tmp/";
-
-        if (!file_exists($dir)) {
-            mkdir($dir, 0777, true);
-        }
-
-        file_put_contents("{$dir}{$tmpfile}", $pdfdata);
-
-        $url = new moodle_url("/local/badgecerts/tmp/{$tmpfile}");
-        $dir = new moodle_url("/local/badgecerts/tmp/");
-
+        $url = new moodle_url('/local/badgecerts/getfile.php', ['hash' => $args->hash, 'certid' => $args->certid, 'userid' => $USER->id, 'filename' => "{$uid}.pdf"]);
+        error_log($url . "\n", 3, "/tmp/my-errors.log");
         $data = array(
-            'data' => $url->out(),
-            'filename' => $tmpfile,
-            'fileurl' => $dir->out(),
-            'url' => "/local/badgecerts/tmp/"
+            'data' => $url,
+            'filename' => $uid . ".pdf",
+            'fileurl' => $url,
+            'url' => $url
         );
 
         return array(

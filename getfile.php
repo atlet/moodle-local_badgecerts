@@ -15,13 +15,41 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Tasks.
+ * Page for badge certificates management.
  *
  * @package    local_badgecerts
  * @copyright  2014 onwards Gregor Anželj, Andraž Prinčič
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author     Andraž Prinčič <atletek@gmail.com>, Gregor Anželj <gregor.anzelj@gmail.com>
  */
-defined('MOODLE_INTERNAL') || die();
 
-$tasks = [];
+require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
+require_once($CFG->dirroot . '/local/badgecerts/lib.php');
+
+$hash       = required_param('hash', PARAM_ALPHA);
+$certid = required_param('certid', PARAM_INT);
+$userid = required_param('userid', PARAM_INT);
+$filename = required_param('filename', PARAM_ALPHA);
+
+$badges = array();
+
+$user = (object) array();
+
+$user->userid = $userid;
+$user->hash = $hash;
+
+$badges[$userid] = $user;
+
+$pdfdata = bulk_generate_certificates($certid, $badges, 'S');
+
+$dir = sys_get_temp_dir();
+
+file_put_contents("{$dir}/{$filename}", $pdfdata);
+
+$file = "{$dir}/{$filename}";
+
+header('Content-type: application/octet-stream');
+header("Content-Type: ".mime_content_type($file));
+header("Content-Disposition: attachment; filename=".$filename);
+
+readfile($file);

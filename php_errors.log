@@ -150,3 +150,364 @@ Error code: dmlreadexception
 * line 795 of /local/badgecerts/lib.php: call to mysqli_native_moodle_database->get_records_sql()
 * line 86 of /local/badgecerts/mycerts.php: call to badges_get_user_certificates()
 
+[19-Apr-2021 14:01:35 Europe/Ljubljana] PHP Notice:  Undefined variable: args in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 42
+[19-Apr-2021 14:01:35 Europe/Ljubljana] PHP Notice:  Trying to get property 'certid' of non-object in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 42
+[19-Apr-2021 14:01:35 Europe/Ljubljana] Default exception handler: badges/error:nosuchbadgecertificate Debug: 
+Error code: error:nosuchbadgecertificate
+$a contents: 
+* line 498 of /lib/setuplib.php: moodle_exception thrown
+* line 290 of /local/badgecerts/lib.php: call to print_error()
+* line 1302 of /local/badgecerts/lib.php: call to badge_certificate->__construct()
+* line 42 of /local/badgecerts/getfile.php: call to bulk_generate_certificates()
+
+[19-Apr-2021 14:10:55 Europe/Ljubljana] PHP Notice:  Undefined variable: args in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 42
+[19-Apr-2021 14:10:55 Europe/Ljubljana] PHP Notice:  Trying to get property 'certid' of non-object in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 42
+[19-Apr-2021 14:10:55 Europe/Ljubljana] Default exception handler: badges/error:nosuchbadgecertificate Debug: 
+Error code: error:nosuchbadgecertificate
+$a contents: 
+* line 498 of /lib/setuplib.php: moodle_exception thrown
+* line 290 of /local/badgecerts/lib.php: call to print_error()
+* line 1302 of /local/badgecerts/lib.php: call to badge_certificate->__construct()
+* line 42 of /local/badgecerts/getfile.php: call to bulk_generate_certificates()
+
+[19-Apr-2021 14:10:58 Europe/Ljubljana] PHP Notice:  Undefined variable: args in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 42
+[19-Apr-2021 14:10:58 Europe/Ljubljana] PHP Notice:  Trying to get property 'certid' of non-object in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 42
+[19-Apr-2021 14:10:58 Europe/Ljubljana] Default exception handler: badges/error:nosuchbadgecertificate Debug: 
+Error code: error:nosuchbadgecertificate
+$a contents: 
+* line 498 of /lib/setuplib.php: moodle_exception thrown
+* line 290 of /local/badgecerts/lib.php: call to print_error()
+* line 1302 of /local/badgecerts/lib.php: call to badge_certificate->__construct()
+* line 42 of /local/badgecerts/getfile.php: call to bulk_generate_certificates()
+
+[19-Apr-2021 14:12:48 Europe/Ljubljana] PHP Notice:  Undefined variable: args in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 42
+[19-Apr-2021 14:12:48 Europe/Ljubljana] PHP Notice:  Trying to get property 'certid' of non-object in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 42
+[19-Apr-2021 14:12:48 Europe/Ljubljana] Default exception handler: badges/error:nosuchbadgecertificate Debug: 
+Error code: error:nosuchbadgecertificate
+$a contents: 
+* line 498 of /lib/setuplib.php: moodle_exception thrown
+* line 290 of /local/badgecerts/lib.php: call to print_error()
+* line 1302 of /local/badgecerts/lib.php: call to badge_certificate->__construct()
+* line 42 of /local/badgecerts/getfile.php: call to bulk_generate_certificates()
+
+[19-Apr-2021 14:12:52 Europe/Ljubljana] PHP Notice:  Undefined variable: args in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 42
+[19-Apr-2021 14:12:52 Europe/Ljubljana] PHP Notice:  Trying to get property 'certid' of non-object in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 42
+[19-Apr-2021 14:12:52 Europe/Ljubljana] Default exception handler: badges/error:nosuchbadgecertificate Debug: 
+Error code: error:nosuchbadgecertificate
+$a contents: 
+* line 498 of /lib/setuplib.php: moodle_exception thrown
+* line 290 of /local/badgecerts/lib.php: call to print_error()
+* line 1302 of /local/badgecerts/lib.php: call to badge_certificate->__construct()
+* line 42 of /local/badgecerts/getfile.php: call to bulk_generate_certificates()
+
+[19-Apr-2021 14:14:22 Europe/Ljubljana] PHP Notice:  Undefined variable: args in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 42
+[19-Apr-2021 14:14:22 Europe/Ljubljana] PHP Notice:  Trying to get property 'certid' of non-object in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 42
+[19-Apr-2021 14:14:22 Europe/Ljubljana] Default exception handler: badges/error:nosuchbadgecertificate Debug: 
+Error code: error:nosuchbadgecertificate
+$a contents: 
+* line 498 of /lib/setuplib.php: moodle_exception thrown
+* line 290 of /local/badgecerts/lib.php: call to print_error()
+* line 1302 of /local/badgecerts/lib.php: call to badge_certificate->__construct()
+* line 42 of /local/badgecerts/getfile.php: call to bulk_generate_certificates()
+
+[19-Apr-2021 14:14:25 Europe/Ljubljana] PHP Notice:  Undefined variable: args in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 42
+[19-Apr-2021 14:14:25 Europe/Ljubljana] PHP Notice:  Trying to get property 'certid' of non-object in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 42
+[19-Apr-2021 14:14:25 Europe/Ljubljana] Default exception handler: badges/error:nosuchbadgecertificate Debug: 
+Error code: error:nosuchbadgecertificate
+$a contents: 
+* line 498 of /lib/setuplib.php: moodle_exception thrown
+* line 290 of /local/badgecerts/lib.php: call to print_error()
+* line 1302 of /local/badgecerts/lib.php: call to badge_certificate->__construct()
+* line 42 of /local/badgecerts/getfile.php: call to bulk_generate_certificates()
+
+[19-Apr-2021 14:17:12 Europe/Ljubljana] Default exception handler: Exception - Call to undefined function equired_param() Debug: 
+Error code: generalexceptionmessage
+* line 30 of /local/badgecerts/getfile.php: Error thrown
+
+[19-Apr-2021 14:17:15 Europe/Ljubljana] Default exception handler: Exception - Call to undefined function equired_param() Debug: 
+Error code: generalexceptionmessage
+* line 30 of /local/badgecerts/getfile.php: Error thrown
+
+[19-Apr-2021 14:17:18 Europe/Ljubljana] Default exception handler: Exception - Call to undefined function equired_param() Debug: 
+Error code: generalexceptionmessage
+* line 30 of /local/badgecerts/getfile.php: Error thrown
+
+[19-Apr-2021 14:18:45 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1211
+[19-Apr-2021 14:18:45 Europe/Ljubljana] PHP Notice:  Undefined index: description in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1212
+[19-Apr-2021 14:18:45 Europe/Ljubljana] PHP Notice:  Undefined index: issuedOn in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1228
+[19-Apr-2021 14:18:45 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1415
+[19-Apr-2021 14:18:45 Europe/Ljubljana] PHP Warning:  file_put_contents(/tmp
+607d752519c12.pdf): failed to open stream: Permission denied in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 48
+[19-Apr-2021 14:18:45 Europe/Ljubljana] PHP Warning:  mime_content_type(/tmp
+607d752519c12.pdf): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 54
+[19-Apr-2021 14:18:45 Europe/Ljubljana] PHP Warning:  readfile(/tmp
+607d752519c12.pdf): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 57
+[19-Apr-2021 14:18:45 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1211
+[19-Apr-2021 14:18:45 Europe/Ljubljana] PHP Notice:  Undefined index: description in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1212
+[19-Apr-2021 14:18:45 Europe/Ljubljana] PHP Notice:  Undefined index: issuedOn in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1228
+[19-Apr-2021 14:18:45 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1415
+[19-Apr-2021 14:18:45 Europe/Ljubljana] PHP Warning:  file_put_contents(/tmp
+607d75255c59b.pdf): failed to open stream: Permission denied in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 48
+[19-Apr-2021 14:18:45 Europe/Ljubljana] PHP Warning:  mime_content_type(/tmp
+607d75255c59b.pdf): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 54
+[19-Apr-2021 14:18:45 Europe/Ljubljana] PHP Warning:  readfile(/tmp
+607d75255c59b.pdf): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 57
+[19-Apr-2021 14:20:24 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1211
+[19-Apr-2021 14:20:24 Europe/Ljubljana] PHP Notice:  Undefined index: description in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1212
+[19-Apr-2021 14:20:24 Europe/Ljubljana] PHP Notice:  Undefined index: issuedOn in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1228
+[19-Apr-2021 14:20:24 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1415
+[19-Apr-2021 14:20:24 Europe/Ljubljana] PHP Warning:  file_put_contents(/tmp
+607d758875edd.pdf): failed to open stream: Permission denied in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 48
+[19-Apr-2021 14:20:24 Europe/Ljubljana] PHP Warning:  mime_content_type(/tmp
+607d758875edd.pdf): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 54
+[19-Apr-2021 14:20:24 Europe/Ljubljana] PHP Warning:  readfile(/tmp
+607d758875edd.pdf): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 57
+[19-Apr-2021 14:20:50 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1211
+[19-Apr-2021 14:20:50 Europe/Ljubljana] PHP Notice:  Undefined index: description in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1212
+[19-Apr-2021 14:20:50 Europe/Ljubljana] PHP Notice:  Undefined index: issuedOn in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1228
+[19-Apr-2021 14:20:50 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1415
+[19-Apr-2021 14:20:50 Europe/Ljubljana] PHP Warning:  file_put_contents(/tmp
+607d75a2ddb66.pdf): failed to open stream: Permission denied in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 48
+[19-Apr-2021 14:20:50 Europe/Ljubljana] PHP Warning:  mime_content_type(/tmp
+607d75a2ddb66.pdf): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 54
+[19-Apr-2021 14:20:50 Europe/Ljubljana] PHP Warning:  readfile(/tmp
+607d75a2ddb66.pdf): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 57
+[19-Apr-2021 14:21:11 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1211
+[19-Apr-2021 14:21:11 Europe/Ljubljana] PHP Notice:  Undefined index: description in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1212
+[19-Apr-2021 14:21:11 Europe/Ljubljana] PHP Notice:  Undefined index: issuedOn in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1228
+[19-Apr-2021 14:21:11 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1415
+[19-Apr-2021 14:21:11 Europe/Ljubljana] PHP Warning:  file_put_contents(/tmp
+607d75b7a7100.pdf): failed to open stream: Permission denied in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 48
+[19-Apr-2021 14:21:11 Europe/Ljubljana] PHP Warning:  mime_content_type(/tmp
+607d75b7a7100.pdf): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 54
+[19-Apr-2021 14:21:11 Europe/Ljubljana] PHP Warning:  readfile(/tmp
+607d75b7a7100.pdf): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 57
+[19-Apr-2021 14:21:22 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1211
+[19-Apr-2021 14:21:22 Europe/Ljubljana] PHP Notice:  Undefined index: description in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1212
+[19-Apr-2021 14:21:22 Europe/Ljubljana] PHP Notice:  Undefined index: issuedOn in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1228
+[19-Apr-2021 14:21:22 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1415
+[19-Apr-2021 14:21:22 Europe/Ljubljana] PHP Warning:  file_put_contents(/tmp
+607d75c2d9096.pdf): failed to open stream: Permission denied in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 48
+[19-Apr-2021 14:21:22 Europe/Ljubljana] PHP Warning:  mime_content_type(/tmp
+607d75c2d9096.pdf): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 54
+[19-Apr-2021 14:21:22 Europe/Ljubljana] PHP Warning:  readfile(/tmp
+607d75c2d9096.pdf): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 57
+[19-Apr-2021 14:22:16 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1211
+[19-Apr-2021 14:22:16 Europe/Ljubljana] PHP Notice:  Undefined index: description in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1212
+[19-Apr-2021 14:22:16 Europe/Ljubljana] PHP Notice:  Undefined index: issuedOn in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1228
+[19-Apr-2021 14:22:16 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1415
+[19-Apr-2021 14:22:16 Europe/Ljubljana] PHP Warning:  file_put_contents(/tmp
+dfpdf): failed to open stream: Permission denied in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 48
+[19-Apr-2021 14:22:16 Europe/Ljubljana] PHP Notice:  Undefined variable: tmpfile in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 50
+[19-Apr-2021 14:22:16 Europe/Ljubljana] PHP Warning:  mime_content_type(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 53
+[19-Apr-2021 14:22:16 Europe/Ljubljana] PHP Warning:  readfile(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 56
+[19-Apr-2021 14:22:40 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1211
+[19-Apr-2021 14:22:40 Europe/Ljubljana] PHP Notice:  Undefined index: description in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1212
+[19-Apr-2021 14:22:40 Europe/Ljubljana] PHP Notice:  Undefined index: issuedOn in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1228
+[19-Apr-2021 14:22:40 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1415
+[19-Apr-2021 14:22:40 Europe/Ljubljana] PHP Warning:  file_put_contents(/tmp
+dfabedpdf): failed to open stream: Permission denied in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 46
+[19-Apr-2021 14:22:40 Europe/Ljubljana] PHP Notice:  Undefined variable: tmpfile in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 48
+[19-Apr-2021 14:22:40 Europe/Ljubljana] PHP Warning:  mime_content_type(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 51
+[19-Apr-2021 14:22:40 Europe/Ljubljana] PHP Warning:  readfile(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 54
+[19-Apr-2021 14:23:08 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1211
+[19-Apr-2021 14:23:08 Europe/Ljubljana] PHP Notice:  Undefined index: description in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1212
+[19-Apr-2021 14:23:08 Europe/Ljubljana] PHP Notice:  Undefined index: issuedOn in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1228
+[19-Apr-2021 14:23:08 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1415
+[19-Apr-2021 14:23:08 Europe/Ljubljana] PHP Warning:  file_put_contents(/tmp
+dbfpdf): failed to open stream: Permission denied in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 46
+[19-Apr-2021 14:23:08 Europe/Ljubljana] PHP Notice:  Undefined variable: tmpfile in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 48
+[19-Apr-2021 14:23:08 Europe/Ljubljana] PHP Warning:  readfile(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 54
+[19-Apr-2021 14:23:47 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1211
+[19-Apr-2021 14:23:47 Europe/Ljubljana] PHP Notice:  Undefined index: description in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1212
+[19-Apr-2021 14:23:47 Europe/Ljubljana] PHP Notice:  Undefined index: issuedOn in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1228
+[19-Apr-2021 14:23:47 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1415
+[19-Apr-2021 14:23:47 Europe/Ljubljana] PHP Warning:  file_put_contents(/tmp
+daepdf): failed to open stream: Permission denied in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 46
+[19-Apr-2021 14:23:47 Europe/Ljubljana] PHP Notice:  Undefined variable: tmpfile in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 48
+[19-Apr-2021 14:23:47 Europe/Ljubljana] PHP Warning:  readfile(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 54
+[19-Apr-2021 14:30:50 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1211
+[19-Apr-2021 14:30:50 Europe/Ljubljana] PHP Notice:  Undefined index: description in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1212
+[19-Apr-2021 14:30:50 Europe/Ljubljana] PHP Notice:  Undefined index: issuedOn in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1228
+[19-Apr-2021 14:30:50 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1415
+[19-Apr-2021 14:30:50 Europe/Ljubljana] PHP Warning:  file_put_contents(/tmp
+dfdcdpdf): failed to open stream: Permission denied in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 46
+[19-Apr-2021 14:30:50 Europe/Ljubljana] PHP Notice:  Undefined variable: tmpfile in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 48
+[19-Apr-2021 14:30:50 Europe/Ljubljana] PHP Warning:  readfile(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 54
+[19-Apr-2021 14:35:30 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1211
+[19-Apr-2021 14:35:30 Europe/Ljubljana] PHP Notice:  Undefined index: description in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1212
+[19-Apr-2021 14:35:30 Europe/Ljubljana] PHP Notice:  Undefined index: issuedOn in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1228
+[19-Apr-2021 14:35:31 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1415
+[19-Apr-2021 14:35:31 Europe/Ljubljana] PHP Warning:  file_put_contents(/tmp
+dfpdf): failed to open stream: Permission denied in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 47
+[19-Apr-2021 14:35:31 Europe/Ljubljana] PHP Notice:  Undefined variable: tmpfile in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 49
+[19-Apr-2021 14:35:31 Europe/Ljubljana] PHP Warning:  mime_content_type(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 52
+[19-Apr-2021 14:35:31 Europe/Ljubljana] PHP Warning:  readfile(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 55
+[19-Apr-2021 14:36:46 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1211
+[19-Apr-2021 14:36:46 Europe/Ljubljana] PHP Notice:  Undefined index: description in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1212
+[19-Apr-2021 14:36:46 Europe/Ljubljana] PHP Notice:  Undefined index: issuedOn in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1228
+[19-Apr-2021 14:36:46 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1415
+[19-Apr-2021 14:36:46 Europe/Ljubljana] PHP Warning:  file_put_contents(/tmp
+dcfcpdf): failed to open stream: Permission denied in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 47
+[19-Apr-2021 14:36:46 Europe/Ljubljana] PHP Notice:  Undefined variable: tmpfile in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 49
+[19-Apr-2021 14:36:46 Europe/Ljubljana] PHP Warning:  mime_content_type(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 52
+[19-Apr-2021 14:36:46 Europe/Ljubljana] PHP Warning:  readfile(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 55
+[19-Apr-2021 14:40:22 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1211
+[19-Apr-2021 14:40:22 Europe/Ljubljana] PHP Notice:  Undefined index: description in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1212
+[19-Apr-2021 14:40:22 Europe/Ljubljana] PHP Notice:  Undefined index: issuedOn in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1228
+[19-Apr-2021 14:40:22 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1415
+[19-Apr-2021 14:40:22 Europe/Ljubljana] PHP Warning:  file_put_contents(/tmp
+dabbpdf): failed to open stream: Permission denied in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 47
+[19-Apr-2021 14:40:22 Europe/Ljubljana] PHP Notice:  Undefined variable: tmpfile in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 49
+[19-Apr-2021 14:40:22 Europe/Ljubljana] PHP Warning:  mime_content_type(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 52
+[19-Apr-2021 14:40:22 Europe/Ljubljana] PHP Warning:  readfile(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 55
+[19-Apr-2021 14:40:41 Europe/Ljubljana] Default exception handler: Manjka potreben parameter (certid) Debug: 
+Error code: missingparam
+* line 498 of /lib/setuplib.php: moodle_exception thrown
+* line 566 of /lib/moodlelib.php: call to print_error()
+* line 30 of /local/badgecerts/getfile.php: call to required_param()
+
+[19-Apr-2021 14:42:08 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1211
+[19-Apr-2021 14:42:08 Europe/Ljubljana] PHP Notice:  Undefined index: description in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1212
+[19-Apr-2021 14:42:08 Europe/Ljubljana] PHP Notice:  Undefined index: issuedOn in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1228
+[19-Apr-2021 14:42:08 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1415
+[19-Apr-2021 14:42:08 Europe/Ljubljana] PHP Warning:  file_put_contents(/tmp
+daeaefpdf): failed to open stream: Permission denied in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 47
+[19-Apr-2021 14:42:08 Europe/Ljubljana] PHP Notice:  Undefined variable: tmpfile in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 49
+[19-Apr-2021 14:42:08 Europe/Ljubljana] PHP Warning:  mime_content_type(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 52
+[19-Apr-2021 14:42:08 Europe/Ljubljana] PHP Warning:  readfile(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 55
+[19-Apr-2021 14:42:55 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1211
+[19-Apr-2021 14:42:55 Europe/Ljubljana] PHP Notice:  Undefined index: description in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1212
+[19-Apr-2021 14:42:55 Europe/Ljubljana] PHP Notice:  Undefined index: issuedOn in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1228
+[19-Apr-2021 14:42:55 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1415
+[19-Apr-2021 14:42:55 Europe/Ljubljana] PHP Warning:  file_put_contents(/tmp
+daccdfpdf): failed to open stream: Permission denied in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 47
+[19-Apr-2021 14:42:55 Europe/Ljubljana] PHP Notice:  Undefined variable: tmpfile in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 49
+[19-Apr-2021 14:42:55 Europe/Ljubljana] PHP Warning:  mime_content_type(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 52
+[19-Apr-2021 14:42:55 Europe/Ljubljana] PHP Warning:  readfile(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 55
+[19-Apr-2021 14:42:58 Europe/Ljubljana] Default exception handler: Manjka potreben parameter (certid) Debug: 
+Error code: missingparam
+* line 498 of /lib/setuplib.php: moodle_exception thrown
+* line 566 of /lib/moodlelib.php: call to print_error()
+* line 30 of /local/badgecerts/getfile.php: call to required_param()
+
+[19-Apr-2021 14:44:03 Europe/Ljubljana] Default exception handler: Manjka potreben parameter (userid) Debug: 
+Error code: missingparam
+* line 498 of /lib/setuplib.php: moodle_exception thrown
+* line 566 of /lib/moodlelib.php: call to print_error()
+* line 31 of /local/badgecerts/getfile.php: call to required_param()
+
+[19-Apr-2021 14:44:12 Europe/Ljubljana] Default exception handler: Manjka potreben parameter (filename) Debug: 
+Error code: missingparam
+* line 498 of /lib/setuplib.php: moodle_exception thrown
+* line 566 of /lib/moodlelib.php: call to print_error()
+* line 32 of /local/badgecerts/getfile.php: call to required_param()
+
+[19-Apr-2021 14:44:19 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1211
+[19-Apr-2021 14:44:19 Europe/Ljubljana] PHP Notice:  Undefined index: description in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1212
+[19-Apr-2021 14:44:19 Europe/Ljubljana] PHP Notice:  Undefined index: issuedOn in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1228
+[19-Apr-2021 14:44:19 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1415
+[19-Apr-2021 14:44:19 Europe/Ljubljana] PHP Warning:  file_put_contents(/tmp
+daccdfpdf): failed to open stream: Permission denied in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 47
+[19-Apr-2021 14:44:19 Europe/Ljubljana] PHP Notice:  Undefined variable: tmpfile in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 49
+[19-Apr-2021 14:44:19 Europe/Ljubljana] PHP Warning:  mime_content_type(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 52
+[19-Apr-2021 14:44:19 Europe/Ljubljana] PHP Warning:  readfile(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 55
+[19-Apr-2021 14:46:52 Europe/Ljubljana] Default exception handler: Manjka potreben parameter (filename) Debug: 
+Error code: missingparam
+* line 498 of /lib/setuplib.php: moodle_exception thrown
+* line 566 of /lib/moodlelib.php: call to print_error()
+* line 32 of /local/badgecerts/getfile.php: call to required_param()
+
+[19-Apr-2021 14:46:56 Europe/Ljubljana] Default exception handler: Manjka potreben parameter (filename) Debug: 
+Error code: missingparam
+* line 498 of /lib/setuplib.php: moodle_exception thrown
+* line 566 of /lib/moodlelib.php: call to print_error()
+* line 32 of /local/badgecerts/getfile.php: call to required_param()
+
+[19-Apr-2021 14:47:03 Europe/Ljubljana] PHP Notice:  Trying to get property 'name' of non-object in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1211
+[19-Apr-2021 14:47:03 Europe/Ljubljana] PHP Notice:  Undefined index: description in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1212
+[19-Apr-2021 14:47:03 Europe/Ljubljana] PHP Notice:  Undefined index: issuedOn in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1228
+[19-Apr-2021 14:47:03 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1415
+[19-Apr-2021 14:47:03 Europe/Ljubljana] PHP Warning:  file_put_contents(/tmp
+daccdfpdf): failed to open stream: Permission denied in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 47
+[19-Apr-2021 14:47:03 Europe/Ljubljana] PHP Notice:  Undefined variable: tmpfile in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 49
+[19-Apr-2021 14:47:03 Europe/Ljubljana] PHP Warning:  mime_content_type(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 52
+[19-Apr-2021 14:47:03 Europe/Ljubljana] PHP Warning:  readfile(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 55
+[19-Apr-2021 14:47:30 Europe/Ljubljana] PHP Notice:  Undefined property: badge_certificate::$badge in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1211
+[19-Apr-2021 14:47:30 Europe/Ljubljana] PHP Notice:  Trying to get property 'name' of non-object in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1211
+[19-Apr-2021 14:47:30 Europe/Ljubljana] PHP Notice:  Undefined index: description in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1212
+[19-Apr-2021 14:47:30 Europe/Ljubljana] PHP Notice:  Undefined index: issuedOn in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1228
+[19-Apr-2021 14:47:30 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1415
+[19-Apr-2021 14:47:30 Europe/Ljubljana] PHP Warning:  file_put_contents(/tmp
+daccdfpdf): failed to open stream: Permission denied in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 47
+[19-Apr-2021 14:47:30 Europe/Ljubljana] PHP Notice:  Undefined variable: tmpfile in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 49
+[19-Apr-2021 14:47:30 Europe/Ljubljana] PHP Warning:  mime_content_type(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 52
+[19-Apr-2021 14:47:30 Europe/Ljubljana] PHP Warning:  readfile(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 55
+[19-Apr-2021 14:49:18 Europe/Ljubljana] PHP Notice:  Undefined index: issuedOn in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1228
+[19-Apr-2021 14:49:18 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1415
+[19-Apr-2021 14:49:18 Europe/Ljubljana] PHP Warning:  file_put_contents(/tmp
+daccdfpdf): failed to open stream: Permission denied in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 47
+[19-Apr-2021 14:49:18 Europe/Ljubljana] PHP Notice:  Undefined variable: tmpfile in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 49
+[19-Apr-2021 14:49:18 Europe/Ljubljana] PHP Warning:  mime_content_type(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 52
+[19-Apr-2021 14:49:18 Europe/Ljubljana] PHP Warning:  readfile(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 55
+[19-Apr-2021 14:49:19 Europe/Ljubljana] PHP Notice:  Undefined index: issuedOn in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1228
+[19-Apr-2021 14:49:19 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1415
+[19-Apr-2021 14:49:19 Europe/Ljubljana] PHP Warning:  file_put_contents(/tmp
+daccdfpdf): failed to open stream: Permission denied in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 47
+[19-Apr-2021 14:49:19 Europe/Ljubljana] PHP Notice:  Undefined variable: tmpfile in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 49
+[19-Apr-2021 14:49:19 Europe/Ljubljana] PHP Warning:  mime_content_type(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 52
+[19-Apr-2021 14:49:19 Europe/Ljubljana] PHP Warning:  readfile(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 55
+[19-Apr-2021 14:49:43 Europe/Ljubljana] PHP Notice:  Undefined property: badge_certificate::$issuedOn in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1228
+[19-Apr-2021 14:49:43 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1415
+[19-Apr-2021 14:49:43 Europe/Ljubljana] PHP Warning:  file_put_contents(/tmp
+daccdfpdf): failed to open stream: Permission denied in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 47
+[19-Apr-2021 14:49:43 Europe/Ljubljana] PHP Notice:  Undefined variable: tmpfile in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 49
+[19-Apr-2021 14:49:43 Europe/Ljubljana] PHP Warning:  mime_content_type(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 52
+[19-Apr-2021 14:49:43 Europe/Ljubljana] PHP Warning:  readfile(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 55
+[19-Apr-2021 14:52:26 Europe/Ljubljana] PHP Notice:  Undefined index: name in /home/atlet/www/moodle.piltek.com/local/badgecerts/lib.php on line 1415
+[19-Apr-2021 14:52:26 Europe/Ljubljana] PHP Warning:  file_put_contents(/tmp
+daccdfpdf): failed to open stream: Permission denied in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 47
+[19-Apr-2021 14:52:26 Europe/Ljubljana] PHP Notice:  Undefined variable: tmpfile in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 49
+[19-Apr-2021 14:52:26 Europe/Ljubljana] PHP Warning:  mime_content_type(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 52
+[19-Apr-2021 14:52:26 Europe/Ljubljana] PHP Warning:  readfile(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 55
+[19-Apr-2021 14:53:01 Europe/Ljubljana] PHP Warning:  file_put_contents(/tmp
+daccdfpdf): failed to open stream: Permission denied in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 47
+[19-Apr-2021 14:53:01 Europe/Ljubljana] PHP Notice:  Undefined variable: tmpfile in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 49
+[19-Apr-2021 14:53:01 Europe/Ljubljana] PHP Warning:  mime_content_type(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 52
+[19-Apr-2021 14:53:01 Europe/Ljubljana] PHP Warning:  readfile(/tmp
+): failed to open stream: No such file or directory in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 55
+[19-Apr-2021 14:53:24 Europe/Ljubljana] PHP Warning:  file_put_contents(/tmpdaccdfpdf): failed to open stream: Permission denied in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 47
+[19-Apr-2021 14:53:24 Europe/Ljubljana] PHP Notice:  Undefined variable: tmpfile in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 49
+[19-Apr-2021 14:53:48 Europe/Ljubljana] PHP Notice:  Undefined variable: tmpfile in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 49
