@@ -88,7 +88,7 @@ class mobile {
         $uid = uniqid();
 
         $url = new moodle_url('/local/badgecerts/getfile.php', ['hash' => $args->hash, 'certid' => $args->certid, 'userid' => $USER->id, 'filename' => "{$uid}.pdf"]);
-        error_log($url . "\n", 3, "/tmp/my-errors.log");
+
         $data = array(
             'data' => $url,
             'filename' => $uid . ".pdf",
