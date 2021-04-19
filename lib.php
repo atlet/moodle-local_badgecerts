@@ -1208,8 +1208,8 @@ function get_placeholders($cert, $booking, $quizreporting = null) {
         $recipientemail,
         $cert->issuername,
         $cert->issuercontact,
-        $cert->badgeclass['name'],
-        $cert->badgeclass['description'],
+        $cert->name,
+        $cert->description,
         $cert->id,
         $DB->get_field('course', 'fullname', array('id' => $cert->courseid)),
         sha1(rand() . $cert->usercreated . $cert->id . $now),
@@ -1225,7 +1225,7 @@ function get_placeholders($cert, $booking, $quizreporting = null) {
         $booking->duration,
         userdate((int) $cert->recipient->birthdate, get_string('datetimeformat', 'local_badgecerts')),
         $cert->recipient->institution,
-        userdate((int) $cert->issued['issuedOn'], get_string('datetimeformat', 'local_badgecerts')),
+        userdate((int) $cert->usercreated, get_string('datetimeformat', 'local_badgecerts')),
         // Quiz Grading.
         $quizreporting->quizname,
         $quizreporting->sumgrades,
@@ -1412,11 +1412,11 @@ function bulk_generate_certificates($certid, $badges, $dest = 'D') {
         // This method has several options, check the source code documentation for more information.
         switch ($dest) {
             case 'S':
-                return $pdf->Output($cert->badgeclass['name'] . '.pdf', $dest);
+                return $pdf->Output($cert->name . '.pdf', $dest);
                 break;
 
             default:
-                $pdf->Output($cert->badgeclass['name'] . '.pdf', $dest);
+                $pdf->Output($cert->name . '.pdf', $dest);
                 break;
         }
     }

@@ -25,8 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2020112000;
+$plugin->version = 2021041900;
 $plugin->requires = 2018051700; // Moodle 3.5 or newer.
 $plugin->component = 'local_badgecerts';
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = '1.0.8';
+$plugin->release = '1.0.9';
