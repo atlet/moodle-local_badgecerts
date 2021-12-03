@@ -90,7 +90,11 @@ if ($form->is_cancelled()) {
     if (isset($data->bookingid)) {
         $cert->bookingid = $data->bookingid;
         $cert->enablebookingoptions = (empty($data->enablebookingoptions) ? 0 : $data->enablebookingoptions);
-        $cert->bookingoptions = $data->bookingoptions;
+        if (isset($data->bookingoptions)) {
+            $cert->bookingoptions = $data->bookingoptions;
+        } else {
+            $cert->bookingoptions = '';
+        }
         $cert->optionsincexc = (empty($data->optionsincexc) ? 0 : $data->optionsincexc);
     } else {
         $cert->enablebookingoptions = 0;
