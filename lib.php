@@ -683,7 +683,7 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
     $booking = '';
 
     if (utils::check_mod_quizgrading()) {
-        $quizgrading = '(SELECT CASE WHEN bc.quizgradingid > 0 AND bc.certtype = 3 THEN
+        $quizgrading = 'OR (SELECT CASE WHEN bc.quizgradingid > 0 AND bc.certtype = 3 THEN
             (SELECT
                 CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
             FROM
@@ -694,11 +694,7 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
     }
 
     if (utils::check_mod_booking()) {
-        $addor = '';
-        if (!empty($quizgrading)) {
-            $addor = ' OR ';
-        }
-        $booking = $addor . '(SELECT
+        $booking = 'OR (SELECT
         CASE WHEN bc.bookingid > 0 AND bc.certtype = 1 THEN
                 (SELECT
                         CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
@@ -775,6 +771,7 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
             WHERE bi.userid = ?
                 AND bc.certid IS NOT null
                 AND bc.status >= 1 AND (
+            ((SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END) = 1 AND bc.certtype = 0)
             {$quizgrading}
             {$booking}
             )";
