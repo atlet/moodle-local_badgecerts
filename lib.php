@@ -683,21 +683,21 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
     $booking = '';
 
     if (utils::check_mod_quizgrading()) {
-        $quizgrading = 'OR (SELECT IF(bc.quizgradingid > 0 AND bc.certtype = 3,
+        $quizgrading = 'OR (SELECT CASE WHEN bc.quizgradingid > 0 AND bc.certtype = 3 THEN
             (SELECT
-                IF(COUNT(*) > 0, 1, 0)
+                CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
             FROM
                 {quizgrading_results} AS qr
             WHERE
                 qr.userid = u.id)
-            , 0)) = 1';
+            ELSE 0 END) = 1';
     }
 
     if (utils::check_mod_booking()) {
         $booking = 'OR (SELECT
-        IF(bc.bookingid > 0 AND bc.certtype = 1,
+        CASE WHEN bc.bookingid > 0 AND bc.certtype = 1 THEN
                 (SELECT
-                        IF(COUNT(*) > 0, 1, 0)
+                        CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
                     FROM
                         {booking_answers} ans
                     LEFT JOIN
@@ -710,12 +710,12 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
                             WHERE
                                 cm.id = bc.bookingid)
                             AND ans.userid = u.id AND ans.completed = 1 AND CASE WHEN bc.startdate != 0
-                            THEN bo.coursestarttime >= bc.startdate AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END),
-                0) = 1
+                            THEN bo.coursestarttime >= bc.startdate AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END) ELSE
+                0 END = 1
         OR (SELECT
-        IF(bc.bookingid > 0 AND bc.certtype = 4,
+        CASE WHEN bc.bookingid > 0 AND bc.certtype = 4 THEN
                 (SELECT
-                        IF(COUNT(*) > 0, 1, 0)
+                        CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
                     FROM
                         {booking_answers} AS ans
                     LEFT JOIN
@@ -728,12 +728,12 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
                             WHERE
                                 cm.id = bc.bookingid)
                             AND ans.userid = u.id AND ans.completed = 1 AND CASE WHEN bc.startdate != 0
-                             THEN bo.coursestarttime >= bc.startdate AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END),
-                0)) = 1
+                             THEN bo.coursestarttime >= bc.startdate AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END) ELSE
+                0 END) = 1
         OR (SELECT
-        IF(bc.bookingid > 0 AND bc.certtype = 2,
+        CASE WHEN bc.bookingid > 0 AND bc.certtype = 2 THEN
                 (SELECT
-                        IF(COUNT(*) > 0, 1, 0)
+                        CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
                     FROM
                         {booking_teachers} tch
                     LEFT JOIN
@@ -747,8 +747,8 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
                                 cm.id = bc.bookingid)
                             AND tch.userid = u.id AND tch.completed = 1 AND
                             CASE WHEN bc.startdate != 0 THEN bo.coursestarttime >= bc.startdate
-                            AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END),
-                0)
+                            AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END) ELSE
+                0 END
      = 1))';
     }
 
@@ -771,7 +771,7 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
             WHERE bi.userid = ?
                 AND bc.certid IS NOT null
                 AND bc.status >= 1 AND (
-            (SELECT IF(bc.certtype = 0, 1, 0)) = 1
+            ((SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END) = 1 AND bc.certtype = 0)
             {$quizgrading}
             {$booking}
             )";
@@ -1208,8 +1208,8 @@ function get_placeholders($cert, $booking, $quizreporting = null) {
         $recipientemail,
         $cert->issuername,
         $cert->issuercontact,
-        $cert->badgeclass['name'],
-        $cert->badgeclass['description'],
+        $cert->name,
+        $cert->description,
         $cert->id,
         $DB->get_field('course', 'fullname', array('id' => $cert->courseid)),
         sha1(rand() . $cert->usercreated . $cert->id . $now),
@@ -1225,7 +1225,7 @@ function get_placeholders($cert, $booking, $quizreporting = null) {
         $booking->duration,
         userdate((int) $cert->recipient->birthdate, get_string('datetimeformat', 'local_badgecerts')),
         $cert->recipient->institution,
-        userdate((int) $cert->issued['issuedOn'], get_string('datetimeformat', 'local_badgecerts')),
+        userdate((int) $cert->usercreated, get_string('datetimeformat', 'local_badgecerts')),
         // Quiz Grading.
         $quizreporting->quizname,
         $quizreporting->sumgrades,
@@ -1412,11 +1412,11 @@ function bulk_generate_certificates($certid, $badges, $dest = 'D') {
         // This method has several options, check the source code documentation for more information.
         switch ($dest) {
             case 'S':
-                return $pdf->Output($cert->badgeclass['name'] . '.pdf', $dest);
+                return $pdf->Output($cert->name . '.pdf', $dest);
                 break;
 
             default:
-                $pdf->Output($cert->badgeclass['name'] . '.pdf', $dest);
+                $pdf->Output($cert->name . '.pdf', $dest);
                 break;
         }
     }
@@ -1504,7 +1504,7 @@ function local_badgecerts_extend_navigation_user(navigation_node $parentnode, st
             $url = new moodle_url('/local/badgecerts/index.php', array('type' => CERT_TYPE_COURSE, 'id' => $course->id));
             $coursenode = $PAGE->navigation->find($course->id, navigation_node::TYPE_COURSE);
             $coursenode->add(get_string('managebadgecertificates', 'local_badgecerts'), $url,
-                navigation_node::TYPE_SETTING, null, 'managecerts', new pix_icon('i/folder', 'badgecerts'));
+                navigation_node::TYPE_SETTING, null, 'userscerts', new pix_icon('i/folder', 'badgecerts'));
         }
     }
 }
