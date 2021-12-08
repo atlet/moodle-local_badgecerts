@@ -710,7 +710,13 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
                             WHERE
                                 cm.id = bc.bookingid)
                             AND ans.userid = u.id AND ans.completed = 1 AND CASE WHEN bc.startdate != 0
-                            THEN bo.coursestarttime >= bc.startdate AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END) ELSE
+                            THEN bo.coursestarttime >= bc.startdate AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END
+                            AND CASE 
+                                WHEN bc.enablebookingoptions = 1 AND bc.optionsincexc = 1 THEN ans.optionid IN (bc.bookingoptions)
+                                WHEN bc.enablebookingoptions = 1 AND bc.optionsincexc = 0 THEN ans.optionid NOT IN (bc.bookingoptions)
+                                ELSE 1 = 1
+                            END
+                            ) ELSE
                 0 END = 1
         OR (SELECT
         CASE WHEN bc.bookingid > 0 AND bc.certtype = 4 THEN
