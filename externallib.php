@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * External Web Service Template
+ * External Web Service Template.
  *
  * @package    local_badgecerts
  * @copyright  2014 Andraž Prinčič s.p. (http://www.princic.net)
@@ -28,6 +28,9 @@ require_once($CFG->libdir . "/externallib.php");
 require_once($CFG->libdir . "/filelib.php");
 require_once($CFG->libdir . "/datalib.php");
 
+/**
+ * External Web Service Template
+ */
 class local_badgecerts_external extends external_api {
 
     /**
@@ -45,6 +48,10 @@ class local_badgecerts_external extends external_api {
 
     /**
      * Return PDF of user certificate.
+     *
+     * @param  string  $hash   Hash of cert.
+     * @param  integer $certid Record ID.
+     * @return array Certificate data.
      */
     public static function download_user_certificate($hash = '', $certid = 0) {
         global $USER;
@@ -74,8 +81,11 @@ class local_badgecerts_external extends external_api {
     }
 
     /**
-     * Return certificates for selected courseid
-     * @return ...
+     * Return certificates for selected courseid.
+     *
+     * @param int $courseid Course ID.
+     *
+     * @return array List of certificates.
      */
     public static function get_certificates($courseid = 0) {
         $context = context_course::instance($courseid);

@@ -511,6 +511,7 @@ daccdfpdf): failed to open stream: Permission denied in /home/atlet/www/moodle.p
 [19-Apr-2021 14:53:24 Europe/Ljubljana] PHP Warning:  file_put_contents(/tmpdaccdfpdf): failed to open stream: Permission denied in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 47
 [19-Apr-2021 14:53:24 Europe/Ljubljana] PHP Notice:  Undefined variable: tmpfile in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 49
 [19-Apr-2021 14:53:48 Europe/Ljubljana] PHP Notice:  Undefined variable: tmpfile in /home/atlet/www/moodle.piltek.com/local/badgecerts/getfile.php on line 49
+<<<<<<< HEAD
 [03-Dec-2021 13:40:59 Europe/Ljubljana] PHP Notice:  Undefined property: stdClass::$bookingoptions in /home/atlet/www/moodle.piltek.com/local/badgecerts/new.php on line 90
 [03-Dec-2021 13:41:36 Europe/Ljubljana] PHP Notice:  Undefined property: stdClass::$bookingoptions in /home/atlet/www/moodle.piltek.com/local/badgecerts/edit.php on line 93
 [03-Dec-2021 13:46:10 Europe/Ljubljana] PHP Notice:  Undefined property: stdClass::$bookingoptions in /home/atlet/www/moodle.piltek.com/local/badgecerts/edit.php on line 98
@@ -784,3 +785,5 @@ Error code: dmlreadexception
 * line 795 of /local/badgecerts/lib.php: call to mysqli_native_moodle_database->get_records_sql()
 * line 86 of /local/badgecerts/mycerts.php: call to badges_get_user_certificates()
 
+=======
+>>>>>>> 04381c98d40dccfb7ea0c6b8e58664c4fcab52a8

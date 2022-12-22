@@ -13,6 +13,15 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * Mobile output class for certificate.
+ *
+ * @package   local_badgecerts
+ * @copyright 2014 onwards Gregor Anželj, Andraž Prinčič
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author    Andraž Prinčič <atletek@gmail.com>, Gregor Anželj <gregor.anzelj@gmail.com>
+ */
 namespace local_badgecerts\output;
 
 use context_course;
@@ -24,11 +33,7 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/local/badgecerts/lib.php');
 
 /**
- * Mobile output class for certificate
- *
- * @package    local_badgecerts
- * @copyright  2019 Andraž Prinčič
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * Mobile output class for certificate.
  */
 class mobile {
     /**
@@ -72,42 +77,23 @@ class mobile {
 
     /**
      * Returno certificate file for downloading.
+     * @param  array $args Arguments from tool_mobile_get_content WS
+     *
+     * @return array       HTML, javascript and otherdata
      */
     public static function mobile_badgecerts_download($args) {
         global $OUTPUT, $USER, $CFG;
 
         $args = (object) $args;
+        $uid = uniqid();
 
-        require_login();
-
-        $badges = array();
-
-        $user = (object) array();
-
-        $user->userid = $USER->id;
-        $user->hash = $args->hash;
-
-        $badges[$USER->id] = $user;
-
-        $pdfdata = bulk_generate_certificates($args->certid, $badges, 'S');
-
-        $tmpfile = uniqid() . '.pdf';
-        $dir = "{$CFG->dirroot}/local/badgecerts/tmp/";
-
-        if (!file_exists($dir)) {
-            mkdir($dir, 0777, true);
-        }
-
-        file_put_contents("{$dir}{$tmpfile}", $pdfdata);
-
-        $url = new moodle_url("/local/badgecerts/tmp/{$tmpfile}");
-        $dir = new moodle_url("/local/badgecerts/tmp/");
+        $url = new moodle_url('/local/badgecerts/getfile.php', ['hash' => $args->hash, 'certid' => $args->certid, 'userid' => $USER->id, 'filename' => "{$uid}.pdf"]);
 
         $data = array(
-            'data' => $url->out(),
-            'filename' => $tmpfile,
-            'fileurl' => $dir->out(),
-            'url' => "/local/badgecerts/tmp/"
+            'data' => $url,
+            'filename' => $uid . ".pdf",
+            'fileurl' => $url,
+            'url' => $url
         );
 
         return array(

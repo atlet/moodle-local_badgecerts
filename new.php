@@ -15,12 +15,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * First step page for creating a new badge certificate
+ * First step page for creating a new badge certificate.
  *
  * @package    local_badgecerts
- * @copyright  2014 onwards Gregor Anželj
+ * @copyright  2014 onwards Gregor Anželj, Andraž Prinčič
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @author     Gregor Anželj <gregor.anzelj@gmail.com>
+ * @author     Andraž Prinčič <atletek@gmail.com>, Gregor Anželj <gregor.anzelj@gmail.com>
  */
 
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
@@ -86,6 +86,14 @@ if ($form->is_cancelled()) {
     $fordb->unit = $data->unit;
     if (isset($data->bookingid)) {
         $fordb->bookingid = $data->bookingid;
+        $fordb->enablebookingoptions = (empty($data->enablebookingoptions) ? 0 : $data->enablebookingoptions);
+        $fordb->bookingoptions = $data->bookingoptions;
+        $fordb->optionsincexc = (empty($data->optionsincexc) ? 0 : $data->optionsincexc);
+    } else {
+        $fordb->enablebookingoptions = 0;
+        $fordb->bookingoptions = '';
+        $fordb->optionsincexc = 0;
+        $fordb->bookingid = 0;
     }
     $fordb->type = $type;
     $fordb->courseid = ($type == CERT_TYPE_COURSE) ? $courseid : null;

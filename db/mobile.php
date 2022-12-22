@@ -18,9 +18,9 @@
  * Code for installing the plugin.
  *
  * @package    local_badgecerts
- * @copyright  2014 onwards Andraž Prinčič
+ * @copyright  2014 onwards Gregor Anželj, Andraž Prinčič
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @author     Andraž Prinčič <atletek@gmail.com>
+ * @author     Andraž Prinčič <atletek@gmail.com>, Gregor Anželj <gregor.anzelj@gmail.com>
  */
 
 defined('MOODLE_INTERNAL') || die();
@@ -36,7 +36,7 @@ $addons = [
                 ],
 
                 'delegate' => 'CoreMainMenuDelegate', // Delegate (where to display the link to the plugin)
-                'method' => 'mobile_badgecerts_list', // Main function in \mod_certificate\output\mobile
+                'method' => 'mobile_badgecerts_list', // Main function in \mod_certificate\output\mobile.
                 'offlinefunctions' => [
                 ], // Function that needs to be downloaded for offline.
             ],

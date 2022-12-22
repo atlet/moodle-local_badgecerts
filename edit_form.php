@@ -15,32 +15,34 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Form classes for editing badge certificates
+ * Form classes for editing badge certificates.
  *
- * @package    local_badgecerts
- * @copyright  2014 onwards Gregor Anželj
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @author     Gregor Anželj <gregor.anzelj@gmail.com>
+ * @package   local_badgecerts
+ * @copyright 2014 onwards Gregor Anželj, Andraž Prinčič
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author    Andraž Prinčič <atletek@gmail.com>, Gregor Anželj <gregor.anzelj@gmail.com>
  */
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/formslib.php');
 require_once($CFG->libdir . '/filelib.php');
 require_once($CFG->dirroot . '/local/badgecerts/lib.php');
 
+use local_badgecerts\utils;
+
 /**
  * Form to edit badge certificate details.
  *
  */
-class edit_cert_details_form extends moodleform {
+class edit_cert_details_form extends moodleform
+{
 
     /**
      * Defines the form
      */
     public function definition() {
         global $CFG, $PAGE, $DB;
-
-        $utils = new \local\badgecerts\classes\utils();
 
         $mform = $this->_form;
         $cert = (isset($this->_customdata['badgecertificate'])) ? $this->_customdata['badgecertificate'] : false;
@@ -53,14 +55,22 @@ class edit_cert_details_form extends moodleform {
         $mform->addRule('name', null, 'required');
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
 
-        $mform->addElement('textarea', 'description', get_string('description', 'local_badgecerts'),
-            'wrap="virtual" rows="8" cols="70"');
+        $mform->addElement(
+            'textarea',
+            'description',
+            get_string('description', 'local_badgecerts'),
+            'wrap="virtual" rows="8" cols="70"'
+        );
         $mform->setType('description', PARAM_CLEANHTML);
         $mform->addRule('description', null, 'required');
 
         if (has_capability('local/badgecerts:assignofficialcertificate', $PAGE->context)) {
-            $mform->addElement('checkbox', 'official', get_string('officialtype', 'local_badgecerts'),
-                get_string('officialtypedesc', 'local_badgecerts'));
+            $mform->addElement(
+                'checkbox',
+                'official',
+                get_string('officialtype', 'local_badgecerts'),
+                get_string('officialtypedesc', 'local_badgecerts')
+            );
             $mform->setDefault('official', 0);
         } else {
             $mform->addElement('hidden', 'official', 0);
@@ -79,6 +89,7 @@ class edit_cert_details_form extends moodleform {
         }
 
         $mform->addElement('select', 'certid', get_string('certid', 'local_badgecerts'), $badges);
+        $mform->addRule('certid', null, 'required');
 
         $formatoptions = array(
             'A3' => get_string('certificateformat:A3', 'local_badgecerts'),
@@ -94,36 +105,51 @@ class edit_cert_details_form extends moodleform {
         $mform->addRule('format', null, 'required');
 
         $orientationoptions = array();
-        $orientationoptions[] = & $mform->createElement('radio', 'orientation', '',
-            get_string('certificateorientation:portrait', 'local_badgecerts'), 'P');
-        $orientationoptions[] = & $mform->createElement('static', 'portrait_break', null, '<br/>');
-        $orientationoptions[] = & $mform->createElement('radio', 'orientation', '',
-            get_string('certificateorientation:landscape', 'local_badgecerts'), 'L');
-        $mform->addGroup($orientationoptions, 'orientationgr',
-            get_string('certificateorientation', 'local_badgecerts'), array(' '), false);
+        $orientationoptions[] = &$mform->createElement(
+            'radio',
+            'orientation',
+            '',
+            get_string('certificateorientation:portrait', 'local_badgecerts'),
+            'P'
+        );
+        $orientationoptions[] = &$mform->createElement('static', 'portrait_break', null, '<br/>');
+        $orientationoptions[] = &$mform->createElement(
+            'radio',
+            'orientation',
+            '',
+            get_string('certificateorientation:landscape', 'local_badgecerts'),
+            'L'
+        );
+        $mform->addGroup(
+            $orientationoptions,
+            'orientationgr',
+            get_string('certificateorientation', 'local_badgecerts'),
+            array(' '),
+            false
+        );
         $mform->setDefault('orientation', 'P');
         $mform->addRule('orientationgr', null, 'required');
 
         $unitoptions = array();
-        $unitoptions[] = & $mform->createElement('radio', 'unit', '', get_string('certificateunit:pt', 'local_badgecerts'), 'pt');
-        $unitoptions[] = & $mform->createElement('static', 'pt_break', null, '<br/>');
-        $unitoptions[] = & $mform->createElement('radio', 'unit', '', get_string('certificateunit:mm', 'local_badgecerts'), 'mm');
-        $unitoptions[] = & $mform->createElement('static', 'mm_break', null, '<br/>');
-        $unitoptions[] = & $mform->createElement('radio', 'unit', '', get_string('certificateunit:cm', 'local_badgecerts'), 'cm');
-        $unitoptions[] = & $mform->createElement('static', 'cm_break', null, '<br/>');
-        $unitoptions[] = & $mform->createElement('radio', 'unit', '', get_string('certificateunit:in', 'local_badgecerts'), 'in');
+        $unitoptions[] = &$mform->createElement('radio', 'unit', '', get_string('certificateunit:pt', 'local_badgecerts'), 'pt');
+        $unitoptions[] = &$mform->createElement('static', 'pt_break', null, '<br/>');
+        $unitoptions[] = &$mform->createElement('radio', 'unit', '', get_string('certificateunit:mm', 'local_badgecerts'), 'mm');
+        $unitoptions[] = &$mform->createElement('static', 'mm_break', null, '<br/>');
+        $unitoptions[] = &$mform->createElement('radio', 'unit', '', get_string('certificateunit:cm', 'local_badgecerts'), 'cm');
+        $unitoptions[] = &$mform->createElement('static', 'cm_break', null, '<br/>');
+        $unitoptions[] = &$mform->createElement('radio', 'unit', '', get_string('certificateunit:in', 'local_badgecerts'), 'in');
         $mform->addGroup($unitoptions, 'unitgr', get_string('certificateunit', 'local_badgecerts'), array(' '), false);
         $mform->setDefault('unit', 'mm');
         $mform->addRule('unitgr', null, 'required');
 
         $certtypes = array();
         $certtypes[0] = get_string('certificateforbadge', 'local_badgecerts');
-        if ($utils->check_mod_booking()) {
+        if (utils::check_mod_booking()) {
             $certtypes[1] = get_string('certificateformodbookingusers', 'local_badgecerts');
             $certtypes[4] = get_string('certificateformodbookinguserssum', 'local_badgecerts');
             $certtypes[2] = get_string('certificateformodbookingteachers', 'local_badgecerts');
         }
-        if ($utils->check_mod_quizgrading()) {
+        if (utils::check_mod_quizgrading()) {
             $certtypes[3] = get_string('certificateforquizgrading', 'local_badgecerts');
         }
 
@@ -155,13 +181,14 @@ class edit_cert_details_form extends moodleform {
             $mform->disabledIf('reusetemplate', 'reuse', 'notchecked');
         }
 
-        if ($utils->check_mod_booking()) {
-            $mform->addElement('text', 'bookingid', get_string('bookingid', 'local_badgecerts'), array('size' => '10'));
+        if (utils::check_mod_booking()) {
+            $rec = utils::get_all_bookings();
+            $mform->addElement('autocomplete', 'bookingid', get_string('bookingid', 'local_badgecerts'), $rec);
             $mform->setType('bookingid', PARAM_INT);
             $mform->addHelpButton('bookingid', 'bookingid', 'local_badgecerts');
         }
 
-        if ($utils->check_mod_quizgrading()) {
+        if (utils::check_mod_quizgrading()) {
             $mform->addElement('text', 'quizgradingid', get_string('quizgradingid', 'local_badgecerts'), array('size' => '10'));
             $mform->setType('quizgradingid', PARAM_INT);
             $mform->addHelpButton('quizgradingid', 'quizgradingid', 'local_badgecerts');
@@ -184,7 +211,7 @@ class edit_cert_details_form extends moodleform {
         $mform->setType('issuercontact', PARAM_RAW);
         $mform->addHelpButton('issuercontact', 'contact', 'local_badgecerts');
 
-        if ($utils->check_mod_booking()) {
+        if (utils::check_mod_booking()) {
             $mform->addElement('header', 'datelimit', get_string('datelimit', 'local_badgecerts'));
 
             $mform->addElement('static', 'whenisthisfiltervalid', '', get_string('whenisthisfiltervalid', 'local_badgecerts'));
@@ -199,6 +226,26 @@ class edit_cert_details_form extends moodleform {
             $mform->addElement('date_time_selector', 'enddate', get_string("endtime", "local_badgecerts"));
             $mform->setType('enddate', PARAM_INT);
             $mform->disabledIf('enddate', 'restricttocertaindate', 'notchecked');
+
+            // Limit for booking options.
+            $mform->addElement('header', 'bookingoptionlimit', get_string('bookingoptionlimitdatelimit', 'local_badgecerts'));
+            $mform->addElement('static', 'whenisthisfiltervalid', '', get_string('whenisthisfiltervalid', 'local_badgecerts'));
+
+            $mform->addElement('checkbox', 'enablebookingoptions', get_string('enablebookingoptions', 'local_badgecerts'));
+            $mform->disabledIf('enablebookingoptions', 'certtype', 'in', array(0, 3));
+
+            $formatoptions = array(
+                '0' => get_string('bookingoptionsexclude', 'local_badgecerts'),
+                '1' => get_string('bookingoptionsuseonly', 'local_badgecerts')
+            );
+            $mform->addElement('select', 'optionsincexc', get_string('bookingoptions', 'local_badgecerts'), $formatoptions);
+            $mform->setDefault('optionsincexc', '0');
+            $mform->disabledIf('optionsincexc', 'enablebookingoptions');
+
+            $mform->addElement('text', 'bookingoptions', get_string('bookingoptionsinc', 'local_badgecerts'));
+            $mform->setType('bookingoptions', PARAM_NOTAGS);
+            $mform->disabledIf('bookingoptions', 'enablebookingoptions');
+            $mform->addHelpButton('bookingoptions', 'bookingoptions', 'local_badgecerts');
         }
         $mform->addElement('header', 'qrcode', get_string('qrcode', 'local_badgecerts'));
 
@@ -218,7 +265,8 @@ class edit_cert_details_form extends moodleform {
         $mform->setType('qrh', PARAM_INT);
 
         $mform->addElement('select', 'qrdata', get_string('qrdata', 'local_badgecerts'), array(
-            0 => get_string('userid', 'local_badgecerts'), 1 => get_string('username', 'local_badgecerts')));
+            0 => get_string('userid', 'local_badgecerts'), 1 => get_string('username', 'local_badgecerts')
+        ));
         $mform->setType('qrdata', PARAM_INT);
 
         $mform->addElement('hidden', 'action', $action);
@@ -244,7 +292,7 @@ class edit_cert_details_form extends moodleform {
     /**
      * Load in existing data as form defaults
      *
-     * @param stdClass|array $defaultvalues object or array of default values
+     * @param stdClass $cert Object default values.
      */
     public function set_data($cert) {
         $defaultvalues = array();
@@ -260,6 +308,10 @@ class edit_cert_details_form extends moodleform {
 
     /**
      * Validates form data
+     *
+     * @param  array $data Data to validate.
+     * @param  array $files List of files.
+     * @return array List of errors.
      */
     public function validation($data, $files) {
         global $DB, $USER;
@@ -286,8 +338,11 @@ class edit_cert_details_form extends moodleform {
         if ($data['action'] == 'new') {
             $duplicate = $DB->record_exists_select('local_badgecerts', 'name = :name', array('name' => $data['name']));
         } else {
-            $duplicate = $DB->record_exists_select('local_badgecerts', 'name = :name AND id != :certid',
-                array('name' => $data['name'], 'certid' => $data['id']));
+            $duplicate = $DB->record_exists_select(
+                'local_badgecerts',
+                'name = :name AND id != :certid',
+                array('name' => $data['name'], 'certid' => $data['id'])
+            );
         }
 
         if ($duplicate) {
@@ -296,5 +351,4 @@ class edit_cert_details_form extends moodleform {
 
         return $errors;
     }
-
 }

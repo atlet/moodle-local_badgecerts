@@ -17,12 +17,16 @@
 /**
  * BadgeCerts table for displaying list of users with certificate.
  *
- * @package    report_reportbadges
- * @copyright  2014 Andraž Prinčič <atletek@gmail.com>
+ * @package    local_badgecerts
+ * @copyright  2014 onwards Gregor Anželj, Andraž Prinčič
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author     Andraž Prinčič <atletek@gmail.com>, Gregor Anželj <gregor.anzelj@gmail.com>
  */
 defined('MOODLE_INTERNAL') || die;
 
+/**
+ * BadgeCerts table for displaying list of users with certificate.
+ */
 class all_users extends table_sql {
 
     /**
@@ -72,6 +76,12 @@ class all_users extends table_sql {
         return userdate($values->dateissued);
     }
 
+    /**
+     * Show last date of download.
+     *
+     * @param  object $values Contains object with all the values of record.
+     * @return $string Return last transfered date.
+     */
     public function col_ndatelasttransfer($values) {
 
         if (empty($values->ndatelasttransfer)) {
@@ -81,6 +91,12 @@ class all_users extends table_sql {
         }
     }
 
+    /**
+     * Show checxbox to select this record.
+     *
+     * @param  object $values Contains object with all the values of record.
+     * @return $string Return checxbox field.
+     */
     public function col_selected($values) {
         if (!$this->is_downloading()) {
             return '<input type="checkbox" class="usercheckbox" name="user[][' . $values->id .
