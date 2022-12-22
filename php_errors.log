@@ -793,3 +793,13 @@ Error code: dmlreadexception
 >>>>>>> 04381c98d40dccfb7ea0c6b8e58664c4fcab52a8
 =======
 >>>>>>> e0fcef5f512fb6756b892e0c58f029e2408faf1d
+[22-Dec-2022 11:37:08 Europe/Ljubljana] Default exception handler: A required parameter (type) was missing Debug: 
+Error code: missingparam
+* line 498 of /lib/setuplib.php: moodle_exception thrown
+* line 566 of /lib/moodlelib.php: call to print_error()
+* line 30 of /local/badgecerts/new.php: call to required_param()
+
+[22-Dec-2022 12:43:45 Europe/Ljubljana] Default exception handler: Exception - syntax error, unexpected '$certs' (T_VARIABLE) Debug: 
+Error code: generalexceptionmessage
+* line 803 of /local/badgecerts/lib.php: ParseError thrown
+

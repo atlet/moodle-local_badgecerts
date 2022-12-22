@@ -711,9 +711,9 @@ function badges_get_user_certificates($userid, $courseid = 0, $page = 0, $perpag
                                 cm.id = bc.bookingid)
                             AND ans.userid = u.id AND ans.completed = 1 AND CASE WHEN bc.startdate != 0
                             THEN bo.coursestarttime >= bc.startdate AND bo.courseendtime <= bc.enddate ELSE 1 = 1 END
-                            AND CASE 
-                                WHEN bc.enablebookingoptions = 1 AND bc.optionsincexc = 1 THEN ans.optionid IN (bc.bookingoptions)
-                                WHEN bc.enablebookingoptions = 1 AND bc.optionsincexc = 0 THEN ans.optionid NOT IN (bc.bookingoptions)
+                            AND CASE
+                                WHEN bc.enablebookingoptions = 1 AND bc.optionsincexc = 1 THEN find_in_set(ans.optionid, bc.bookingoptions)
+                                WHEN bc.enablebookingoptions = 1 AND bc.optionsincexc = 0 THEN NOT find_in_set(ans.optionid, bc.bookingoptions)
                                 ELSE 1 = 1
                             END
                             ) ELSE
