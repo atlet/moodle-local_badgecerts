@@ -1231,7 +1231,7 @@ function get_placeholders($cert, $booking, $quizreporting = null) {
         $booking->duration,
         userdate((int) $cert->recipient->birthdate, get_string('datetimeformat', 'local_badgecerts')),
         $cert->recipient->institution,
-        userdate((int) $cert->usercreated, get_string('datetimeformat', 'local_badgecerts')),
+        userdate((int) $cert->timecreated, get_string('datetimeformat', 'local_badgecerts')),
         // Quiz Grading.
         $quizreporting->quizname,
         $quizreporting->sumgrades,
