@@ -61,6 +61,7 @@ To design a new certifiate I reccomend [Inkscape](https://inkscape.org/). Text c
 [[recipient-birthdate]] Adds the recipient's date of birth.
 [[recipient-institution]] Adds the institution where the recipient is employed.
 [[badge-date-issued]] Adds the date when badge was issued.
+[[badge-desc-1]],[[badge-desc-2]] , [[badge-desc-3]], ...  Adds the badge's description - multiline.
 
 [Booking placeholders](https://github.com/atlet/moodle-mod_booking)
 [[booking-name]] Adds the seminar instance name.
@@ -96,5 +97,12 @@ To design a new certifiate I reccomend [Inkscape](https://inkscape.org/). Text c
 [[qg-up-lokacija]]'
 ```
 
-# Contributors
-Main contributers are Gregor Anželj and Andraž Prinčič.
+# The Badgecerts team:
+- Andraž Prinčič
+
+# Inactive Developers:
+- Gregor Anželj - original author of this plugin.
+
+# Thanks to:
+- Janko Harej - for great ideas.
+- Ueli Leutwyler - transaltion in Germany and fix for multiline description of badge.

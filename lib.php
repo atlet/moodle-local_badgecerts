@@ -30,6 +30,7 @@ use local_badgecerts\utils;
 /*
  * Number of records per page.
  */
+
 define('CERT_PERPAGE', 50);
 
 /*
@@ -347,7 +348,8 @@ class badge_certificate {
      */
     public function is_active() {
         if (($this->status == CERT_STATUS_ACTIVE) ||
-                ($this->status == CERT_STATUS_ACTIVE_LOCKED)) {
+            ($this->status == CERT_STATUS_ACTIVE_LOCKED)
+        ) {
             return true;
         }
         return false;
@@ -381,7 +383,8 @@ class badge_certificate {
      */
     public function is_locked() {
         if (($this->status == CERT_STATUS_ACTIVE_LOCKED) ||
-                ($this->status == CERT_STATUS_INACTIVE_LOCKED)) {
+            ($this->status == CERT_STATUS_INACTIVE_LOCKED)
+        ) {
             return true;
         }
         return false;
@@ -430,6 +433,7 @@ class badge_certificate {
         if ($this->certbgimage) {
             // Add a page
             // This method has several options, check the source code documentation for more information.
+            $nr_desc_lines =  10;
             $pdf->AddPage();
 
             // Get the current page break margin.
@@ -469,6 +473,11 @@ class badge_certificate {
                 '[[recipient-institution]]', // Adds the institution where the recipient is employed.
                 '[[badge-date-issued]]', // Adds the date when badge was issued.
             );
+
+            for ($i = 1; $i <= $nr_desc_lines; $i++) {
+                $placeholders[] = "[[badge-desc-$i]]";
+            }
+
             $values = array(
                 get_string('preview:recipientfname', 'local_badgecerts'),
                 get_string('preview:recipientlname', 'local_badgecerts'),
@@ -496,6 +505,21 @@ class badge_certificate {
                 get_string('preview:recipientinstitution', 'local_badgecerts'),
                 userdate($now, get_string('datetimeformat', 'local_badgecerts')),
             );
+
+            $desc_lines = array();
+            for ($i = 1; $i <= $nr_desc_lines; $i++) {
+                $desc_linies[] = '';
+            }
+
+            $desc_lines_input = explode(PHP_EOL, get_string('preview:badgedesc', 'local_badgecerts'));
+
+            for ($i = 0; $i < count($desc_lines_input); $i++) {
+                $desc_lines[$i] = $desc_lines_input[$i];
+            }
+
+            $values = array_merge($values, $desc_lines);
+
+
             $template = str_replace($placeholders, $values, $template);
 
             $pdf->ImageSVG('@' . $template, 0, 0, 0, 0, '', '', '', 0, true);
@@ -510,7 +534,6 @@ class badge_certificate {
         // This method has several options, check the source code documentation for more information.
         $pdf->Output('preview_' . $this->name . '.pdf', 'I');
     }
-
 }
 
 /**
@@ -937,7 +960,8 @@ function booking_getbookingoptions($cmid = null, $optionid = null) {
             'text' => $booking->option->text,
             'coursestarttime' => $booking->option->coursestarttime,
             'courseendtime' => $booking->option->courseendtime,
-            'duration' => $booking->booking->settings->duration);
+            'duration' => $booking->booking->settings->duration
+        );
     }
 }
 
@@ -967,16 +991,22 @@ function getuserdata($userid = null) {
                     WHERE u.id = :userid", array('userid' => $userid));
     // Add custom profile field 'Datumrojstva' value.
     $fieldid = $DB->get_field('user_info_field', 'id', array('shortname' => 'Datumrojstva'));
-    if ($fieldid && $birthdate = $DB->get_field('user_info_data', 'data',
-        array('userid' => $userid, 'fieldid' => $fieldid))) {
+    if ($fieldid && $birthdate = $DB->get_field(
+        'user_info_data',
+        'data',
+        array('userid' => $userid, 'fieldid' => $fieldid)
+    )) {
         $user->birthdate = $birthdate;
     } else {
         $user->birthdate = null;
     }
     // Add custom profile field 'VIZ' value.
     $fieldid = $DB->get_field('user_info_field', 'id', array('shortname' => 'VIZ'));
-    if ($fieldid && $institution = $DB->get_field('user_info_data', 'data',
-        array('userid' => $userid, 'fieldid' => $fieldid))) {
+    if ($fieldid && $institution = $DB->get_field(
+        'user_info_data',
+        'data',
+        array('userid' => $userid, 'fieldid' => $fieldid)
+    )) {
         $user->institution = $institution;
     } else {
         $user->institution = null;
@@ -1216,6 +1246,12 @@ function get_placeholders($cert, $booking, $quizreporting = null) {
         '[[qg-up-organizator]]',
         '[[qg-up-lokacija]]'
     );
+
+    $nr_desc_lines =  10;
+    for ($i = 1; $i <= $nr_desc_lines; $i++) {
+        $placeholders[] = "[[badge-desc-$i]]";
+    }
+
     $values = array(
         $cert->recipient->firstname,
         $cert->recipient->lastname,
@@ -1257,14 +1293,22 @@ function get_placeholders($cert, $booking, $quizreporting = null) {
         $quizreporting->moznih_tock,
         $quizreporting->procent,
         $quizreporting->vprasanja,
-        ($quizreporting->status_kviza == 1 ? get_string('jeopravil', 'local_badgecerts') : get_string('niopravil',
-            'local_badgecerts')),
-        isset($quizreporting->datum_resitve) ? userdate($quizreporting->datum_resitve,
-            get_string('datetimeformat', 'local_badgecerts')) : '',
-        isset($quizreporting->datum_vpisa) ? userdate($quizreporting->datum_vpisa,
-            get_string('datetimeformat', 'local_badgecerts')) : '',
-        isset($quizreporting->datum_rojstva) ? userdate($quizreporting->datum_rojstva,
-            get_string('datetimeformat', 'local_badgecerts')) : '',
+        ($quizreporting->status_kviza == 1 ? get_string('jeopravil', 'local_badgecerts') : get_string(
+            'niopravil',
+            'local_badgecerts'
+        )),
+        isset($quizreporting->datum_resitve) ? userdate(
+            $quizreporting->datum_resitve,
+            get_string('datetimeformat', 'local_badgecerts')
+        ) : '',
+        isset($quizreporting->datum_vpisa) ? userdate(
+            $quizreporting->datum_vpisa,
+            get_string('datetimeformat', 'local_badgecerts')
+        ) : '',
+        isset($quizreporting->datum_rojstva) ? userdate(
+            $quizreporting->datum_rojstva,
+            get_string('datetimeformat', 'local_badgecerts')
+        ) : '',
         $quizreporting->uvrstitev_posamezniki,
         $quizreporting->uvrstitev_skupina,
         $quizreporting->organizator,
@@ -1272,6 +1316,20 @@ function get_placeholders($cert, $booking, $quizreporting = null) {
         mb_strtoupper($quizreporting->organizator, 'UTF-8'),
         mb_strtoupper($quizreporting->lokacija, 'UTF-8')
     );
+
+    $desc_lines = array();
+    for ($i = 1; $i <= $nr_desc_lines; $i++) {
+        $desc_linies[] = '';
+    }
+
+    $desc_lines_input = explode(PHP_EOL, $cert->description);
+
+    for ($i = 0; $i < count($desc_lines_input); $i++) {
+        $desc_lines[$i] = $desc_lines_input[$i];
+    }
+
+    $values = array_merge($values, $desc_lines);
+
 
     $i = 1;
 
@@ -1410,11 +1468,15 @@ function bulk_generate_certificates($certid, $badges, $dest = 'D') {
                 add_pdf_page($cert, $badge, $pdf, $booking, null, $user);
             } else if ($cert->quizgradingid > 0 && $cert->certtype == 3) {
 
-                $quizreporting = $DB->get_records_sql("SELECT *
+                $quizreporting = $DB->get_records_sql(
+                    "SELECT *
                             FROM {quizgrading_results}
                             WHERE quizgradingid = :quizgradnigid AND userid = :userid",
-                            array('quizgradnigid' => $cert->quizgradingid,
-                                'userid' => $cert->recipient->id));
+                    array(
+                        'quizgradnigid' => $cert->quizgradingid,
+                        'userid' => $cert->recipient->id
+                    )
+                );
 
                 foreach ($quizreporting as $quizreport) {
                     add_pdf_page($cert, $badge, $pdf, $booking, $quizreport, $user);
@@ -1504,23 +1566,33 @@ function add_pdf_page($cert, $badge, &$pdf, $booking, $quizreporting = null, $us
  *
  * @return void
  */
-function local_badgecerts_extend_navigation_user(navigation_node $parentnode, stdClass $user,
-    context_user $context, stdClass $course) {
+function local_badgecerts_extend_navigation_user(
+    navigation_node $parentnode,
+    stdClass $user,
+    context_user $context,
+    stdClass $course
+) {
     global $PAGE;
 
     if (isloggedin()) {
         if (has_any_capability(array(
-                    'local/badgecerts:viewcertificates',
-                    'local/badgecerts:createcertificate',
-                    'local/badgecerts:configurecertificate',
-                    'local/badgecerts:configureelements',
-                    'local/badgecerts:deletecertificate'
-                        ), $context)) {
+            'local/badgecerts:viewcertificates',
+            'local/badgecerts:createcertificate',
+            'local/badgecerts:configurecertificate',
+            'local/badgecerts:configureelements',
+            'local/badgecerts:deletecertificate'
+        ), $context)) {
 
             $url = new moodle_url('/local/badgecerts/index.php', array('type' => CERT_TYPE_COURSE, 'id' => $course->id));
             $coursenode = $PAGE->navigation->find($course->id, navigation_node::TYPE_COURSE);
-            $coursenode->add(get_string('managebadgecertificates', 'local_badgecerts'), $url,
-                navigation_node::TYPE_SETTING, null, 'userscerts', new pix_icon('i/folder', 'badgecerts'));
+            $coursenode->add(
+                get_string('managebadgecertificates', 'local_badgecerts'),
+                $url,
+                navigation_node::TYPE_SETTING,
+                null,
+                'userscerts',
+                new pix_icon('i/folder', 'badgecerts')
+            );
         }
     }
 }
@@ -1556,17 +1628,23 @@ function local_badgecerts_extend_settings_navigation(settings_navigation $nav, c
     if (isloggedin()) {
         $coursenode = $nav->get('courseadmin');
         if (has_any_capability(array(
-                    'local/badgecerts:viewcertificates',
-                    'local/badgecerts:createcertificate',
-                    'local/badgecerts:configurecertificate',
-                    'local/badgecerts:configureelements',
-                    'local/badgecerts:deletecertificate'
-                        ), $context)) {
+            'local/badgecerts:viewcertificates',
+            'local/badgecerts:createcertificate',
+            'local/badgecerts:configurecertificate',
+            'local/badgecerts:configureelements',
+            'local/badgecerts:deletecertificate'
+        ), $context)) {
 
             if ($coursenode) {
                 $url = new moodle_url('/local/badgecerts/index.php', array('type' => CERT_TYPE_COURSE, 'id' => $COURSE->id));
-                $coursenode->add(get_string('managebadgecertificates', 'local_badgecerts'), $url,
-                    navigation_node::TYPE_SETTING, null, 'managecerts', new pix_icon('i/report', 'badgecerts'));
+                $coursenode->add(
+                    get_string('managebadgecertificates', 'local_badgecerts'),
+                    $url,
+                    navigation_node::TYPE_SETTING,
+                    null,
+                    'managecerts',
+                    new pix_icon('i/report', 'badgecerts')
+                );
             }
         }
     }
