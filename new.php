@@ -102,7 +102,7 @@ if ($form->is_cancelled()) {
     if (isset($data->quizgradingid)) {
         $fordb->quizgradingid = $data->quizgradingid;
     }
-    $cert->certid = $data->certid;
+    $fordb->certid = $data->certid;
 
     $newid = $DB->insert_record('local_badgecerts', $fordb, true);
 

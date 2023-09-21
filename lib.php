@@ -949,9 +949,18 @@ function booking_getbookingoptions($cmid = null, $optionid = null) {
  * @return void
  */
 function getuserdata($userid = null) {
-    global $DB;
+    global $DB, $CFG;
+
+    if ($CFG->version >= 2021051700) {
+        // This only works in Moodle 3.11 and later.
+        $namefields = \core_user\fields::for_name()->get_sql('u')->selects;
+        $namefields = trim($namefields, ', ');
+    } else {
+        // This is only here to support Moodle versions earlier than 3.11.
+        $namefields = get_all_user_name_fields(true, 'u');
+    }
+
     // Get a recipient from database.
-    $namefields = get_all_user_name_fields(true, 'u');
     $user = $DB->get_record_sql("SELECT u.id, $namefields, u.deleted,
                                             u.email AS accountemail, b.email AS backpackemail
                     FROM {user} u LEFT JOIN {badge_backpack} b ON u.id = b.userid
@@ -1154,6 +1163,7 @@ function get_placeholders($cert, $booking, $quizreporting = null) {
     } else {
         $recipientemail = $cert->recipient->accountemail;
     }
+
     $placeholders = array(
         '[[recipient-fname]]', // Adds the recipient's first name.
         '[[recipient-lname]]', // Adds the recipient's last name.

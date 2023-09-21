@@ -225,7 +225,16 @@ $currenturl = new moodle_url('/local/badgecerts/view.php', $urlparams);
 $table = new all_users('all_users_bcde');
 $table->is_downloading($download, 'all_users_bcde', 'testing123456');
 
-$fields = 'DISTINCT u.id, ' . get_all_user_name_fields(true, 'u') . ', u.username, d.dateissued, d.uniquehash, '
+if ($CFG->version >= 2021051700) {
+    // This only works in Moodle 3.11 and later.
+    $namefields = \core_user\fields::for_name()->get_sql('u')->selects;
+    $namefields = trim($namefields, ', ');
+} else {
+    // This is only here to support Moodle versions earlier than 3.11.
+    $namefields = get_all_user_name_fields(true, 'u');
+}
+
+$fields = 'DISTINCT u.id, ' . $namefields . ', u.username, d.dateissued, d.uniquehash, '
         . '(SELECT COUNT(*) nctransfers FROM {local_badgecerts_trasnfers} bcf WHERE bcf.userid = u.id AND '
         . 'bcf.badgecertificateid = c.id AND bcf.transfereruserid = u.id) nctransfers,'
         . '(SELECT COUNT(*) nctransfers FROM {local_badgecerts_trasnfers} bcf WHERE '

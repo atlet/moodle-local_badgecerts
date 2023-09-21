@@ -105,7 +105,7 @@ where
         $rec = $DB->get_records_sql("
         select
         cm.id id,
-        concat(c.shortname, ' - ', b.name) name
+        CONCAT(c.shortname, ' - ', b.name) as name
     from
         {booking} b
     left join {course_modules} cm on
