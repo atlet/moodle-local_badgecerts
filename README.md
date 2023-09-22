@@ -106,3 +106,4 @@ To design a new certifiate I reccomend [Inkscape](https://inkscape.org/). Text c
 # Thanks to:
 - Janko Harej - for great ideas.
 - Ueli Leutwyler - transaltion in Germany and fix for multiline description of badge.
+- Allan Coutarel - bug fixes.

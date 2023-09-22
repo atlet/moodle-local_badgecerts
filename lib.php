@@ -1318,16 +1318,14 @@ function get_placeholders($cert, $booking, $quizreporting = null) {
     );
 
     $desc_lines = array();
-    for ($i = 1; $i <= $nr_desc_lines; $i++) {
-        $desc_linies[] = '';
-    }
-
     $desc_lines_input = explode(PHP_EOL, $cert->description);
-
-    for ($i = 0; $i < count($desc_lines_input); $i++) {
-        $desc_lines[$i] = $desc_lines_input[$i];
+    for ($i = 0; $i < $nr_desc_lines; $i++) {
+        if ($i < count($desc_lines_input)) {
+            $desc_lines[] = $desc_lines_input[$i];
+        } else {
+            $desc_lines[] = '';
+        }
     }
-
     $values = array_merge($values, $desc_lines);
 
 
