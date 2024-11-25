@@ -249,7 +249,7 @@ class badge_certificate {
      */
     public $enddate;
     /**
-     * Certificate instance.
+     * Certificate instance - Badge ID.
      *
      * @var int
      */
@@ -300,6 +300,195 @@ class badge_certificate {
                 }
             }
         }
+    }
+
+    /**
+     * Migrate certificate to tool_certificate.
+     */
+    public function migrate($toolcertificateid) {
+        global $DB, $USER;
+
+        $sqlwhere = '';
+        $sqlvalues = ['certid' => $this->id];
+
+        switch ($this->certtype) {
+            case 1:
+            case 4:
+                // Mod_booking users.
+                if ($this->bookingid > 0) {
+                    if ($this->enablebookingoptions) {
+                        $yesno = ($this->optionsincexc == 1 ? '' : 'NOT');
+                        $exsql = " AND ans.optionid {$yesno} IN ({$this->bookingoptions})";
+                    } else {
+                        $exsql = '';
+                    }
+                    if ($this->startdate != 0) {
+                        $sqlwhere .= " AND (SELECT
+                                    CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
+                                FROM
+                                    {booking_answers} ans
+                                LEFT JOIN
+                                    {booking_options} bo ON bo.id = ans.optionid
+                                WHERE
+                                    ans.bookingid = (SELECT
+                                            instance
+                                        FROM
+                                            {course_modules} cm
+                                        WHERE
+                                            cm.id = c.bookingid)
+                                        AND ans.userid = u.id AND ans.completed = 1 AND " .
+                            "bo.coursestarttime >= c.startdate AND bo.courseendtime <= c.enddate {$exsql}) = 1";
+                    } else {
+                        $sqlwhere .= " AND (SELECT
+                                    CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
+                                FROM
+                                    {booking_answers} ans
+                                WHERE
+                                    bookingid = (SELECT
+                                            instance
+                                        FROM
+                                            {course_modules} cm
+                                        WHERE
+                                            cm.id = c.bookingid)
+                                        AND ans.userid = u.id AND ans.completed = 1 {$exsql}) = 1";
+                    }
+                }
+                break;
+
+            case 2:
+                // Mod_booking teachers.
+                if ($this->bookingid > 0) {
+                    if ($this->enablebookingoptions) {
+                        $yesno = ($this->optionsincexc == 1 ? '' : 'NOT');
+                        $exsql = " AND tch.optionid {$yesno} IN ({$this->bookingoptions})";
+                    } else {
+                        $exsql = '';
+                    }
+                    if ($this->startdate != 0) {
+                        $sqlwhere .= " AND (SELECT
+                                    CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
+                                FROM
+                                    {booking_teachers} tch
+                                LEFT JOIN
+                                    {booking_options} bo ON bo.id = tch.optionid
+                                WHERE
+                                    tch.bookingid = (SELECT
+                                            instance
+                                        FROM
+                                            {course_modules} cm
+                                        WHERE
+                                            cm.id = c.bookingid)
+                                        AND tch.userid = u.id AND tch.completed = 1 AND
+                                        bo.coursestarttime >= c.startdate AND
+                                        bo.courseendtime <= c.enddate {$exsql}) = 1 ";
+                    } else {
+                        $sqlwhere .= " AND (SELECT
+                    CASE WHEN c.bookingid > 0 THEN
+                            (SELECT
+                                CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
+                                FROM
+                                    {booking_teachers} tch
+                                WHERE
+                                    bookingid = (SELECT
+                                            instance
+                                        FROM
+                                            {course_modules} cm
+                                        WHERE
+                                            cm.id = c.bookingid)
+                                        AND tch.userid = u.id AND tch.completed = 1 {$exsql})ELSE 0 END ) = 1 ";
+                    }
+                }
+                break;
+
+            case 3:
+                // Mod_quizgrading.
+                if ($this->quizgradingid > 0) {
+                    $sqlwhere .= " AND c.quizgradingid = :quizgradingid ";
+                    $sqlvalues['quizgradingid'] = $this->quizgradingid;
+                }
+                break;
+
+            default:
+                break;
+        }
+
+        $fields = 'DISTINCT u.id, u.username, d.dateissued, d.uniquehash, '
+            . '(SELECT COUNT(*) nctransfers FROM {local_badgecerts_trasnfers} bcf WHERE bcf.userid = u.id AND '
+            . 'bcf.badgecertificateid = c.id AND bcf.transfereruserid = u.id) nctransfers,'
+            . '(SELECT created ndatelasttransfer FROM {local_badgecerts_trasnfers} bcf WHERE bcf.userid = '
+            . 'u.id AND bcf.badgecertificateid = c.id AND bcf.transfereruserid = u.id ORDER BY created DESC LIMIT 1) ndatelasttransfer';
+        $from = ' {badge_issued} d JOIN {badge} b ON d.badgeid = b.id JOIN {user} u ON d.userid = u.id JOIN '
+            . '{local_badgecerts} c ON b.id = c.certid ';
+
+        $where = ' c.id = :certid ' . $sqlwhere;
+
+        $r = $DB->get_records_sql(
+            "SELECT {$fields} FROM {$from} WHERE {$where}",
+            $sqlvalues
+        );
+
+        if ($this->bookingid > 0) {
+            $coursemodule = get_coursemodule_from_id('booking', $this->bookingid);
+            $bookingid = $coursemodule->instance;
+        }
+
+        $badges = [];
+
+        foreach ($r as $value) {
+
+            $user = new stdClass();
+
+            $user->userid = $value->id;
+            $user->hash = $value->uniquehash;
+
+            $badges[$value->id] = $user;
+        }
+
+        foreach ($badges as $badge) {
+            list($cert, $badge, $booking, $user) = get_badge_data($this, $badge);
+
+            if ($this->bookingid > 0 && in_array($this->certtype, array(1))) {
+                $optionids = booking_getbookingoptionsid($bookingid, $badge->userid, $this);
+                foreach ($optionids as $optionid) {
+                    if (isset($optionid) && $optionid > 0) {
+                        $data = booking_getbookingoptions($coursemodule->id, $optionid);
+                        $template = \tool_certificate\template::instance($toolcertificateid);
+
+                        try {
+                            $cid = $template->issue_certificate(
+                                $badge->userid,
+                                null,
+                                $data,
+                                'mod_booking',
+                                $coursemodule->instance
+                            );
+
+                            $DB->execute("UPDATE {booking_answers} SET certificateid = :cid WHERE optionid = :optionid AND userid = :userid", ['cid' => $cid, 'optionid' => $optionid, 'userid' => $badge->userid]);
+                            
+                            $event = \local_badgecerts\event\created_event::create(
+                                array('objectid' => $this->id, 'context' => $this->get_context(), 'relateduserid' => $badge->userid)
+                            );
+                            $event->trigger();
+
+                        } catch (\Throwable $th) {
+                            mtrace("Not issued: {$th->getMessage()}");
+
+                            $event = \local_badgecerts\event\error_event::create(
+                                array('objectid' => $this->id, 'context' => $this->get_context(), 'relateduserid' => $badge->userid)
+                            );
+                            $event->trigger();
+                        }
+                    }
+                }
+            } else {
+                $event = \local_badgecerts\event\not_suported::create(
+                    array('objectid' => $this->id, 'context' => $this->get_context(), 'relateduserid' => $badge->userid)
+                );
+                $event->trigger();
+            }
+        }
+
+        // Your logic here.
     }
 
     /**
@@ -956,11 +1145,20 @@ function booking_getbookingoptions($cmid = null, $optionid = null) {
         return false;
     } else {
         return array(
-            'name' => $booking->booking->settings->name,
+            'name' => $booking->booking->cm->name,
+            'eventtype' => $booking->booking->settings->eventtype,
+            'duration' => $booking->booking->settings->duration,
+            'points' => $booking->booking->settings->points,
+            'organizatorname' => $booking->booking->settings->organizatorname,
             'text' => $booking->option->text,
-            'coursestarttime' => $booking->option->coursestarttime,
-            'courseendtime' => $booking->option->courseendtime,
-            'duration' => $booking->booking->settings->duration
+            'location' => $booking->option->location,
+            'institution' => $booking->option->institution,
+            'address' => $booking->option->address,
+            'coursestarttime' => ($booking->option->coursestarttime == 0 ? '' : userdate($booking->option->coursestarttime, get_string('strftimedatetimeshort'))),
+            'courseendtime' => ($booking->option->courseendtime == 0 ? '' : userdate($booking->option->courseendtime, get_string('strftimedatetimeshort'))),
+            'coursestartdate' => ($booking->option->coursestarttime == 0 ? '' : userdate($booking->option->coursestarttime, get_string('pollstrftimedate', 'booking'))),
+            'courseenddate' => ($booking->option->courseendtime == 0 ? '' : userdate($booking->option->courseendtime, get_string('pollstrftimedate', 'booking'))),
+            'tnofhours' => 0
         );
     }
 }

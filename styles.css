@@ -1,0 +1,24 @@
+/* Flex container for buttons */
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    /* Push buttons to opposite sides */
+    align-items: center;
+    /* Vertically center the buttons */
+    margin: 20px 0;
+    /* Add spacing around the container */
+}
+
+/* Individual button containers */
+.left-button,
+.right-button {
+    flex: 0 0 auto;
+    /* Prevent buttons from stretching */
+}
+
+/* Optional: Customize buttons further */
+.left-button .singlebutton,
+.right-button .singlebutton {
+    display: inline-block;
+    /* Ensure proper button layout */
+}
