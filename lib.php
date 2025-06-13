@@ -1154,8 +1154,8 @@ function booking_getbookingoptions($cmid = null, $optionid = null) {
             'location' => $booking->option->location,
             'institution' => $booking->option->institution,
             'address' => $booking->option->address,
-            'coursestarttime' => ($booking->option->coursestarttime == 0 ? '' : userdate($booking->option->coursestarttime, get_string('strftimedatetimeshort'))),
-            'courseendtime' => ($booking->option->courseendtime == 0 ? '' : userdate($booking->option->courseendtime, get_string('strftimedatetimeshort'))),
+            'coursestarttime' => ($booking->option->coursestarttime == 0 ? '' : userdate($booking->option->coursestarttime, get_string('strftimedate'))),
+            'courseendtime' => ($booking->option->courseendtime == 0 ? '' : userdate($booking->option->courseendtime, get_string('strftimedate'))),
             'coursestartdate' => ($booking->option->coursestarttime == 0 ? '' : userdate($booking->option->coursestarttime, get_string('pollstrftimedate', 'booking'))),
             'courseenddate' => ($booking->option->courseendtime == 0 ? '' : userdate($booking->option->courseendtime, get_string('pollstrftimedate', 'booking'))),
             'tnofhours' => 0
@@ -1599,6 +1599,7 @@ function bulk_generate_certificates($certid, $badges, $dest = 'D') {
 
             if ($cert->bookingid > 0 && in_array($cert->certtype, array(1, 2))) {
                 $optionids = booking_getbookingoptionsid($bookingid, $badge->userid, $cert);
+                
                 foreach ($optionids as $optionid) {
                     if (isset($optionid) && $optionid > 0) {
                         $options = booking_getbookingoptions($coursemodule->id, $optionid);
@@ -1619,14 +1620,14 @@ function bulk_generate_certificates($certid, $badges, $dest = 'D') {
 
                         // Set seminar start date.
                         if (isset($options['coursestarttime']) && !empty($options['coursestarttime'])) {
-                            $booking->startdate = userdate((int) $options['coursestarttime'], get_string('strftimedate'));
+                            $booking->startdate = $options['coursestarttime'];
                         } else {
                             $booking->startdate = get_string('datenotdefined', 'local_badgecerts');
                         }
 
                         // Set seminar end date.
                         if (isset($options['courseendtime']) && !empty($options['courseendtime'])) {
-                            $booking->enddate = userdate((int) $options['courseendtime'], get_string('strftimedate'));
+                            $booking->enddate = $options['courseendtime'];
                         } else {
                             $booking->enddate = get_string('datenotdefined', 'local_badgecerts');
                         }
